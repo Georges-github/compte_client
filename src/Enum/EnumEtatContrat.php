@@ -2,7 +2,7 @@
 
 namespace App\Enum;
 
-enum Etat : string
+enum EnumEtatContrat : string
 {
     case EN_DISCUSSION = 'En discussion';
     case A_VENIR = 'A venir';

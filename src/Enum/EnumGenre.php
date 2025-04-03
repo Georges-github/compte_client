@@ -2,7 +2,7 @@
 
 namespace App\Enum;
 
-enum Genre : string {
+enum EnumGenre : string {
     case HOMME = "Homme";
     case FEMME = "Femme";
 }
