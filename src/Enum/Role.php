@@ -1,0 +1,15 @@
+<?php
+
+namespace App\Enum;
+
+enum Role : string
+{
+    case ADMIN = 'ROLE_ADMIN';
+
+    case EMPLOYE = 'ROLE_EMPLOYE';
+    case ANCIEN_EMPLOYE = 'ROLE_ANCIEN_EMPLOYE';
+
+    case CLIENT_POTENTIEL = 'ROLE_CLIENT_POTENTIEL';
+    case CLIENT_POTENTIEL_ABANDON = 'ROLE_CLIENT_POTENTIEL_ABANDON';
+    case CLIENT = 'ROLE_CLIENT';
+}
