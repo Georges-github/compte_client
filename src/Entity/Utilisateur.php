@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Enum\Genre;
+use App\Enum\EnumGenre;
 use App\Repository\UtilisateurRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -41,8 +41,8 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 50)]
     private ?string $nom = null;
 
-    #[ORM\Column(enumType: Genre::class)]
-    private ?Genre $genre = null;
+    #[ORM\Column(enumType: EnumGenre::class)]
+    private ?EnumGenre $genre = null;
 
     #[ORM\Column(length: 30, nullable: true)]
     private ?string $telephone = null;
@@ -188,12 +188,12 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getGenre(): ?Genre
+    public function getGenre(): ?EnumGenre
     {
         return $this->genre;
     }
 
-    public function setGenre(Genre $genre): static
+    public function setGenre(EnumGenre $genre): static
     {
         $this->genre = $genre;
 

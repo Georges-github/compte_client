@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Enum\Etat;
+use App\Enum\EnumEtatContrat;
 use App\Repository\EtatContratRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -15,8 +15,8 @@ class EtatContrat
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(enumType: Etat::class)]
-    private ?Etat $etat = null;
+    #[ORM\Column(enumType: EnumEtatContrat::class)]
+    private ?EnumEtatContrat $etat = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $dateHeureInsertion = null;
@@ -36,12 +36,12 @@ class EtatContrat
         return $this->id;
     }
 
-    public function getEtat(): ?Etat
+    public function getEtat(): ?EnumEtatContrat
     {
         return $this->etat;
     }
 
-    public function setEtat(Etat $etat): static
+    public function setEtat(EnumEtatContrat $etat): static
     {
         $this->etat = $etat;
 
