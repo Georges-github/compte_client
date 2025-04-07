@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Enum\EnumGenre;
 use App\Repository\UtilisateurRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -15,6 +14,20 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_COURRIEL', fields: ['courriel'])]
 class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    public const GENRE_HOMME = 'Homme';
+    public const GENRE_FEMME = 'Femme';
+
+    public const ROLE_UTILISATEUR = 'ROLE_UTILISATEUR';
+    
+    public const ROLE_ADMIN = 'ROLE_ADMIN';
+
+    public const ROLE_EMPLOYE = 'ROLE_EMPLOYE';
+    public const ROLE_ANCIEN_EMPLOYE = 'ROLE_ANCIEN_EMPLOYE';
+
+    public const ROLE_CLIENT_POTENTIEL = 'ROLE_CLIENT_POTENTIEL';
+    public const ROLE_CLIENT_POTENTIEL_ABANDON = 'ROLE_CLIENT_POTENTIEL_ABANDON';
+    public const ROLE_CLIENT = 'ROLE_CLIENT';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -41,8 +54,8 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 50)]
     private ?string $nom = null;
 
-    #[ORM\Column(enumType: EnumGenre::class)]
-    private ?EnumGenre $genre = null;
+    #[ORM\Column(length: 20)]
+    private ?string $genre = null;
 
     #[ORM\Column(length: 30, nullable: true)]
     private ?string $telephone = null;
@@ -125,7 +138,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        $roles[] = 'ROLE_UTILISATEUR';
 
         return array_unique($roles);
     }
@@ -138,6 +151,22 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         $this->roles = $roles;
 
         return $this;
+    }
+
+    public static function getLesRoles(): array
+    {
+        return [
+            self::ROLE_UTILISATEUR => 'ROLE_UTILISATEUR' ,
+
+            self::ROLE_ADMIN => 'ROLE_ADMIN' ,
+
+            self::ROLE_EMPLOYE => 'ROLE_EMPLOYE' ,
+            self::ROLE_ANCIEN_EMPLOYE => 'ROLE_ANCIEN_EMPLOYE' ,
+        
+            self::ROLE_CLIENT_POTENTIEL => 'ROLE_CLIENT_POTENTIEL' ,
+            self::ROLE_CLIENT_POTENTIEL_ABANDON => 'ROLE_CLIENT_POTENTIEL_ABANDON' ,
+            self::ROLE_CLIENT => 'ROLE_CLIENT'
+        ];
     }
 
     /**
@@ -188,16 +217,24 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getGenre(): ?EnumGenre
+    public function getGenre(): ?string
     {
         return $this->genre;
     }
 
-    public function setGenre(EnumGenre $genre): static
+    public function setGenre(string $genre): static
     {
         $this->genre = $genre;
 
         return $this;
+    }
+
+    public static function getGenres(): array
+    {
+        return [
+            self::GENRE_HOMME => 'Homme' ,
+            self::GENRE_FEMME => 'Femme'
+        ];
     }
 
     public function getTelephone(): ?string

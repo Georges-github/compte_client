@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Enum\EnumEtatContrat;
 use App\Repository\EtatContratRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,13 +9,21 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: EtatContratRepository::class)]
 class EtatContrat
 {
+
+    public const ETAT_EN_DISCUSSION = 'En discussion';
+    public const ETAT_A_VENIR = 'A venir';
+    public const ETAT_EN_COURS = 'En cours';
+    public const ETAT_EN_PAUSE = 'En pause';
+    public const ETAT_ANNULE = 'Annulé';
+    public const ETAT_TERMINE = 'Terminé';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(enumType: EnumEtatContrat::class)]
-    private ?EnumEtatContrat $etat = null;
+    #[ORM\Column(length: 30)]
+    private ?string $etat = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $dateHeureInsertion = null;
@@ -36,16 +43,28 @@ class EtatContrat
         return $this->id;
     }
 
-    public function getEtat(): ?EnumEtatContrat
+    public function getEtat(): ?string
     {
         return $this->etat;
     }
 
-    public function setEtat(EnumEtatContrat $etat): static
+    public function setEtat(string $etat): static
     {
         $this->etat = $etat;
 
         return $this;
+    }
+
+    public static function getEtats(): array
+    {
+        return [
+            self::ETAT_EN_DISCUSSION => 'En discussion' ,
+            self::ETAT_A_VENIR => 'A venir' ,
+            self::ETAT_EN_COURS => 'En cours' ,
+            self::ETAT_EN_PAUSE => 'En pause' ,
+            self::ETAT_ANNULE => 'Annulé' ,
+            self::ETAT_TERMINE > 'Terminé'
+        ];
     }
 
     public function getDateHeureInsertion(): ?\DateTimeImmutable

@@ -56,6 +56,9 @@ final class UtilisateurController extends AbstractController{
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $roles = $form->get('roles')->getData();
+            $utilisateur->setRoles($roles);
+
             $entityManager->flush();
 
             return $this->redirectToRoute('app_utilisateur_index', [], Response::HTTP_SEE_OTHER);

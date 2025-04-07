@@ -3,7 +3,6 @@
 namespace App\Factory;
 
 use App\Entity\Utilisateur;
-use App\Enum\EnumGenre;
 use App\Repository\UtilisateurRepository;
 use DateTime;
 use Doctrine\ORM\EntityRepository;
@@ -20,10 +19,10 @@ final class UtilisateurFactory extends PersistentProxyObjectFactory {
     public static int $_occurrence = 0;
 
     private static $_u = [
-        [ "prenom" => "Clara" , "nom" => "Israel", "genre" => EnumGenre::FEMME , "courriel" => "contact@ad-clo.fr" , "motDePasse" => "az" , "telephone" => "+33 1 02 03 04 05" , "numeroEtRue" => "151 rue des Rabats" , "codePostal" => "92160" , "ville" => "Antony" , "societe" => "CLO architecture" , "role" => "ADMINISTRATEUR" ] ,
-        [ "prenom" => "Aurélien" , "nom" => "Avert", "genre" => EnumGenre::HOMME , "courriel" => "aurelien.Avert@ad-clo.fr" , "motDePasse" => "qs" , "telephone" => "+33 1 06 07 08 09" , "numeroEtRue" => "1 rue de l'industrie" , "codePostal" => "74000" , "ville" => "Annecy" , "societe" => "CLO architecture" , "role" => "ADMINISTRATEUR" ] ,
-        [ "prenom" => "Eléonor" , "nom" => "Majault", "genre" => EnumGenre::FEMME , "courriel" => "eleonor.majault@ad-clo.fr" , "motDePasse" => "wx" , "telephone" => "+33 1 10 11 12 13" , "numeroEtRue" => "2 rue de l'industrie" , "codePostal" => "74000" , "ville" => "Annecy" , "societe" => "CLO architecture" , "role" => "EMPLOYE" ] ,
-        [ "prenom" => "Anaïs" , "nom" => "Molliex", "genre" => EnumGenre::FEMME , "courriel" => "anais.molliex@ad-clo.fr" , "motDePasse" => "er" , "telephone" => "+33 1 14 15 16 17" , "numeroEtRue" => "3 rue de l'industrie" , "codePostal" => "74000" , "ville" => "Annecy" , "societe" => "CLO architecture" , "role" => "EMPLOYE"]
+        [ "prenom" => "Clara" , "nom" => "Israel", "genre" => Utilisateur::GENRE_FEMME , "courriel" => "contact@ad-clo.fr" , "motDePasse" => "az" , "telephone" => "+33 1 02 03 04 05" , "numeroEtRue" => "151 rue des Rabats" , "codePostal" => "92160" , "ville" => "Antony" , "societe" => "CLO architecture" , "role" => "ADMINISTRATEUR" ] ,
+        [ "prenom" => "Aurélien" , "nom" => "Avert", "genre" => Utilisateur::GENRE_HOMME , "courriel" => "aurelien.Avert@ad-clo.fr" , "motDePasse" => "qs" , "telephone" => "+33 1 06 07 08 09" , "numeroEtRue" => "1 rue de l'industrie" , "codePostal" => "74000" , "ville" => "Annecy" , "societe" => "CLO architecture" , "role" => "ADMINISTRATEUR" ] ,
+        [ "prenom" => "Eléonor" , "nom" => "Majault", "genre" => Utilisateur::GENRE_FEMME , "courriel" => "eleonor.majault@ad-clo.fr" , "motDePasse" => "wx" , "telephone" => "+33 1 10 11 12 13" , "numeroEtRue" => "2 rue de l'industrie" , "codePostal" => "74000" , "ville" => "Annecy" , "societe" => "CLO architecture" , "role" => "EMPLOYE" ] ,
+        [ "prenom" => "Anaïs" , "nom" => "Molliex", "genre" => Utilisateur::GENRE_FEMME , "courriel" => "anais.molliex@ad-clo.fr" , "motDePasse" => "er" , "telephone" => "+33 1 14 15 16 17" , "numeroEtRue" => "3 rue de l'industrie" , "codePostal" => "74000" , "ville" => "Annecy" , "societe" => "CLO architecture" , "role" => "EMPLOYE"]
     ];
 
     /**
@@ -62,6 +61,7 @@ final class UtilisateurFactory extends PersistentProxyObjectFactory {
             'roles' => [ $u[ "role" ] ],
             'rueEtNumero' => $u[ "numeroEtRue" ] ,
             'societe' => $u[ "societe" ],
+            'telephone' => $u[ "telephone" ],
             'ville' => $u[ "ville" ]
         ];
         // return [
