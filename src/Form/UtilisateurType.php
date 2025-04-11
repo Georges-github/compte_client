@@ -23,7 +23,7 @@ class UtilisateurType extends AbstractType
                 'multiple' => true ,
                 'expanded' => true
             ])
-            ->add('password' , TextType::class )
+            // ->add('password' , TextType::class )
             ->add('prenom' , TextType::class )
             ->add('nom' , TextType::class )
             ->add('genre', ChoiceType::class , [
@@ -35,12 +35,13 @@ class UtilisateurType extends AbstractType
             ->add('codePostal' , TextType::class )
             ->add('ville' , TextType::class )
             ->add('societe' , TextType::class )
-            ->add('dateHeureInsertion', null, [
-                'widget' => 'single_text'
-            ])
-            ->add('dateHeureMAJ', null, [
-                'widget' => 'single_text'
-            ]);
+            // ->add('dateHeureInsertion', null, [
+            //     'widget' => 'single_text'
+            // ])
+            // ->add('dateHeureMAJ', null, [
+            //     'widget' => 'single_text'
+            // ]);
+            ;
 
     }
 

@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EtatContrat index{% endblock %}
+
+{% block body %}
+    <h1>EtatContrat index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Etat</th>
+                <th>DateHeureInsertion</th>
+                <th>DateHeureMAJ</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for etat_contrat in etat_contrats %}
+            <tr>
+                <td>{{ etat_contrat.id }}</td>
+                <td>{{ etat_contrat.etat }}</td>
+                <td>{{ etat_contrat.dateHeureInsertion ? etat_contrat.dateHeureInsertion|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ etat_contrat.dateHeureMAJ ? etat_contrat.dateHeureMAJ|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_etat_contrat_show', {'id': etat_contrat.id}) }}">show</a>
+                    <a href="{{ path('app_etat_contrat_edit', {'id': etat_contrat.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_etat_contrat_new') }}">Create new</a>
+{% endblock %}

@@ -29,6 +29,9 @@ final class UtilisateurController extends AbstractController{
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $utilisateur->setDateHeureInsertion( new \DateTimeImmutable( 'now', new \DateTimeZone('Europe/Paris') ) );
+
             $entityManager->persist($utilisateur);
             $entityManager->flush();
 
@@ -58,6 +61,8 @@ final class UtilisateurController extends AbstractController{
         if ($form->isSubmitted() && $form->isValid()) {
             $roles = $form->get('roles')->getData();
             $utilisateur->setRoles($roles);
+
+            $utilisateur->setDateHeureMAJ( new \DateTimeImmutable( 'now', new \DateTimeZone('Europe/Paris') ) );
 
             $entityManager->flush();
 
