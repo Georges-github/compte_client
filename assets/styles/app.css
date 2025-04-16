@@ -1,3 +1,10 @@
 body {
-    background-color: skyblue;
+    /* background-color: skyblue; */
+    background-color: #c9beaf;
+}
+
+.table {
+    th , td {
+        background-color: #c9beaf;
+    }
 }
