@@ -5,23 +5,26 @@
 {% block body %}
     <h1>Utilisateur index</h1>
 
-    <table class="table clo_table">
+    <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
                 <th>Courriel</th>
+                <th>MediasDeContact</th>
                 <th>Roles</th>
-                {# <th>Password</th> #}
+                <th>Password</th>
                 <th>Prenom</th>
                 <th>Nom</th>
                 <th>Genre</th>
-                <th>Telephone</th>
+                <th>TelephoneFixe</th>
+                <th>TelephoneMobile</th>
                 <th>RueEtNumero</th>
                 <th>CodePostal</th>
                 <th>Ville</th>
                 <th>Societe</th>
                 <th>DateHeureInsertion</th>
                 <th>DateHeureMAJ</th>
+                <th>IsVerified</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -30,18 +33,21 @@
             <tr>
                 <td>{{ utilisateur.id }}</td>
                 <td>{{ utilisateur.courriel }}</td>
+                <td>{{ utilisateur.mediasDeContact ? utilisateur.mediasDeContact|json_encode : '' }}</td>
                 <td>{{ utilisateur.roles ? utilisateur.roles|json_encode : '' }}</td>
-                {# <td>{{ utilisateur.password }}</td> #}
+                <td>{{ utilisateur.password }}</td>
                 <td>{{ utilisateur.prenom }}</td>
                 <td>{{ utilisateur.nom }}</td>
                 <td>{{ utilisateur.genre }}</td>
-                <td>{{ utilisateur.telephone }}</td>
+                <td>{{ utilisateur.telephoneFixe }}</td>
+                <td>{{ utilisateur.telephoneMobile }}</td>
                 <td>{{ utilisateur.rueEtNumero }}</td>
                 <td>{{ utilisateur.codePostal }}</td>
                 <td>{{ utilisateur.ville }}</td>
                 <td>{{ utilisateur.societe }}</td>
                 <td>{{ utilisateur.dateHeureInsertion ? utilisateur.dateHeureInsertion|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ utilisateur.dateHeureMAJ ? utilisateur.dateHeureMAJ|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ utilisateur.isVerified ? 'Yes' : 'No' }}</td>
                 <td>
                     <a href="{{ path('app_utilisateur_show', {'id': utilisateur.id}) }}">show</a>
                     <a href="{{ path('app_utilisateur_edit', {'id': utilisateur.id}) }}">edit</a>
@@ -49,7 +55,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="15">no records found</td>
+                <td colspan="18">no records found</td>
             </tr>
         {% endfor %}
         </tbody>

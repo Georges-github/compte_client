@@ -3,13 +3,13 @@
 namespace App\Tests\Controller;
 
 use App\Entity\Utilisateur;
-use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-final class UtilisateurControllerTest extends WebTestCase{
+final class UtilisateurControllerTest extends WebTestCase
+{
     private KernelBrowser $client;
     private EntityManagerInterface $manager;
     private EntityRepository $utilisateurRepository;
@@ -49,18 +49,21 @@ final class UtilisateurControllerTest extends WebTestCase{
 
         $this->client->submitForm('Save', [
             'utilisateur[courriel]' => 'Testing',
+            'utilisateur[mediasDeContact]' => 'Testing',
             'utilisateur[roles]' => 'Testing',
             'utilisateur[password]' => 'Testing',
             'utilisateur[prenom]' => 'Testing',
             'utilisateur[nom]' => 'Testing',
             'utilisateur[genre]' => 'Testing',
-            'utilisateur[telephone]' => 'Testing',
+            'utilisateur[telephoneFixe]' => 'Testing',
+            'utilisateur[telephoneMobile]' => 'Testing',
             'utilisateur[rueEtNumero]' => 'Testing',
             'utilisateur[codePostal]' => 'Testing',
             'utilisateur[ville]' => 'Testing',
             'utilisateur[societe]' => 'Testing',
             'utilisateur[dateHeureInsertion]' => 'Testing',
             'utilisateur[dateHeureMAJ]' => 'Testing',
+            'utilisateur[isVerified]' => 'Testing',
         ]);
 
         self::assertResponseRedirects($this->path);
@@ -73,18 +76,21 @@ final class UtilisateurControllerTest extends WebTestCase{
         $this->markTestIncomplete();
         $fixture = new Utilisateur();
         $fixture->setCourriel('My Title');
+        $fixture->setMediasDeContact('My Title');
         $fixture->setRoles('My Title');
         $fixture->setPassword('My Title');
         $fixture->setPrenom('My Title');
         $fixture->setNom('My Title');
         $fixture->setGenre('My Title');
-        $fixture->setTelephone('My Title');
+        $fixture->setTelephoneFixe('My Title');
+        $fixture->setTelephoneMobile('My Title');
         $fixture->setRueEtNumero('My Title');
         $fixture->setCodePostal('My Title');
         $fixture->setVille('My Title');
         $fixture->setSociete('My Title');
         $fixture->setDateHeureInsertion('My Title');
         $fixture->setDateHeureMAJ('My Title');
+        $fixture->setIsVerified('My Title');
 
         $this->manager->persist($fixture);
         $this->manager->flush();
@@ -102,18 +108,21 @@ final class UtilisateurControllerTest extends WebTestCase{
         $this->markTestIncomplete();
         $fixture = new Utilisateur();
         $fixture->setCourriel('Value');
+        $fixture->setMediasDeContact('Value');
         $fixture->setRoles('Value');
         $fixture->setPassword('Value');
         $fixture->setPrenom('Value');
         $fixture->setNom('Value');
         $fixture->setGenre('Value');
-        $fixture->setTelephone('Value');
+        $fixture->setTelephoneFixe('Value');
+        $fixture->setTelephoneMobile('Value');
         $fixture->setRueEtNumero('Value');
         $fixture->setCodePostal('Value');
         $fixture->setVille('Value');
         $fixture->setSociete('Value');
         $fixture->setDateHeureInsertion('Value');
         $fixture->setDateHeureMAJ('Value');
+        $fixture->setIsVerified('Value');
 
         $this->manager->persist($fixture);
         $this->manager->flush();
@@ -122,18 +131,21 @@ final class UtilisateurControllerTest extends WebTestCase{
 
         $this->client->submitForm('Update', [
             'utilisateur[courriel]' => 'Something New',
+            'utilisateur[mediasDeContact]' => 'Something New',
             'utilisateur[roles]' => 'Something New',
             'utilisateur[password]' => 'Something New',
             'utilisateur[prenom]' => 'Something New',
             'utilisateur[nom]' => 'Something New',
             'utilisateur[genre]' => 'Something New',
-            'utilisateur[telephone]' => 'Something New',
+            'utilisateur[telephoneFixe]' => 'Something New',
+            'utilisateur[telephoneMobile]' => 'Something New',
             'utilisateur[rueEtNumero]' => 'Something New',
             'utilisateur[codePostal]' => 'Something New',
             'utilisateur[ville]' => 'Something New',
             'utilisateur[societe]' => 'Something New',
             'utilisateur[dateHeureInsertion]' => 'Something New',
             'utilisateur[dateHeureMAJ]' => 'Something New',
+            'utilisateur[isVerified]' => 'Something New',
         ]);
 
         self::assertResponseRedirects('/utilisateur/');
@@ -141,18 +153,21 @@ final class UtilisateurControllerTest extends WebTestCase{
         $fixture = $this->utilisateurRepository->findAll();
 
         self::assertSame('Something New', $fixture[0]->getCourriel());
+        self::assertSame('Something New', $fixture[0]->getMediasDeContact());
         self::assertSame('Something New', $fixture[0]->getRoles());
         self::assertSame('Something New', $fixture[0]->getPassword());
         self::assertSame('Something New', $fixture[0]->getPrenom());
         self::assertSame('Something New', $fixture[0]->getNom());
         self::assertSame('Something New', $fixture[0]->getGenre());
-        self::assertSame('Something New', $fixture[0]->getTelephone());
+        self::assertSame('Something New', $fixture[0]->getTelephoneFixe());
+        self::assertSame('Something New', $fixture[0]->getTelephoneMobile());
         self::assertSame('Something New', $fixture[0]->getRueEtNumero());
         self::assertSame('Something New', $fixture[0]->getCodePostal());
         self::assertSame('Something New', $fixture[0]->getVille());
         self::assertSame('Something New', $fixture[0]->getSociete());
         self::assertSame('Something New', $fixture[0]->getDateHeureInsertion());
         self::assertSame('Something New', $fixture[0]->getDateHeureMAJ());
+        self::assertSame('Something New', $fixture[0]->getIsVerified());
     }
 
     public function testRemove(): void
@@ -160,18 +175,21 @@ final class UtilisateurControllerTest extends WebTestCase{
         $this->markTestIncomplete();
         $fixture = new Utilisateur();
         $fixture->setCourriel('Value');
+        $fixture->setMediasDeContact('Value');
         $fixture->setRoles('Value');
         $fixture->setPassword('Value');
         $fixture->setPrenom('Value');
         $fixture->setNom('Value');
         $fixture->setGenre('Value');
-        $fixture->setTelephone('Value');
+        $fixture->setTelephoneFixe('Value');
+        $fixture->setTelephoneMobile('Value');
         $fixture->setRueEtNumero('Value');
         $fixture->setCodePostal('Value');
         $fixture->setVille('Value');
         $fixture->setSociete('Value');
         $fixture->setDateHeureInsertion('Value');
         $fixture->setDateHeureMAJ('Value');
+        $fixture->setIsVerified('Value');
 
         $this->manager->persist($fixture);
         $this->manager->flush();

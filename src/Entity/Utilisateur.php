@@ -32,6 +32,10 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public const ROLE_CLIENT_POTENTIEL_ABANDON = 'ROLE_CLIENT_POTENTIEL_ABANDON';
     public const ROLE_CLIENT = 'ROLE_CLIENT';
 
+    public const MDC_SMS = 'SMS';
+    public const MDC_WHATSAPP = 'WhatsApp';
+    public const MDC_COURRIEL = 'Courriel';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -43,16 +47,22 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $courriel = null;
 
     /**
+     * @var list<string> The user 'media de contact'
+     */
+    #[ORM\Column]
+    private array $mediasDeContact = [];
+
+    /**
      * @var list<string> The user roles
      */
     #[ORM\Column]
     private array $roles = [];
 
-    /**
+    /** 
      * @var string The hashed password
      */
     #[Assert\NotCompromisedPassword()]
-    #[Assert\PasswordStrength(minScore: Assert\PasswordStrength::STRENGTH_STRONG)]
+    #[Assert\PasswordStrength(minScore: Assert\PasswordStrength::STRENGTH_MEDIUM)]
     #[Assert\Regex('/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.*\s).{8,32}$/')]
     #[ORM\Column]
     private ?string $password = null;
@@ -69,7 +79,10 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $genre = null;
 
     #[ORM\Column(length: 30, nullable: true)]
-    private ?string $telephone = null;
+    private ?string $telephoneFixe = null;
+
+    #[ORM\Column(length: 30, nullable: true)]
+    private ?string $telephoneMobile = null;
 
     #[ORM\Column(length: 255)]
     private ?string $rueEtNumero = null;
@@ -98,7 +111,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Contrat>
      */
-    #[ORM\OneToMany(targetEntity: Contrat::class, mappedBy: 'idUser', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Contrat::class, mappedBy: 'idUtilisateur', orphanRemoval: true)]
     private Collection $contrats;
 
     /**
@@ -144,6 +157,31 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return (string) $this->courriel;
     }
 
+    public function getMediasDeContact(): array
+    {
+        $mediasDeContact = $this->mediasDeContact;
+        $mediasDeContact[] = self::MDC_SMS;
+
+        return array_unique($mediasDeContact);
+    }
+
+    public function setMediasDeContact(array $mediasDeContact): static
+    {
+        $this->mediasDeContact = $mediasDeContact;
+
+        return $this;
+    }
+
+    public static function getLesMediasDeContact(): array
+    {
+        return [
+            'SMS' => self::MDC_SMS ,
+            'Courriel' =>  self::MDC_COURRIEL ,
+            'WhatsApp' =>  self::MDC_WHATSAPP
+        ];
+    }
+
+
     /**
      * @see UserInterface
      * @return list<string>
@@ -170,16 +208,16 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public static function getLesRoles(): array
     {
         return [
-            self::ROLE_UTILISATEUR => 'ROLE_UTILISATEUR' ,
+            'ROLE_UTILISATEUR' => self::ROLE_UTILISATEUR ,
 
-            self::ROLE_ADMIN => 'ROLE_ADMIN' ,
+            'ROLE_ADMIN' => self::ROLE_ADMIN ,
 
-            self::ROLE_EMPLOYE => 'ROLE_EMPLOYE' ,
-            self::ROLE_ANCIEN_EMPLOYE => 'ROLE_ANCIEN_EMPLOYE' ,
-        
-            self::ROLE_CLIENT_POTENTIEL => 'ROLE_CLIENT_POTENTIEL' ,
-            self::ROLE_CLIENT_POTENTIEL_ABANDON => 'ROLE_CLIENT_POTENTIEL_ABANDON' ,
-            self::ROLE_CLIENT => 'ROLE_CLIENT'
+            'ROLE_EMPLOYE' => self::ROLE_EMPLOYE ,
+            'ROLE_ANCIEN_EMPLOYE' => self::ROLE_ANCIEN_EMPLOYE ,
+       
+            'ROLE_CLIENT_POTENTIEL' => self::ROLE_CLIENT_POTENTIEL ,
+            'ROLE_CLIENT_POTENTIEL_ABANDON' => self::ROLE_CLIENT_POTENTIEL_ABANDON ,
+            'ROLE_CLIENT' => self::ROLE_CLIENT
         ];
     }
 
@@ -243,7 +281,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public static function getGenres(): array
+    public static function getLesGenres(): array
     {
         return [
             self::GENRE_HOMME => 'Homme' ,
@@ -251,14 +289,26 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         ];
     }
 
-    public function getTelephone(): ?string
+    public function getTelephoneFixe(): ?string
     {
-        return $this->telephone;
+        return $this->telephoneFixe;
     }
 
-    public function setTelephone(?string $telephone): static
+    public function setTelephoneFixe(?string $telephoneFixe): static
     {
-        $this->telephone = $telephone;
+        $this->telephoneFixe = $telephoneFixe;
+
+        return $this;
+    }
+
+    public function getTelephoneMobile(): ?string
+    {
+        return $this->telephoneMobile;
+    }
+
+    public function setTelephoneMobile(?string $telephoneMobile): static
+    {
+        $this->telephoneMobile = $telephoneMobile;
 
         return $this;
     }

@@ -16,13 +16,17 @@
                 <td>{{ utilisateur.courriel }}</td>
             </tr>
             <tr>
+                <th>MediasDeContact</th>
+                <td>{{ utilisateur.mediasDeContact ? utilisateur.mediasDeContact|json_encode : '' }}</td>
+            </tr>
+            <tr>
                 <th>Roles</th>
                 <td>{{ utilisateur.roles ? utilisateur.roles|json_encode : '' }}</td>
             </tr>
-            {# <tr>
+            <tr>
                 <th>Password</th>
                 <td>{{ utilisateur.password }}</td>
-            </tr> #}
+            </tr>
             <tr>
                 <th>Prenom</th>
                 <td>{{ utilisateur.prenom }}</td>
@@ -36,8 +40,12 @@
                 <td>{{ utilisateur.genre }}</td>
             </tr>
             <tr>
-                <th>Telephone</th>
-                <td>{{ utilisateur.telephone }}</td>
+                <th>TelephoneFixe</th>
+                <td>{{ utilisateur.telephoneFixe }}</td>
+            </tr>
+            <tr>
+                <th>TelephoneMobile</th>
+                <td>{{ utilisateur.telephoneMobile }}</td>
             </tr>
             <tr>
                 <th>RueEtNumero</th>
@@ -62,6 +70,10 @@
             <tr>
                 <th>DateHeureMAJ</th>
                 <td>{{ utilisateur.dateHeureMAJ ? utilisateur.dateHeureMAJ|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>IsVerified</th>
+                <td>{{ utilisateur.isVerified ? 'Yes' : 'No' }}</td>
             </tr>
         </tbody>
     </table>

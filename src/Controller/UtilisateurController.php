@@ -12,8 +12,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/utilisateur')]
-final class UtilisateurController extends AbstractController{
-    #[Route('/', name: 'app_utilisateur_index', methods: ['GET'])]
+final class UtilisateurController extends AbstractController
+{
+    #[Route(name: 'app_utilisateur_index', methods: ['GET'])]
     public function index(UtilisateurRepository $utilisateurRepository): Response
     {
         return $this->render('utilisateur/index.html.twig', [
@@ -59,8 +60,6 @@ final class UtilisateurController extends AbstractController{
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $roles = $form->get('roles')->getData();
-            $utilisateur->setRoles($roles);
 
             $utilisateur->setDateHeureMAJ( new \DateTimeImmutable( 'now', new \DateTimeZone('Europe/Paris') ) );
 

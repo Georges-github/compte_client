@@ -19,10 +19,10 @@ final class UtilisateurFactory extends PersistentProxyObjectFactory {
     public static int $_occurrence = 0;
 
     private static $_u = [
-        [ "prenom" => "Clara" , "nom" => "Israel", "genre" => Utilisateur::GENRE_FEMME , "courriel" => "contact@ad-clo.fr" , "motDePasse" => "az" , "telephone" => "+33 1 02 03 04 05" , "numeroEtRue" => "151 rue des Rabats" , "codePostal" => "92160" , "ville" => "Antony" , "societe" => "CLO architecture" , "role" => "ADMINISTRATEUR" ] ,
-        [ "prenom" => "Aurélien" , "nom" => "Avert", "genre" => Utilisateur::GENRE_HOMME , "courriel" => "aurelien.Avert@ad-clo.fr" , "motDePasse" => "qs" , "telephone" => "+33 1 06 07 08 09" , "numeroEtRue" => "1 rue de l'industrie" , "codePostal" => "74000" , "ville" => "Annecy" , "societe" => "CLO architecture" , "role" => "ADMINISTRATEUR" ] ,
-        [ "prenom" => "Eléonor" , "nom" => "Majault", "genre" => Utilisateur::GENRE_FEMME , "courriel" => "eleonor.majault@ad-clo.fr" , "motDePasse" => "wx" , "telephone" => "+33 1 10 11 12 13" , "numeroEtRue" => "2 rue de l'industrie" , "codePostal" => "74000" , "ville" => "Annecy" , "societe" => "CLO architecture" , "role" => "EMPLOYE" ] ,
-        [ "prenom" => "Anaïs" , "nom" => "Molliex", "genre" => Utilisateur::GENRE_FEMME , "courriel" => "anais.molliex@ad-clo.fr" , "motDePasse" => "er" , "telephone" => "+33 1 14 15 16 17" , "numeroEtRue" => "3 rue de l'industrie" , "codePostal" => "74000" , "ville" => "Annecy" , "societe" => "CLO architecture" , "role" => "EMPLOYE"]
+        [ "prenom" => "Clara" , "nom" => "Israel", "genre" => Utilisateur::GENRE_FEMME , "courriel" => "contact@ad-clo.fr" , "motDePasse" => "az" , "telephoneFixe" => "+33 1 02 03 04 05" , "telephoneMobile" => "+33 6 02 03 04 05" , "mediaDeContact" => "SMS" , "numeroEtRue" => "151 rue des Rabats" , "codePostal" => "92160" , "ville" => "Antony" , "societe" => "CLO architecture" , "role" => "ADMINISTRATEUR" ] ,
+        [ "prenom" => "Aurélien" , "nom" => "Avert", "genre" => Utilisateur::GENRE_HOMME , "courriel" => "aurelien.Avert@ad-clo.fr" , "motDePasse" => "qs" , "telephoneFixe" => "+33 1 06 07 08 09" , "telephoneMobile" => "+33 6 06 07 08 09" , "mediaDeContact" => "SMS" , "numeroEtRue" => "1 rue de l'industrie" , "codePostal" => "74000" , "ville" => "Annecy" , "societe" => "CLO architecture" , "role" => "ADMINISTRATEUR" ] ,
+        [ "prenom" => "Eléonor" , "nom" => "Majault", "genre" => Utilisateur::GENRE_FEMME , "courriel" => "eleonor.majault@ad-clo.fr" , "motDePasse" => "wx" , "telephoneFixe" => "+33 1 10 11 12 13" , "telephoneMobile" => "+33 6 10 11 12 13" , "mediaDeContact" => "SMS" , "numeroEtRue" => "2 rue de l'industrie" , "codePostal" => "74000" , "ville" => "Annecy" , "societe" => "CLO architecture" , "role" => "EMPLOYE" ] ,
+        [ "prenom" => "Anaïs" , "nom" => "Molliex", "genre" => Utilisateur::GENRE_FEMME , "courriel" => "anais.molliex@ad-clo.fr" , "motDePasse" => "er" , "telephoneFixe" => "+33 1 14 15 16 17" , "telephoneMobile" => "+33 6 14 15 16 17" , "mediaDeContact" => "SMS" , "numeroEtRue" => "3 rue de l'industrie" , "codePostal" => "74000" , "ville" => "Annecy" , "societe" => "CLO architecture" , "role" => "EMPLOYE"]
     ];
 
     /**
@@ -53,15 +53,18 @@ final class UtilisateurFactory extends PersistentProxyObjectFactory {
         return [
             'codePostal' => $u[ "codePostal" ] ,
             'courriel' => $u[ "courriel" ] ,
+            'mediasDeContact' => [ $u[ "mediaDeContact" ] ] ,
             'dateHeureInsertion' => new \DateTimeImmutable( 'now', new \DateTimeZone('Europe/Paris') ) ,
             'genre' => $u[ "genre" ] ,
             'nom' => $u[ "nom" ] ,
-            'password' => $this->hasher->hashPassword( $utilisateur , $u[ "motDePasse" ] ) ,
+            // 'password' => $this->hasher->hashPassword( $utilisateur , $u[ "motDePasse" ] ) ,
+            'password' => $u[ "motDePasse" ] ,
             'prenom' => $u[ "prenom" ] ,
-            'roles' => [ $u[ "role" ] ],
+            'roles' => [ $u[ "role" ] ] ,
             'rueEtNumero' => $u[ "numeroEtRue" ] ,
-            'societe' => $u[ "societe" ],
-            'telephone' => $u[ "telephone" ],
+            'societe' => $u[ "societe" ] ,
+            'telephoneFixe' => $u[ "telephoneFixe" ] ,
+            'telephoneMobile' => $u[ "telephoneMobile" ] ,
             'ville' => $u[ "ville" ]
         ];
         // return [

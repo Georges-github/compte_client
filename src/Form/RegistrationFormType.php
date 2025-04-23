@@ -22,16 +22,24 @@ class RegistrationFormType extends AbstractType
         ->add('prenom' , TextType::class )
         ->add('nom' , TextType::class )
         ->add('genre', ChoiceType::class , [
-            'choices' => Utilisateur::getGenres() ,
-            'placeholder' => 'Choisir un genre'
+            'choices' => Utilisateur::getLesGenres() ,
+            'expanded' => true
         ])
         ->add('courriel')
         ->add('roles' , ChoiceType::class , [
             'choices' => Utilisateur::getLesRoles() ,
-            'placeholder' => 'Choisir un role' ,
             'multiple' => true ,
             'expanded' => true
         ])
+        ->add('mediasDeContact' , ChoiceType::class , [
+            'choices' => Utilisateur::getLesMediasDeContact() ,
+            'multiple' => true ,
+            'expanded' => true
+        ])
+        // ->add('mediasDeContact', ChoiceType::class , [
+        //     'choices' => Utilisateur::getLesMediasDeContact() ,
+        //     'expanded' => true
+        // ])
         ->add('agreeTerms', CheckboxType::class, [
             'mapped' => false,
             'constraints' => [
@@ -57,7 +65,8 @@ class RegistrationFormType extends AbstractType
                 ]),
             ],
         ])
-        ->add('telephone' , TextType::class )
+        ->add('telephoneFixe' , TextType::class )
+        ->add('telephoneMobile' , TextType::class )
         ->add('rueEtNumero' , TextType::class )
         ->add('codePostal' , TextType::class )
         ->add('ville' , TextType::class )
