@@ -10,6 +10,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+
 
 #[Route('/utilisateur')]
 final class UtilisateurController extends AbstractController
@@ -54,12 +56,17 @@ final class UtilisateurController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_utilisateur_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Utilisateur $utilisateur, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Utilisateur $utilisateur, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher): Response
     {
         $form = $this->createForm(UtilisateurType::class, $utilisateur);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $pwd = $form->get('plainPassword')->getData();
+            $pwd = $userPasswordHasher->hashPassword( $utilisateur , $pwd );
+            $utilisateur->setPassword( $pwd );
+
 
             $utilisateur->setDateHeureMAJ( new \DateTimeImmutable( 'now', new \DateTimeZone('Europe/Paris') ) );
 

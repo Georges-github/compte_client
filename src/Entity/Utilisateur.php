@@ -208,16 +208,16 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public static function getLesRoles(): array
     {
         return [
-            'ROLE_UTILISATEUR' => self::ROLE_UTILISATEUR ,
+            'Utilisateur' => self::ROLE_UTILISATEUR ,
 
-            'ROLE_ADMIN' => self::ROLE_ADMIN ,
+            'Administrateur' => self::ROLE_ADMIN ,
 
-            'ROLE_EMPLOYE' => self::ROLE_EMPLOYE ,
-            'ROLE_ANCIEN_EMPLOYE' => self::ROLE_ANCIEN_EMPLOYE ,
+            'Employé' => self::ROLE_EMPLOYE ,
+            'Ancien employé' => self::ROLE_ANCIEN_EMPLOYE ,
        
-            'ROLE_CLIENT_POTENTIEL' => self::ROLE_CLIENT_POTENTIEL ,
-            'ROLE_CLIENT_POTENTIEL_ABANDON' => self::ROLE_CLIENT_POTENTIEL_ABANDON ,
-            'ROLE_CLIENT' => self::ROLE_CLIENT
+            'Client potentiel' => self::ROLE_CLIENT_POTENTIEL ,
+            'Client potentiel abandonné' => self::ROLE_CLIENT_POTENTIEL_ABANDON ,
+            'Client' => self::ROLE_CLIENT
         ];
     }
 

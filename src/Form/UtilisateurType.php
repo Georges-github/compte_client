@@ -6,8 +6,12 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 use App\Entity\Utilisateur;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function PHPSTORM_META\type;
 
 class UtilisateurType extends AbstractType
 {
@@ -27,7 +31,14 @@ class UtilisateurType extends AbstractType
                 'multiple' => true ,
                 'expanded' => true
             ])
-            ->add('password')
+            ->add('plainPassword', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'invalid_message' => 'Les mots de passe doivent correspondre.',
+                'required' => true,
+                'first_options'  => ['label' => 'Mot de passe'],
+                'second_options' => ['label' => 'Confirmation du mot de passe'],
+                'mapped' => false, // si ce champ ne correspond pas directement à une propriété de l'entité
+            ])
             ->add('prenom')
             ->add('nom')
             // ->add('genre')
