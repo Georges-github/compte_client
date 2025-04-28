@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/utilisateur')]
 final class UtilisateurController extends AbstractController
@@ -19,6 +19,8 @@ final class UtilisateurController extends AbstractController
     #[Route(name: 'app_utilisateur_index', methods: ['GET'])]
     public function index(UtilisateurRepository $utilisateurRepository): Response
     {
+        $this-> denyAccessUnlessGranted( "ROLE_UTILISATEUR" );
+
         return $this->render('utilisateur/index.html.twig', [
             'utilisateurs' => $utilisateurRepository->findAll(),
         ]);

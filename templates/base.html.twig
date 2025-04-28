@@ -14,8 +14,9 @@
         {% endblock %}
     </head>
     <body>
-        <header class="d-flex justify-content-center mt-3">
+        <header class="d-flex flex-column align-items-center mt-3 mb-5">
             <img src="{{ asset('images/logo.png') }}" width="80px" alt="Logo non trouvé.">
+            <div class="t-3">Compte client</div>
         </header>
         <div class="container">
             {% block body %}{% endblock %}
