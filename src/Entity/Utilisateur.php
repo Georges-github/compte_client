@@ -23,8 +23,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     public const ROLE_UTILISATEUR = 'ROLE_UTILISATEUR';
     
-    public const ROLE_ADMINISTRATEUR = 'ROLE_ADMINISTRATEUR';
-
+    public const ROLE_EMPLOYE_ADMINISTRATEUR = 'ROLE_EMPLOYE_ADMINISTRATEUR';
     public const ROLE_EMPLOYE = 'ROLE_EMPLOYE';
     public const ROLE_ANCIEN_EMPLOYE = 'ROLE_ANCIEN_EMPLOYE';
 
@@ -210,7 +209,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return [
             'Utilisateur' => self::ROLE_UTILISATEUR ,
 
-            'Administrateur' => self::ROLE_ADMINISTRATEUR ,
+            'Employé, administrateur' => self::ROLE_EMPLOYE_ADMINISTRATEUR ,
 
             'Employé' => self::ROLE_EMPLOYE ,
             'Ancien employé' => self::ROLE_ANCIEN_EMPLOYE ,

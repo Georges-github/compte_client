@@ -13,21 +13,36 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/administrateur')]
-#[IsGranted('ROLE_ADMINISTRATEUR')]
+#[ Route( '/administrateur' ) ]
+#[ IsGranted( 'IS_AUTHENTICATED_FULLY' ) ]
+#[ IsGranted( 'ROLE_EMPLOYE_ADMINISTRATEUR' ) ]
 final class AdministrateurController extends AbstractController
 {
 
-    #[Route(name: 'app_accueil_administrateur_index', methods: ['GET'])]
-    public function accueilAdministrateur(UtilisateurRepository $utilisateurRepository): Response
+    #[ Route( name: 'app_accueil_administrateur_index' , methods: [ 'GET' ] ) ]
+    public function accueilAdministrateur(): Response
     {
 
-        return $this->render('BackEnd/Administrateur/accueilAdministrateur.html.twig', [
-            'utilisateur' => $utilisateurRepository->get_current_user(),
-        ]);
+        return $this->render( 'BackEnd/Administrateur/accueilAdministrateur.html.twig' , [
+            'utilisateur' => $this->getUser() ,
+        ] );
 
     }
 
+    #[ Route( '/listeDesEmployes' , name: 'app_liste_des_employes' , methods: [ 'GET' ] ) ]
+    public function listeDesEmployes( UtilisateurRepository $utilisateurRepository ) : Response
+    {
 
+        $listeDesEmployes = $utilisateurRepository->createQueryBuilder( 'u' )
+            ->andWhere( 'u.roles LIKE :e' )
+            ->setParameter( 'e' , '%EMPLOYE%' )
+            ->getQuery()
+            ->getResult();
+
+        return $this->render( 'BackEnd/Administrateur/listeDesEmployes.html.twig' , [
+            'listeDesEmployes' => $listeDesEmployes
+        ] );
+
+    }
 
 }

@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des employés{% endblock %}
+
+{% block body %}
+
+    <div class="container-fluid">
+
+        Liste des employés.
+
+        {% for e in listeDesEmployes %}
+            * {{ e.prenom }}
+        {% else %}
+            Aucun employé trouvé.
+        {% endfor %}
+
+    </div>
+
+{% endblock %}

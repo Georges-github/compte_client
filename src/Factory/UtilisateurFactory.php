@@ -19,10 +19,13 @@ final class UtilisateurFactory extends PersistentProxyObjectFactory {
     public static int $_occurrence = 0;
 
     private static $_u = [
-        [ "prenom" => "Clara" , "nom" => "Israel", "genre" => Utilisateur::GENRE_FEMME , "courriel" => "contact@ad-clo.fr" , "motDePasse" => "az" , "telephoneFixe" => "+33 1 02 03 04 05" , "telephoneMobile" => "+33 6 02 03 04 05" , "mediaDeContact" => "SMS" , "numeroEtRue" => "151 rue des Rabats" , "codePostal" => "92160" , "ville" => "Antony" , "societe" => "CLO architecture" , "role" => "ADMINISTRATEUR" ] ,
-        [ "prenom" => "Aurélien" , "nom" => "Avert", "genre" => Utilisateur::GENRE_HOMME , "courriel" => "aurelien.Avert@ad-clo.fr" , "motDePasse" => "qs" , "telephoneFixe" => "+33 1 06 07 08 09" , "telephoneMobile" => "+33 6 06 07 08 09" , "mediaDeContact" => "SMS" , "numeroEtRue" => "1 rue de l'industrie" , "codePostal" => "74000" , "ville" => "Annecy" , "societe" => "CLO architecture" , "role" => "ADMINISTRATEUR" ] ,
-        [ "prenom" => "Eléonor" , "nom" => "Majault", "genre" => Utilisateur::GENRE_FEMME , "courriel" => "eleonor.majault@ad-clo.fr" , "motDePasse" => "wx" , "telephoneFixe" => "+33 1 10 11 12 13" , "telephoneMobile" => "+33 6 10 11 12 13" , "mediaDeContact" => "SMS" , "numeroEtRue" => "2 rue de l'industrie" , "codePostal" => "74000" , "ville" => "Annecy" , "societe" => "CLO architecture" , "role" => "EMPLOYE" ] ,
-        [ "prenom" => "Anaïs" , "nom" => "Molliex", "genre" => Utilisateur::GENRE_FEMME , "courriel" => "anais.molliex@ad-clo.fr" , "motDePasse" => "er" , "telephoneFixe" => "+33 1 14 15 16 17" , "telephoneMobile" => "+33 6 14 15 16 17" , "mediaDeContact" => "SMS" , "numeroEtRue" => "3 rue de l'industrie" , "codePostal" => "74000" , "ville" => "Annecy" , "societe" => "CLO architecture" , "role" => "EMPLOYE"]
+        [ "prenom" => "Clara" , "nom" => "Israel", "genre" => Utilisateur::GENRE_FEMME , "courriel" => "contact@ad-clo.fr" , "motDePasse" => "CIazerty11!" , "telephoneFixe" => "+33 1 02 03 04 05" , "telephoneMobile" => "+33 6 02 03 04 05" , "mediaDeContact" => "SMS" , "numeroEtRue" => "151 rue des Rabats" , "codePostal" => "92160" , "ville" => "Antony" , "societe" => "CLO architecture" , "role" => Utilisateur::ROLE_EMPLOYE_ADMINISTRATEUR ] ,
+        [ "prenom" => "Aurélien" , "nom" => "Avert", "genre" => Utilisateur::GENRE_HOMME , "courriel" => "aurelien.Avert@ad-clo.fr" , "motDePasse" => "AAazerty11!" , "telephoneFixe" => "+33 1 06 07 08 09" , "telephoneMobile" => "+33 6 06 07 08 09" , "mediaDeContact" => "SMS" , "numeroEtRue" => "1 rue de l'industrie" , "codePostal" => "74000" , "ville" => "Annecy" , "societe" => "CLO architecture" , "role" => Utilisateur::ROLE_EMPLOYE_ADMINISTRATEUR ] ,
+        [ "prenom" => "Eléonor" , "nom" => "Majault", "genre" => Utilisateur::GENRE_FEMME , "courriel" => "eleonor.majault@ad-clo.fr" , "motDePasse" => "EMazerty11!" , "telephoneFixe" => "+33 1 10 11 12 13" , "telephoneMobile" => "+33 6 10 11 12 13" , "mediaDeContact" => "SMS" , "numeroEtRue" => "2 rue de l'industrie" , "codePostal" => "74000" , "ville" => "Annecy" , "societe" => "CLO architecture" , "role" => Utilisateur::ROLE_EMPLOYE ] ,
+        [ "prenom" => "Anaïs" , "nom" => "Molliex", "genre" => Utilisateur::GENRE_FEMME , "courriel" => "anais.molliex@ad-clo.fr" , "motDePasse" => "AMazerty11!" , "telephoneFixe" => "+33 1 14 15 16 17" , "telephoneMobile" => "+33 6 14 15 16 17" , "mediaDeContact" => "SMS" , "numeroEtRue" => "3 rue de l'industrie" , "codePostal" => "74000" , "ville" => "Annecy" , "societe" => "CLO architecture" , "role" => Utilisateur::ROLE_EMPLOYE ] ,
+
+        [ "prenom" => "Marc" , "nom" => "Dupont", "genre" => Utilisateur::GENRE_HOMME , "courriel" => "marc.dupont@ad-clo.fr" , "motDePasse" => "MDazerty11!" , "telephoneFixe" => "+33 1 19 20 21 22" , "telephoneMobile" => "+33 6 19 20 21 22" , "mediaDeContact" => "SMS" , "numeroEtRue" => "45 rue des Lilas" , "codePostal" => "75015" , "ville" => "Paris" , "societe" => "Indépendant" , "role" => Utilisateur::ROLE_CLIENT ] ,
+        [ "prenom" => "Sylive" , "nom" => "Dutertre", "genre" => Utilisateur::GENRE_FEMME , "courriel" => "sylvie.dutertre@ad-clo.fr" , "motDePasse" => "SDazerty11!" , "telephoneFixe" => "+33 1 23 24 25 26" , "telephoneMobile" => "+33 6 23 24 25 26" , "mediaDeContact" => "SMS" , "numeroEtRue" => "17 rue des Papillons" , "codePostal" => "74011" , "ville" => "Thiais" , "societe" => "SESA" , "role" => Utilisateur::ROLE_CLIENT ]
     ];
 
     /**
@@ -57,8 +60,8 @@ final class UtilisateurFactory extends PersistentProxyObjectFactory {
             'dateHeureInsertion' => new \DateTimeImmutable( 'now', new \DateTimeZone('Europe/Paris') ) ,
             'genre' => $u[ "genre" ] ,
             'nom' => $u[ "nom" ] ,
-            // 'password' => $this->hasher->hashPassword( $utilisateur , $u[ "motDePasse" ] ) ,
-            'password' => $u[ "motDePasse" ] ,
+            'password' => $this->hasher->hashPassword( $utilisateur , $u[ "motDePasse" ] ) ,
+            // 'password' => $u[ "motDePasse" ] ,
             'prenom' => $u[ "prenom" ] ,
             'roles' => [ $u[ "role" ] ] ,
             'rueEtNumero' => $u[ "numeroEtRue" ] ,

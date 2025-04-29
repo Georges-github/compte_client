@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des comptes clients{% endblock %}
+
+{% block body %}
+
+    <div class="container-fluid">
+
+        Liste des comptes clients.
+
+        {{ dump(listeDesComptesClients) }}
+
+        {# {% for c in listeDesComptesClients %}
+            * {{ c.prenom }}
+        {% else %}
+            Aucun employé trouvé.
+        {% endfor %} #}
+
+    </div>
+
+{% endblock %}

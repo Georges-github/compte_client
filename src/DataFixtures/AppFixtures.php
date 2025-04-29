@@ -12,7 +12,7 @@ class AppFixtures extends Fixture
     {
         // $product = new Product();
         // $manager->persist($product);
-        UtilisateurFactory::createMany( 4 );
+        UtilisateurFactory::createMany( 6 );
 
         $manager->flush();
     }
