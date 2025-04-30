@@ -3,23 +3,18 @@
 {% block title %}Accueil administrateur{% endblock %}
 
 {% block body %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-6 col-lg-5">
+            <div class="d-flex flex-column align-items-center border rounded-4 p-4 shadow-sm">
+                <h1 class="h4 mb-5 mt-5 text-center">{{utilisateur.prenom}} {{utilisateur.nom}}</h1>
 
-    <div class="container-fluid">
+                <a href="{{ path('app_liste_des_employes') }}" class="btn btn-outline-light btn-sm mb-5">Gérer les employés</a>
 
-        <div class="row">
-
-            <div class="d-flex flex-column align-items-center col-12 col-md-6 mx-auto border border-3 rounded-5 p-5">
-
-                <div class="fs-5 fw-light d-flex justify-content-md-center mb-3">{{utilisateur.prenom}}</div>
-
-                <a href="{{ path('app_liste_des_employes') }}" class="btn btn-sm">Gérer les employés</a>
-
-                <a href="{{ path('app_liste_des_comptes_clients') }}" class="btn btn-sm">Gérer les clients et leur compte</a>
+                <a href="{{ path('app_liste_des_comptes_clients') }}" class="btn btn-outline-light btn-sm mb-5">Gérer les clients et leur compte</a>
 
             </div>
-
         </div>
-
     </div>
-
+</div>
 {% endblock %}

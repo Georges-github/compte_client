@@ -1,19 +1,65 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+
+    <script>
+      $(document).ready(function() {
+        $('#employes').DataTable({
+          responsive: true,
+          language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json'
+          }
+        });
+      });
+    </script>
+{% endblock %}
+
 {% block title %}Liste des employés{% endblock %}
 
 {% block body %}
 
-    <div class="container-fluid">
+<div id="table-desktop" class="d-none d-md-block">
+    <table id="employes" class="table table-striped">
+        <thead>
+            <tr>
+            <th>Prénom</th>
+            <th>Nom</th>
+            <th>Rôles</th>
+            <th>Courriel</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for e in listeDesEmployes %}
+                <tr>
+                    <td>{{e.prenom}}</td>
+                    <td>{{e.nom}}</td>
+                    <td>{% for r in e.roles %}{{r}}{% if not(loop.last) %} , {% endif %}{% endfor %}</td>
+                    <td>{{e.Courriel}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
-        Liste des employés.
-
-        {% for e in listeDesEmployes %}
-            * {{ e.prenom }}
-        {% else %}
-            Aucun employé trouvé.
-        {% endfor %}
-
-    </div>
+<div id="table-mobile" class="d-block d-md-none">
+    {% for e in listeDesEmployes %}
+        {{e.prenom}}<br>
+        {{e.nom}}<br>
+        {% for r in e.roles %}{{r}}{% if not(loop.last) %} , {% endif %}{% endfor %}<br>
+        {{e.Courriel}}<br>
+    {% endfor %}
+</div>
 
 {% endblock %}
