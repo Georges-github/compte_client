@@ -8,3 +8,34 @@ body {
         background-color: #c9beaf;
     }
 }
+
+/* Rendre les champs de recherche de DataTables transparents */
+.dataTables_filter input , .page-link {
+    background-color: transparent !important;
+    border: 1px solid #ccc; /* Ajout d'une bordure discrète si nécessaire */
+    color: #333; /* Définir la couleur du texte */
+    padding: 5px 10px; /* Ajuster l'espacement interne */
+}
+
+/* Rendre les champs de pagination également transparents si nécessaire */
+.dataTables_length select,
+.dataTables_info {
+    background-color: transparent !important;
+}
+
+/* Optionnel: Styliser le texte si nécessaire */
+.dataTables_filter label {
+    color: #333;
+}
+
+
+/* Bouton adapté à la charte graphique de CLO */
+.btn-clo-outline {
+  color: #333;            /* texte orange */
+  border-color: #333;     /* bordure orange */
+}
+
+.btn-clo-outline:hover {
+  background-color: #333;
+  color: white;
+}

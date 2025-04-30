@@ -45,4 +45,27 @@ final class AdministrateurController extends AbstractController
 
     }
 
+    #[ Route( '/voirUnEmploye/{id}' , name: 'app_voir_un_employe' , methods: [ 'GET' ] ) ]
+    public function voirUnEmploye( UtilisateurRepository $utilisateurRepository , Request $request ) : Response
+    {
+
+        $employe = $utilisateurRepository->findOneBy( [ 'id' => $request->attributes->get( 'id' ) ] );
+
+        return $this->render( 'BackEnd/Administrateur/voirUnEmploye.html.twig' , [
+            'employe' => $employe
+        ]);
+
+    }
+
+    #[ Route( '/voirUnEmploye/{id}' , name: 'app_editer_un_employe' , methods: [ 'GET' ] ) ]
+    public function editerUnEmploye( UtilisateurRepository $utilisateurRepository , Request $request ) : Response{
+
+        $employe = $utilisateurRepository->findOneBy( [ 'id' => $request->attributes->get( 'id' ) ] );
+
+        return $this->render( 'BackEnd/Administrateur/editerUnEmploye.html.twig' , [
+            'employe' => $employe
+        ]);
+
+    }
+
 }

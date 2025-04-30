@@ -17,10 +17,9 @@
     <script>
       $(document).ready(function() {
         $('#employes').DataTable({
-          responsive: true,
-          language: {
-            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json'
-          }
+          responsive: true ,
+          language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json' } ,
+          columnDefs: [ { orderable: false, targets: [ -1 ] } ]
         });
       });
     </script>
@@ -38,6 +37,7 @@
             <th>Nom</th>
             <th>Rôles</th>
             <th>Courriel</th>
+            <th></th>
             </tr>
         </thead>
         <tbody>
@@ -45,8 +45,13 @@
                 <tr>
                     <td>{{e.prenom}}</td>
                     <td>{{e.nom}}</td>
-                    <td>{% for r in e.roles %}{{r}}{% if not(loop.last) %} , {% endif %}{% endfor %}</td>
+                    <td>{% for r in e.roles %}{{r|replace({'ROLE_': ''})|replace({'_':' '})|lower|capitalize}}{% if not(loop.last) %} , {% endif %}{% endfor %}</td>
                     <td>{{e.Courriel}}</td>
+                    <td class="d-flex justify-content-between">
+                        <a href="{{ path('app_voir_un_employe' , {id : e.id}) }}" class="btn btn-outline-light btn-sm w-50 me-2">&nbsp;Voir&nbsp;</a>
+                        <a href="" class="btn btn-outline-light btn-sm w-50">Editer</a>
+
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -55,10 +60,17 @@
 
 <div id="table-mobile" class="d-block d-md-none">
     {% for e in listeDesEmployes %}
-        {{e.prenom}}<br>
-        {{e.nom}}<br>
-        {% for r in e.roles %}{{r}}{% if not(loop.last) %} , {% endif %}{% endfor %}<br>
-        {{e.Courriel}}<br>
+        <div class="d-flex justify-content-start mb-3">
+            <div class="w-75">
+                <span class="fw-bold fs-3">{{e.prenom}} {{e.nom}}</span><br>
+                {% for r in e.roles %}<span class="fs-6 fs-italic">{{r|replace({'ROLE_':''})|replace({'_':' '})|lower|capitalize}}{% if not(loop.last) %} ,<br>{% endif %}</span>{% endfor %}<br>
+                {{e.Courriel}}
+            </div>
+            <div class="d-flex flex-column align-items-center justify-content-center">
+                <a href="{{ path('app_voir_un_employe' , {id : e.id}) }}" class="btn btn-outline-light btn-sm w-100 mb-3">Voir</a>
+                <a href="" class="btn btn-outline-light btn-sm w-100">Editer</a>
+            </div>
+        </div>
     {% endfor %}
 </div>
 
