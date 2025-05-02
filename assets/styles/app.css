@@ -9,7 +9,9 @@ body {
     }
 }
 
+/* --------------------------------------------------------- */
 /* Rendre les champs de recherche de DataTables transparents */
+/* --------------------------------------------------------- */
 .dataTables_filter input , .page-link {
     background-color: transparent !important;
     border: 1px solid #ccc; /* Ajout d'une bordure discrète si nécessaire */
@@ -28,14 +30,33 @@ body {
     color: #333;
 }
 
-
+/* ------------------------------------------ */
 /* Bouton adapté à la charte graphique de CLO */
+/* ------------------------------------------ */
 .btn-clo-outline {
-  color: #333;            /* texte orange */
-  border-color: #333;     /* bordure orange */
+  color: #333;
+  border-color: #333;
 }
 
 .btn-clo-outline:hover {
   background-color: #333;
   color: white;
+}
+
+/* ---------------------------------- */
+/* Style de l'icône "page précédente" */
+/* ---------------------------------- */
+.icon-page-precedente {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    vertical-align: middle;
+    cursor: pointer;
+    opacity: .5;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.icon-page-precedente:hover {
+    transform: scale(1.1);
+    opacity: 0.8;
 }

@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Voir un employé{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-end position-fixed top-0 end-0 m-3">
+    <a href="{{ app.request.headers.get('referer') }}">
+        <img class="icon-page-precedente" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
+    </a>
+</div>
+
+{{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}
+
+<a href="{{ app.request.headers.get('referer') }}" class="btn btn-outline-light btn-sm mt-4">&nbsp;Retour&nbsp;</a>
+{% endblock %}

@@ -3,6 +3,12 @@
 {% block title %}Voir un employé{% endblock %}
 
 {% block body %}
+<div class="d-flex justify-content-end position-fixed top-0 end-0 m-3">
+    <a href="{{ path('app_liste_des_employes') }}">
+        <img class="icon-page-precedente" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
+    </a>
+</div>
+
 <div class="container my-5">
     <div class="row justify-content-center">
         <div class="col-12 col-md-6 col-lg-5 d-flex justify-content-center">
@@ -15,10 +21,12 @@
                     <span class="card-text">Médias de contact : {% for m in employe.mediasDeContact %}{{m|lower|capitalize}}{% if not(loop.last) %} , {% endif %}{% endfor %}</span>
                     <span class="card-text">{{employe.rueEtNumero}}, {{employe.codePostal}} {{employe.ville}}</span>
                     <span class="card-text">Société : {{employe.societe}}</span>
-                    <a href="#" class="btn btn-clo-outline btn-sm w-50 mx-auto mt-4">Editer</a>
+                    <a href="{{ path('app_editer_un_employe' , {id : employe.id}) }}" class="btn btn-outline-secondary btn-sm w-50 mx-auto mt-4">Editer</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<a href="{{ path('app_liste_des_employes') }}" class="btn btn-outline-light btn-sm mt-4">&nbsp;Retour&nbsp;</a>
 {% endblock %}

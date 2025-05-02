@@ -29,6 +29,12 @@
 
 {% block body %}
 
+<div class="d-flex justify-content-end position-fixed top-0 end-0 m-3">
+    <a href="{{ path('app_accueil_administrateur') }}">
+        <img class="icon-page-precedente" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
+    </a>
+</div>
+
 <div id="table-desktop" class="d-none d-md-block">
     <table id="employes" class="table table-striped">
         <thead>
@@ -49,7 +55,7 @@
                     <td>{{e.Courriel}}</td>
                     <td class="d-flex justify-content-between">
                         <a href="{{ path('app_voir_un_employe' , {id : e.id}) }}" class="btn btn-outline-light btn-sm w-50 me-2">&nbsp;Voir&nbsp;</a>
-                        <a href="" class="btn btn-outline-light btn-sm w-50">Editer</a>
+                        <a href="{{ path('app_editer_un_employe' , {id : e.id}) }}" class="btn btn-outline-light btn-sm w-50">Editer</a>
 
                     </td>
                 </tr>
@@ -73,5 +79,7 @@
         </div>
     {% endfor %}
 </div>
+
+<a href="{{ path('app_accueil_administrateur') }}" class="btn btn-outline-light btn-sm mt-4">&nbsp;Retour&nbsp;</a>
 
 {% endblock %}

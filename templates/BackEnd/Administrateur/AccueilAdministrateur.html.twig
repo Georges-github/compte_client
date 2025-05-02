@@ -7,6 +7,11 @@
     <div class="row justify-content-center">
         <div class="col-12 col-md-6 col-lg-5">
             <div class="d-flex flex-column align-items-center border rounded-4 p-4 shadow-sm">
+                <div class="d-flex justify-content-end position-fixed top-0 end-0 m-3">
+                    <a href="{{ path('app_login') }}">
+                        <img class="icon-page-precedente" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
+                    </a>
+                </div>
                 <h1 class="h4 mb-5 mt-5 text-center">{{utilisateur.prenom}} {{utilisateur.nom}}</h1>
 
                 <a href="{{ path('app_liste_des_employes') }}" class="btn btn-outline-light btn-sm mb-5">Gérer les employés</a>

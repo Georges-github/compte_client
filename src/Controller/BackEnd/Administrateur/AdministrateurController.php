@@ -13,13 +13,16 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+use App\Form\EditerUnEmployeType;
+use Doctrine\ORM\EntityManager;
+
 #[ Route( '/administrateur' ) ]
 #[ IsGranted( 'IS_AUTHENTICATED_FULLY' ) ]
 #[ IsGranted( 'ROLE_EMPLOYE_ADMINISTRATEUR' ) ]
 final class AdministrateurController extends AbstractController
 {
 
-    #[ Route( name: 'app_accueil_administrateur_index' , methods: [ 'GET' ] ) ]
+    #[ Route( name: 'app_accueil_administrateur' , methods: [ 'GET' ] ) ]
     public function accueilAdministrateur(): Response
     {
 
@@ -57,13 +60,31 @@ final class AdministrateurController extends AbstractController
 
     }
 
-    #[ Route( '/voirUnEmploye/{id}' , name: 'app_editer_un_employe' , methods: [ 'GET' ] ) ]
-    public function editerUnEmploye( UtilisateurRepository $utilisateurRepository , Request $request ) : Response{
-
+    #[ Route( '/editerUnEmploye/{id}' , name: 'app_editer_un_employe' , methods: [ 'GET' , 'POST' ] ) ]
+    public function editerUnEmploye(Request $request, UtilisateurRepository $utilisateurRepository, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher): Response
+    {
         $employe = $utilisateurRepository->findOneBy( [ 'id' => $request->attributes->get( 'id' ) ] );
 
+        $form = $this->createForm(EditerUnEmployeType::class, $employe);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $pwd = $form->get('plainPassword')->getData();
+            $pwd = $userPasswordHasher->hashPassword( $employe , $pwd );
+            $employe->setPassword( $pwd );
+
+
+            $employe->setDateHeureMAJ( new \DateTimeImmutable( 'now', new \DateTimeZone('Europe/Paris') ) );
+
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_voir_un_employe', [ 'id' => $employe->getId() ], Response::HTTP_SEE_OTHER);
+        }
+
         return $this->render( 'BackEnd/Administrateur/editerUnEmploye.html.twig' , [
-            'employe' => $employe
+            'employe' => $employe ,
+            'form' => $form
         ]);
 
     }
