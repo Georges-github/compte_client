@@ -9,10 +9,90 @@
     </a>
 </div>
 
-{{ form_start(form) }}
-    {{ form_widget(form) }}
+{# {{ form_start(form) }} #}
+
+    {# {{ form_widget(form) }} #}
+
+<div class="form-group">
+    {{ form_label(form.genre) }}
+    <div class="d-flex gap-3">
+        {% for choix in form.genre %}
+            <div class="form-check form-check-inline">
+                {{ form_widget(choix, {'attr': {'class': 'form-check-input'}}) }}
+                {{ form_label(choix, null, {'attr': {'class': 'form-check-label'}}) }}
+            </div>
+        {% endfor %}
+    </div>
+    {{ form_errors(form.genre) }}
+</div>
+
+<div style="grid-template-columns: 1fr 1fr;" class="d-grid gap-3">
+
+  <div class="p-2">
+    {{ form_label(form.prenom) }}
+    {{ form_widget(form.prenom) }}
+    {{ form_errors(form.prenom) }}
+  </div>
+
+  <div class="p-2">
+    {{ form_label(form.nom) }}
+    {{ form_widget(form.nom) }}
+    {{ form_errors(form.nom) }}
+  </div>
+
+  <div class="p-2">
+    {{ form_label(form.telephoneFixe) }}
+    {{ form_widget(form.telephoneFixe) }}
+    {{ form_errors(form.telephoneFixe) }}
+  </div>
+  
+  <div class="p-2">
+    {{ form_label(form.telephoneMobile) }}
+    {{ form_widget(form.telephoneMobile) }}
+    {{ form_errors(form.telephoneMobile) }}
+  </div>
+
+  <div class="p-2">
+    <div class="form-group">
+        {{ form_label(form.mediasDeContact) }}
+        <div class="d-flex gap-3">
+            {% for choix in form.mediasDeContact %}
+                <div class="form-check form-check-inline">
+                    {{ form_widget(choix, {'attr': {'class': 'form-check-input'}}) }}
+                    {{ form_label(choix, null, {'attr': {'class': 'form-check-label'}}) }}
+                </div>
+            {% endfor %}
+        </div>
+        {{ form_errors(form.mediasDeContact) }}
+    </div>
+  </div>
+
+  <div class="p-2">
+        <div style="grid-template-columns: 1fr 1fr;" class="d-grid gap-3">
+            <div class="p-2">
+                {{ form_label(form.plainPassword.first) }}
+                {{ form_widget(form.plainPassword.first) }}
+                {{ form_errors(form.plainPassword.first) }}
+            </div>
+            <div class="p-2">
+                {{ form_label(form.plainPassword.second) }}
+                {{ form_widget(form.plainPassword.second) }}
+                {{ form_errors(form.plainPassword.second) }}
+            </div>
+        </div>
+  </div>
+
+  <div class="grid-span-2">
+    {{ form_label(form.rueEtNumero) }}
+    {{ form_widget(form.rueEtNumero) }}
+    {{ form_errors(form.rueEtNumero) }}
+  </div>
+
+</div>
+
+    {# {{ form_row(form.genre) }} #}
     <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+{# {{ form_end(form) }} #}
 
 <a href="{{ app.request.headers.get('referer') }}" class="btn btn-outline-light btn-sm mt-4">&nbsp;Retour&nbsp;</a>
 {% endblock %}

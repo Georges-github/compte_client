@@ -44,7 +44,10 @@ class EditerUnEmployeType extends AbstractType
             // ->add('genre')
             ->add('genre', ChoiceType::class , [
                 'choices' => Utilisateur::getLesGenres() ,
-                'placeholder' => 'Choisir un genre'
+                    'expanded' => true ,
+                    'multiple' => false ,
+                    'label' => 'Genre' ,
+                    'placeholder' => 'Choisir un genre'
             ])
             ->add('telephoneFixe')
             ->add('telephoneMobile')
