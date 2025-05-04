@@ -29,6 +29,8 @@
 
 {% block body %}
 
+<a href="{{ path('app_ajouter_un_employe') }}" class="btn btn-outline-light btn-sm mt-4">Ajouter un employé</a>
+
 <div class="d-flex justify-content-end position-fixed top-0 end-0 m-3">
     <a href="{{ path('app_accueil_administrateur') }}">
         <img class="icon-page-precedente" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
@@ -80,6 +82,6 @@
     {% endfor %}
 </div>
 
-<a href="{{ path('app_accueil_administrateur') }}" class="btn btn-outline-light btn-sm mt-4">&nbsp;Retour&nbsp;</a>
+<a href="{{ path('app_accueil_administrateur') }}" class="btn btn-outline-light btn-sm mt-4">Retour</a>
 
 {% endblock %}

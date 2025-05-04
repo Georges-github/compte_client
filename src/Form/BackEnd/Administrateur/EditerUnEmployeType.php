@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 use App\Entity\Utilisateur;
 use Symfony\Component\Form\AbstractType;
@@ -28,8 +29,8 @@ class EditerUnEmployeType extends AbstractType
             // ->add('roles')
             ->add('roles' , ChoiceType::class , [
                 'choices' => Utilisateur::getLesRoles() ,
-                'multiple' => true ,
-                'expanded' => true
+                'multiple' => true , 
+                'attr' => ['size' => 5]
             ])
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
@@ -37,7 +38,7 @@ class EditerUnEmployeType extends AbstractType
                 'required' => true,
                 'first_options'  => ['label' => 'Mot de passe'],
                 'second_options' => ['label' => 'Confirmation du mot de passe'],
-                'mapped' => false, // si ce champ ne correspond pas directement à une propriété de l'entité
+                'mapped' => true
             ])
             ->add('prenom')
             ->add('nom')
@@ -46,8 +47,7 @@ class EditerUnEmployeType extends AbstractType
                 'choices' => Utilisateur::getLesGenres() ,
                     'expanded' => true ,
                     'multiple' => false ,
-                    'label' => 'Genre' ,
-                    'placeholder' => 'Choisir un genre'
+                    'label' => 'Genre'
             ])
             ->add('telephoneFixe')
             ->add('telephoneMobile')
@@ -55,13 +55,15 @@ class EditerUnEmployeType extends AbstractType
             ->add('codePostal')
             ->add('ville')
             ->add('societe')
+            ->add('submit', SubmitType::class, [ 'label' => 'Mettre à jour' ,
+            'attr' => ['class' => 'btn btn-outline-light btn-sm'] ])
             // ->add('dateHeureInsertion', null, [
             //     'widget' => 'single_text',
             // ])
             // ->add('dateHeureMAJ', null, [
             //     'widget' => 'single_text',
             // ])
-            ->add('isVerified')
+            // ->add('isVerified')
         ;
     }
 

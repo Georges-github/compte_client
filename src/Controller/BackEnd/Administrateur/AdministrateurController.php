@@ -14,13 +14,18 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 use App\Form\EditerUnEmployeType;
+use App\Validation\ValidationGroups;
 use Doctrine\ORM\EntityManager;
+
+use function PHPUnit\Framework\isEmpty;
 
 #[ Route( '/administrateur' ) ]
 #[ IsGranted( 'IS_AUTHENTICATED_FULLY' ) ]
 #[ IsGranted( 'ROLE_EMPLOYE_ADMINISTRATEUR' ) ]
 final class AdministrateurController extends AbstractController
 {
+
+    public const EDITER_EMPLOYE = 'EditerUnEmploye';
 
     #[ Route( name: 'app_accueil_administrateur' , methods: [ 'GET' ] ) ]
     public function accueilAdministrateur(): Response
@@ -66,20 +71,55 @@ final class AdministrateurController extends AbstractController
         $employe = $utilisateurRepository->findOneBy( [ 'id' => $request->attributes->get( 'id' ) ] );
 
         $form = $this->createForm(EditerUnEmployeType::class, $employe);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
             $pwd = $form->get('plainPassword')->getData();
-            $pwd = $userPasswordHasher->hashPassword( $employe , $pwd );
-            $employe->setPassword( $pwd );
-
-
+            if ( $pwd != null ) {
+                $pwd = $userPasswordHasher->hashPassword( $employe , $pwd );
+                $employe->setPassword( $pwd );
+            }                
+                
             $employe->setDateHeureMAJ( new \DateTimeImmutable( 'now', new \DateTimeZone('Europe/Paris') ) );
+            
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_liste_des_employes', [ 'id' => $employe->getId() ], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render( 'BackEnd/Administrateur/editerUnEmploye.html.twig' , [
+            'employe' => $employe ,
+            'form' => $form
+        ]);
+
+    }
+
+    #[ Route( '/ajouterUnEmploye' , name: 'app_ajouter_un_employe' , methods: [ 'GET' , 'POST' ] ) ]
+    public function ajouterUnEmploye(Request $request, UtilisateurRepository $utilisateurRepository, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher): Response
+    {
+        $employe = new Utilisateur();
+
+        $form = $this->createForm(EditerUnEmployeType::class, $employe, ['validation_groups' => ['Default' , ValidationGroups::AJOUTER_UN_EMPLOYE]]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $pwd = $form->get('plainPassword')->getData();
+            if ( $pwd != null ) {
+                $pwd = $userPasswordHasher->hashPassword( $employe , $pwd );
+                $employe->setPassword( $pwd );
+            }
+
+            $employe->setDateHeureInsertion( new \DateTimeImmutable( 'now', new \DateTimeZone('Europe/Paris') ) );
+
+            $entityManager->persist($employe);
 
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_voir_un_employe', [ 'id' => $employe->getId() ], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_liste_des_employes', [ 'id' => $employe->getId() ], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render( 'BackEnd/Administrateur/editerUnEmploye.html.twig' , [

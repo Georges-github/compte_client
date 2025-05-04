@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UtilisateurRepository;
+use App\Validation\ValidationGroups;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -60,11 +61,18 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /** 
      * @var string The hashed password
      */
-    #[Assert\NotCompromisedPassword()]
-    #[Assert\PasswordStrength(minScore: Assert\PasswordStrength::STRENGTH_MEDIUM)]
-    #[Assert\Regex('/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.*\s).{8,32}$/')]
     #[ORM\Column]
     private ?string $password = null;
+
+    /** 
+     * @var string The hashed password
+     */
+    #[Assert\NotBlank(groups: [ValidationGroups::AJOUTER_UN_EMPLOYE])]
+    #[Assert\NotCompromisedPassword(groups: [ValidationGroups::AJOUTER_UN_EMPLOYE])]
+    // #[Assert\PasswordStrength(minScore: Assert\PasswordStrength::STRENGTH_MEDIUM, groups: [ValidationGroups::AJOUTER_UN_EMPLOYE])]
+    #[Assert\PasswordStrength(minScore: 1, groups: [ValidationGroups::AJOUTER_UN_EMPLOYE])]
+    #[Assert\Regex('/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.*\s).{8,32}$/', groups: [ValidationGroups::AJOUTER_UN_EMPLOYE])]
+    private ?string $plainPassword = null;
 
     #[Assert\NotBlank()]
     #[ORM\Column(length: 50)]
@@ -231,6 +239,26 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): static
     {
         $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of plainPassword
+     */ 
+    public function getPlainPassword()
+    {
+        return $this->plainPassword;
+    }
+
+    /**
+     * Set the value of plainPassword
+     *
+     * @return  self
+     */ 
+    public function setPlainPassword($plainPassword)
+    {
+        $this->plainPassword = $plainPassword;
 
         return $this;
     }
