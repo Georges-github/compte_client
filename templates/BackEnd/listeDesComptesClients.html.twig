@@ -1,21 +1,87 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+
+    <script>
+      $(document).ready(function() {
+        $('#employes').DataTable({
+          responsive: true ,
+          language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json' } ,
+          columnDefs: [ { orderable: false, targets: [ -1 ] } ]
+        });
+      });
+    </script>
+{% endblock %}
+
 {% block title %}Liste des comptes clients{% endblock %}
 
 {% block body %}
 
-    <div class="container-fluid">
+<a href="{{ path('app_ajouter_un_employe') }}" class="btn btn-outline-light btn-sm mt-4">Ajouter un employé</a>
 
-        Liste des comptes clients.
+<div class="d-flex justify-content-end position-fixed top-0 end-0 m-3">
+    <a href="{{ path('app_accueil_administrateur') }}">
+        <img class="icon-page-precedente" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
+    </a>
+</div>
 
-        {{ dump(listeDesComptesClients) }}
+<div id="table-desktop" class="d-none d-md-block">
+    <table id="employes" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Prénom</th>
+                <th>Nom</th>
+                <th>Société</th>
+                <th>Nb contrats</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for e in listeDesEmployes %}
+                <tr>
+                    <td>{{e.prenom}}</td>
+                    <td>{{e.nom}}</td>
+                    <td>{% for r in e.roles %}{{r|replace({'ROLE_': ''})|replace({'_':' '})|lower|capitalize}}{% if not(loop.last) %} , {% endif %}{% endfor %}</td>
+                    <td>{{e.Courriel}}</td>
+                    <td class="d-flex justify-content-between">
+                        <a href="{{ path('app_voir_un_employe' , {id : e.id}) }}" class="btn btn-outline-light btn-sm w-50 me-2">&nbsp;Voir&nbsp;</a>
+                        <a href="{{ path('app_editer_un_employe' , {id : e.id}) }}" class="btn btn-outline-light btn-sm w-50">Editer</a>
 
-        {# {% for c in listeDesComptesClients %}
-            * {{ c.prenom }}
-        {% else %}
-            Aucun employé trouvé.
-        {% endfor %} #}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
-    </div>
+<div id="table-mobile" class="d-block d-md-none">
+    {% for e in listeDesEmployes %}
+        <div class="d-flex justify-content-start mb-3">
+            <div class="w-75">
+                <span class="fw-bold fs-3">{{e.prenom}} {{e.nom}}</span><br>
+                {% for r in e.roles %}<span class="fs-6 fs-italic">{{r|replace({'ROLE_':''})|replace({'_':' '})|lower|capitalize}}{% if not(loop.last) %} ,<br>{% endif %}</span>{% endfor %}<br>
+                {{e.Courriel}}
+            </div>
+            <div class="d-flex flex-column align-items-center justify-content-center">
+                <a href="{{ path('app_voir_un_employe' , {id : e.id}) }}" class="btn btn-outline-light btn-sm w-100 mb-3">Voir</a>
+                <a href="" class="btn btn-outline-light btn-sm w-100">Editer</a>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<a href="{{ path('app_accueil_administrateur') }}" class="btn btn-outline-light btn-sm mt-4">Retour</a>
 
 {% endblock %}

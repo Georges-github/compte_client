@@ -14,6 +14,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
+use App\Validation\ContraintesDuMotDePasse;
+
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_COURRIEL', fields: ['courriel'])]
 #[UniqueEntity(fields: ['courriel'], message: 'There is already an account with this courriel')]
@@ -70,8 +72,8 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank(groups: [ValidationGroups::AJOUTER_UN_EMPLOYE])]
     #[Assert\NotCompromisedPassword(groups: [ValidationGroups::AJOUTER_UN_EMPLOYE])]
     // #[Assert\PasswordStrength(minScore: Assert\PasswordStrength::STRENGTH_MEDIUM, groups: [ValidationGroups::AJOUTER_UN_EMPLOYE])]
-    #[Assert\PasswordStrength(minScore: 1, groups: [ValidationGroups::AJOUTER_UN_EMPLOYE])]
-    #[Assert\Regex('/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.*\s).{8,32}$/', groups: [ValidationGroups::AJOUTER_UN_EMPLOYE])]
+    #[Assert\PasswordStrength(minScore: ContraintesDuMotDePasse::SCORE_MIN, groups: [ValidationGroups::AJOUTER_UN_EMPLOYE])]
+    #[Assert\Regex(ContraintesDuMotDePasse::REGEX_COMPLEXE, message: ContraintesDuMotDePasse::MESSAGE_COMPLEXE, groups: [ValidationGroups::AJOUTER_UN_EMPLOYE])]
     private ?string $plainPassword = null;
 
     #[Assert\NotBlank()]

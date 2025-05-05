@@ -35,7 +35,7 @@ class EditerUnEmployeType extends AbstractType
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'invalid_message' => 'Les mots de passe doivent correspondre.',
-                'required' => true,
+                'required' => !$options[ 'edition' ],
                 'first_options'  => ['label' => 'Mot de passe'],
                 'second_options' => ['label' => 'Confirmation du mot de passe'],
                 'mapped' => true
@@ -71,6 +71,7 @@ class EditerUnEmployeType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Utilisateur::class,
+            'edition' => false
         ]);
     }
 }

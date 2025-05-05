@@ -3,7 +3,6 @@
 namespace App\Controller\BackEnd\Administrateur;
 
 use App\Entity\Utilisateur;
-use App\Form\UtilisateurType;
 use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,11 +12,13 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+
+use Symfony\Component\Form\FormError;
+
 use App\Form\EditerUnEmployeType;
 use App\Validation\ValidationGroups;
-use Doctrine\ORM\EntityManager;
-
-use function PHPUnit\Framework\isEmpty;
+use App\Validation\Validations;
 
 #[ Route( '/administrateur' ) ]
 #[ IsGranted( 'IS_AUTHENTICATED_FULLY' ) ]
@@ -66,11 +67,15 @@ final class AdministrateurController extends AbstractController
     }
 
     #[ Route( '/editerUnEmploye/{id}' , name: 'app_editer_un_employe' , methods: [ 'GET' , 'POST' ] ) ]
-    public function editerUnEmploye(Request $request, UtilisateurRepository $utilisateurRepository, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher): Response
+    public function editerUnEmploye(Request $request,
+                                    UtilisateurRepository $utilisateurRepository,
+                                    EntityManagerInterface $entityManager,
+                                    UserPasswordHasherInterface $userPasswordHasher,
+                                    ValidatorInterface $validator): Response
     {
         $employe = $utilisateurRepository->findOneBy( [ 'id' => $request->attributes->get( 'id' ) ] );
 
-        $form = $this->createForm(EditerUnEmployeType::class, $employe);
+        $form = $this->createForm(EditerUnEmployeType::class, $employe, ['validation_groups' => ['Default'] , 'edition' => true]);
 
         $form->handleRequest($request);
 
@@ -78,6 +83,19 @@ final class AdministrateurController extends AbstractController
 
             $pwd = $form->get('plainPassword')->getData();
             if ( $pwd != null ) {
+
+                $erreurs = Validations::validerMotDePasse( $pwd , $validator );
+                if (!empty($erreurs)) {
+                    foreach ($erreurs as $message) {
+                        $form->get('plainPassword')->addError(new FormError($message));
+                    }
+            
+                    return $this->render('BackEnd/Administrateur/editerUnEmploye.html.twig', [
+                        'employe' => $employe,
+                        'form' => $form
+                    ]);
+                }
+
                 $pwd = $userPasswordHasher->hashPassword( $employe , $pwd );
                 $employe->setPassword( $pwd );
             }                
@@ -86,7 +104,7 @@ final class AdministrateurController extends AbstractController
             
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_liste_des_employes', [ 'id' => $employe->getId() ], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_liste_des_employes', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render( 'BackEnd/Administrateur/editerUnEmploye.html.twig' , [
@@ -101,7 +119,7 @@ final class AdministrateurController extends AbstractController
     {
         $employe = new Utilisateur();
 
-        $form = $this->createForm(EditerUnEmployeType::class, $employe, ['validation_groups' => ['Default' , ValidationGroups::AJOUTER_UN_EMPLOYE]]);
+        $form = $this->createForm(EditerUnEmployeType::class, $employe, ['validation_groups' => ['Default' , ValidationGroups::AJOUTER_UN_EMPLOYE] , 'edition' => false]);
 
         $form->handleRequest($request);
 
@@ -119,7 +137,7 @@ final class AdministrateurController extends AbstractController
 
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_liste_des_employes', [ 'id' => $employe->getId() ], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_liste_des_employes', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render( 'BackEnd/Administrateur/editerUnEmploye.html.twig' , [
