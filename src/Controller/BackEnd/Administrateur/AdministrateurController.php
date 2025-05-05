@@ -26,7 +26,7 @@ use App\Validation\Validations;
 final class AdministrateurController extends AbstractController
 {
 
-    public const EDITER_EMPLOYE = 'EditerUnEmploye';
+    // public const EDITER_EMPLOYE = 'EditerUnEmploye';
 
     #[ Route( name: 'app_accueil_administrateur' , methods: [ 'GET' ] ) ]
     public function accueilAdministrateur(): Response

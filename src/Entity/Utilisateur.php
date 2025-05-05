@@ -516,4 +516,16 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function sesRolesContiennent( string $leRole ) : bool
+    {
+        $oui = false;
+        foreach ( $this->getRoles() as $role ) {
+            if ( str_contains( $role , $leRole ) ) {
+                $oui = true;
+                break;
+            }
+        }
+        return $oui;
+    }
+
 }

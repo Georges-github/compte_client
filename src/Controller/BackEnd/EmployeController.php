@@ -2,18 +2,12 @@
 
 namespace App\Controller\BackEnd;
 
-use App\Entity\Contrat;
 use App\Repository\ContratRepository;
 use App\Repository\UtilisateurRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 #[Route( '/employe' )]
 #[IsGranted('IS_AUTHENTICATED_FULLY')]
@@ -40,7 +34,7 @@ final class EmployeController extends AbstractController
             ->getQuery()
             ->getResult();
 
-            $listeDesComptesClients[] = [ 'client' => $client , 'contrats' => $listeDesContrats ];
+            $listeDesComptesClients[] = [ 'client' => $client , 'nbContrats' => count($listeDesContrats) ];
 
         }
 

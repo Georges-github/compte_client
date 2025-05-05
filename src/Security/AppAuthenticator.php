@@ -55,11 +55,17 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
 
         if ( $utilisateur instanceof Utilisateur ) {
 
-            $roles = $utilisateur->getRoles();
-
-            if ( in_array( Utilisateur::ROLE_EMPLOYE_ADMINISTRATEUR , $roles )  ) {
+            if ( $utilisateur->sesRolesContiennent( 'ADMINISTRATEUR' ) ) {
                 return new RedirectResponse($this->urlGenerator->generate('app_accueil_administrateur'));
             }
+
+            if ( $utilisateur->sesRolesContiennent( 'EMPLOYE' ) ) {
+                return new RedirectResponse($this->urlGenerator->generate('app_liste_des_comptes_clients'));
+            }            
+
+            if ( $utilisateur->sesRolesContiennent( 'CLIENT' ) ) {
+                return new RedirectResponse($this->urlGenerator->generate('app_liste_des_contrats' , [ 'id' => $utilisateur->getId() ]));
+            }            
 
         }
 
