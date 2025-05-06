@@ -69,11 +69,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /** 
      * @var string The hashed password
      */
-    #[Assert\NotBlank(groups: [ValidationGroups::AJOUTER_UN_EMPLOYE])]
-    #[Assert\NotCompromisedPassword(groups: [ValidationGroups::AJOUTER_UN_EMPLOYE])]
+    #[Assert\NotBlank(groups: [ValidationGroups::AJOUTER_UN_EMPLOYE,ValidationGroups::AJOUTER_UN_CLIENT])]
+    #[Assert\NotCompromisedPassword(groups: [ValidationGroups::AJOUTER_UN_EMPLOYE,ValidationGroups::AJOUTER_UN_CLIENT])]
     // #[Assert\PasswordStrength(minScore: Assert\PasswordStrength::STRENGTH_MEDIUM, groups: [ValidationGroups::AJOUTER_UN_EMPLOYE])]
-    #[Assert\PasswordStrength(minScore: ContraintesDuMotDePasse::SCORE_MIN, groups: [ValidationGroups::AJOUTER_UN_EMPLOYE])]
-    #[Assert\Regex(ContraintesDuMotDePasse::REGEX_COMPLEXE, message: ContraintesDuMotDePasse::MESSAGE_COMPLEXE, groups: [ValidationGroups::AJOUTER_UN_EMPLOYE])]
+    #[Assert\PasswordStrength(minScore: ContraintesDuMotDePasse::SCORE_MIN, groups: [ValidationGroups::AJOUTER_UN_EMPLOYE,ValidationGroups::AJOUTER_UN_CLIENT])]
+    #[Assert\Regex(ContraintesDuMotDePasse::REGEX_COMPLEXE, message: ContraintesDuMotDePasse::MESSAGE_COMPLEXE, groups: [ValidationGroups::AJOUTER_UN_EMPLOYE,ValidationGroups::AJOUTER_UN_CLIENT])]
     private ?string $plainPassword = null;
 
     #[Assert\NotBlank()]
@@ -190,7 +190,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         ];
     }
 
-
     /**
      * @see UserInterface
      * @return list<string>
@@ -214,9 +213,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public static function getLesRoles(): array
+    public static function getLesRoles( string $de = '' ): array
     {
-        return [
+        $lesRoles = [
             'Utilisateur' => self::ROLE_UTILISATEUR ,
 
             'Employé, administrateur' => self::ROLE_EMPLOYE_ADMINISTRATEUR ,
@@ -228,6 +227,16 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
             'Client potentiel abandonné' => self::ROLE_CLIENT_POTENTIEL_ABANDON ,
             'Client' => self::ROLE_CLIENT
         ];
+
+        if ( $de === '' ) return $lesRoles;
+
+        foreach ( $lesRoles as $label => $role ) {
+            if ( ! str_contains( $role , $de ) ) {
+                unset( $lesRoles[ $label ] );
+            }
+        }
+        
+        return $lesRoles;
     }
 
     /**

@@ -109,7 +109,8 @@ final class AdministrateurController extends AbstractController
 
         return $this->render( 'BackEnd/Administrateur/editerUnEmploye.html.twig' , [
             'employe' => $employe ,
-            'form' => $form
+            'form' => $form ,
+            'edition' => true
         ]);
 
     }
@@ -140,9 +141,10 @@ final class AdministrateurController extends AbstractController
             return $this->redirectToRoute('app_liste_des_employes', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render( 'BackEnd/Administrateur/editerUnEmploye.html.twig' , [
+        return $this->render( 'BackEnd/Administrateur/EditerUnEmploye.html.twig' , [
             'employe' => $employe ,
-            'form' => $form
+            'form' => $form ,
+            'edition' => false
         ]);
 
     }

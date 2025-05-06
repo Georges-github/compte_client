@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% if edition == true %}Editer{% else %}Ajouter{% endif %} un compte client{% endblock %}
+
+{% block body %}
+
+<div class="d-flex justify-content-end position-fixed top-0 end-0 m-3">
+    <a href="{{ app.request.headers.get('referer') }}">
+        <img class="icon-page-precedente" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
+    </a>
+</div>
+
+{{ form_start(form) }}
+
+{{ form_label(form.intitule) }}
+{{ form_widget(form.intitule) }}
+{{ form_errors(form.intitule) }}
+
+{{ form_label(form.description) }}
+{{ form_widget(form.description) }}
+{{ form_errors(form.description) }}
+
+<div style="grid-template-columns: 1fr 1fr;" class="d-grid gap-3">
+
+    <div class="p-2">
+        {{ form_label(form.intitule) }}
+        {{ form_widget(form.intitule) }}
+        {{ form_errors(form.intitule) }}
+    </div>
+
+</div>
+
+{{ form_row( form.submit ) }}
+
+{{ form_end(form) }}
+
+<a href="{{ app.request.headers.get('referer') }}" class="btn btn-outline-light btn-sm mt-4">Abandonner</a>
+
+{% endblock %}

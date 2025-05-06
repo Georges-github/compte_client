@@ -36,7 +36,7 @@
 </div>
 
 {# <a href="{{ path('app_ajouter_un_compte_client') }}" class="btn btn-outline-light btn-sm mt-4">Ajouter un employé</a> #}
-<a href="#" class="btn btn-outline-light btn-sm mb-4">Ajouter un compte client</a>
+<a href="{{ path('app_ajouter_un_compte_client') }}" class="btn btn-outline-light btn-sm mb-4">Ajouter un compte client</a>
 
 <div id="table-desktop" class="d-none d-md-block">
     <table id="employes" class="table table-striped">
@@ -59,8 +59,8 @@
                     <td class="d-flex justify-content-between">
                         {# <a href="{{ path('app_liste_des_contrats' , {id : e.id}) }}" class="btn btn-outline-light btn-sm w-50 me-2">&nbsp;Voir&nbsp;</a>
                         <a href="{{ path('app_editer_un_compte_client' , {id : e.id}) }}" class="btn btn-outline-light btn-sm w-50">Editer</a> #}
-                        <a href="{{ path('app_liste_des_contrats' , {id : cc.client.id , }) }}" class="btn btn-outline-light btn-sm w-50 me-2">&nbsp;Voir&nbsp;</a>
-                        <a href="#" class="btn btn-outline-light btn-sm w-50">Editer</a>
+                        <a href="{{ path('app_liste_des_contrats' , {id : cc.client.id }) }}" class="btn btn-outline-light btn-sm w-50 me-2">&nbsp;Voir&nbsp;</a>
+                        <a href="{{ path( 'app_editer_un_compte_client' , { id : cc.client.id }) }}" class="btn btn-outline-light btn-sm w-50">Editer</a>
                     </td>
                 </tr>
             {% endfor %}

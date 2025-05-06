@@ -30,7 +30,7 @@
 {% block body %}
 
 <div class="d-flex justify-content-end position-fixed top-0 end-0 m-3">
-    {% if EmployeOuAdministrateur == true %}
+    {% if employeOuAdministrateur == true %}
         <a href="{{ path('app_liste_des_comptes_clients') }}">
             <img class="icon-page-precedente" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé.">
         </a>
@@ -41,9 +41,9 @@
     {% endif %}
 </div>
 
-{% if EmployeOuAdministrateur == true %}
+{% if employeOuAdministrateur == true %}
     {# <a href="{{ path('app_ajouter_un_compte_client') }}" class="btn btn-outline-light btn-sm mt-4">Ajouter un employé</a> #}
-    <a href="#" class="btn btn-outline-light btn-sm mb-4">Ajouter un compte client</a>
+    <a href="{{ path('app_ajouter_un_contrat') }}" class="btn btn-outline-light btn-sm mb-4">Ajouter un contrat</a>
 {% endif %}
 
 <div class="container my-5">
@@ -87,7 +87,7 @@
                         {# <a href="{{ path('app_liste_des_contrats' , {id : e.id}) }}" class="btn btn-outline-light btn-sm w-50 me-2">&nbsp;Voir&nbsp;</a>
                         <a href="{{ path('app_editer_un_compte_client' , {id : e.id}) }}" class="btn btn-outline-light btn-sm w-50">Editer</a> #}
                         <a href="#" class="btn btn-outline-light btn-sm w-50 me-2">&nbsp;Voir&nbsp;</a>
-                        {% if EmployeOuAdministrateur == true %}
+                        {% if employeOuAdministrateur == true %}
                             <a href="#" class="btn btn-outline-light btn-sm w-50">Editer</a>
                         {% endif %}
                     </td>
@@ -113,7 +113,7 @@
     {% endfor %}
 </div> #}
 
-{% if EmployeOuAdministrateur == true %}
+{% if employeOuAdministrateur == true %}
     <a href="{{ path('app_liste_des_comptes_clients') }}" class="btn btn-outline-light btn-sm mt-4">Retour</a>
 {% else %}
     <a href="{{ path('app_login') }}" class="btn btn-outline-light btn-sm mt-4">Retour</a>

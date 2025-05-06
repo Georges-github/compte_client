@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\FrontEnd;
 
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -14,7 +14,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use function PHPSTORM_META\type;
 
-class EditerUnEmployeType extends AbstractType
+class EditerUnCompteClientType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -28,7 +28,7 @@ class EditerUnEmployeType extends AbstractType
             ])
             // ->add('roles')
             ->add('roles' , ChoiceType::class , [
-                'choices' => Utilisateur::getLesRoles( 'EMPLOYE' ) ,
+                'choices' => Utilisateur::getLesRoles( 'CLIENT' ) ,
                 'multiple' => true , 
                 'attr' => ['size' => 5]
             ])
