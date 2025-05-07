@@ -31,10 +31,10 @@ class EtatContrat
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateHeureMAJ = null;
 
-    #[ORM\ManyToOne(inversedBy: 'etatContrats')]
+    #[ORM\ManyToOne(inversedBy: 'etatsContrat')]
     private ?Utilisateur $idUtilisateur = null;
 
-    #[ORM\ManyToOne(inversedBy: 'etatContrats')]
+    #[ORM\ManyToOne(inversedBy: 'etatsContrat')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Contrat $idContrat = null;
 
@@ -55,7 +55,7 @@ class EtatContrat
         return $this;
     }
 
-    public static function getEtats(): array
+    public static function getLesEtats(): array
     {
         return [
             self::ETAT_EN_DISCUSSION => 'En discussion' ,
@@ -63,7 +63,7 @@ class EtatContrat
             self::ETAT_EN_COURS => 'En cours' ,
             self::ETAT_EN_PAUSE => 'En pause' ,
             self::ETAT_ANNULE => 'Annulé' ,
-            self::ETAT_TERMINE > 'Terminé'
+            self::ETAT_TERMINE => 'Terminé'
         ];
     }
 

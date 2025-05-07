@@ -12,21 +12,71 @@
 
 {{ form_start(form) }}
 
-{{ form_label(form.intitule) }}
-{{ form_widget(form.intitule) }}
-{{ form_errors(form.intitule) }}
+<div style="" class="p-2">
 
-{{ form_label(form.description) }}
-{{ form_widget(form.description) }}
-{{ form_errors(form.description) }}
+    {{ form_label(form.intitule) }}
+    {{ form_widget(form.intitule) }}
+    {{ form_errors(form.intitule) }}
+
+    {{ form_label(form.description) }}
+    {{ form_widget(form.description) }}
+    {{ form_errors(form.description) }}
+
+</div>
 
 <div style="grid-template-columns: 1fr 1fr;" class="d-grid gap-3">
 
-    <div class="p-2">
-        {{ form_label(form.intitule) }}
-        {{ form_widget(form.intitule) }}
-        {{ form_errors(form.intitule) }}
+    <div class="p-1">
+        {{ form_label(form.numeroContrat) }}
+        {{ form_widget(form.numeroContrat) }}
+        {{ form_errors(form.numeroContrat) }}
     </div>
+
+    <div class="p-1">
+        {{ form_label(form.etatChoisi) }}
+        {{ form_widget(form.etatChoisi) }}
+        {{ form_errors(form.etatChoisi) }}
+    </div>
+
+    <div style="grid-template-columns: 1fr 1fr;" class="d-grid gap-3">
+
+        <div class="p-1">
+            {{ form_label(form.dateDebutPrevue) }}
+            {{ form_widget(form.dateDebutPrevue) }}
+            {{ form_errors(form.dateDebutPrevue) }}
+        </div>
+
+        <div class="p-1">
+            {{ form_label(form.dateFinPrevue) }}
+            {{ form_widget(form.dateFinPrevue) }}
+            {{ form_errors(form.dateFinPrevue) }}
+        </div>
+
+    </div>
+
+    <div style="grid-template-columns: 1fr 1fr;" class="d-grid gap-3">
+
+        <div class="p-1">
+            {{ form_label(form.dateDebut) }}
+            {{ form_widget(form.dateDebut) }}
+            {{ form_errors(form.dateDebut) }}
+        </div>
+
+        <div class="p-1">
+            {{ form_label(form.dateFin) }}
+            {{ form_widget(form.dateFin) }}
+            {{ form_errors(form.dateFin) }}
+        </div>
+
+    </div>
+
+</div>
+
+<div style="" class="p-2">
+
+    {{ form_label(form.cheminFichier) }}
+    {{ form_widget(form.cheminFichier) }}
+    {{ form_errors(form.cheminFichier) }}
 
 </div>
 

@@ -16,6 +16,9 @@ class Contrat
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(length: 50)]
+    private ?string $numeroContrat = null;
+
     #[ORM\Column(length: 255)]
     private ?string $intitule = null;
 
@@ -46,8 +49,8 @@ class Contrat
     /**
      * @var Collection<int, EtatContrat>
      */
-    #[ORM\OneToMany(targetEntity: EtatContrat::class, mappedBy: 'idContrat', orphanRemoval: true)]
-    private Collection $etatContrats;
+    #[ORM\OneToMany(targetEntity: EtatContrat::class, mappedBy: 'idContrat', orphanRemoval: true, cascade: ['persist'])]
+    private Collection $etatsContrat;
 
     #[ORM\ManyToOne(inversedBy: 'contrats')]
     #[ORM\JoinColumn(nullable: false)]
@@ -61,7 +64,7 @@ class Contrat
 
     public function __construct()
     {
-        $this->etatContrats = new ArrayCollection();
+        $this->etatsContrat = new ArrayCollection();
         $this->publications = new ArrayCollection();
     }
 
@@ -73,6 +76,18 @@ class Contrat
     public function getIntitule(): ?string
     {
         return $this->intitule;
+    }
+
+    public function getNumeroContrat(): ?string
+    {
+        return $this->numeroContrat;
+    }
+
+    public function setNumeroContrat(string $numeroContrat): static
+    {
+        $this->numeroContrat = $numeroContrat;
+
+        return $this;
     }
 
     public function setIntitule(string $intitule): static
@@ -181,15 +196,15 @@ class Contrat
     /**
      * @return Collection<int, EtatContrat>
      */
-    public function getEtatContrats(): Collection
+    public function getEtatsContrat(): Collection
     {
-        return $this->etatContrats;
+        return $this->etatsContrat;
     }
 
     public function addEtatContrat(EtatContrat $etatContrat): static
     {
-        if (!$this->etatContrats->contains($etatContrat)) {
-            $this->etatContrats->add($etatContrat);
+        if (!$this->etatsContrat->contains($etatContrat)) {
+            $this->etatsContrat->add($etatContrat);
             $etatContrat->setIdContrat($this);
         }
 
@@ -198,7 +213,7 @@ class Contrat
 
     public function removeEtatContrat(EtatContrat $etatContrat): static
     {
-        if ($this->etatContrats->removeElement($etatContrat)) {
+        if ($this->etatsContrat->removeElement($etatContrat)) {
             // set the owning side to null (unless already changed)
             if ($etatContrat->getIdContrat() === $this) {
                 $etatContrat->setIdContrat(null);
