@@ -32,8 +32,8 @@ use App\Service\FileUploader;
 #[IsGranted('IS_AUTHENTICATED_FULLY')]
 class ContratController extends AbstractController {
 
-    #[ Route( '/ajouterUnContrat' , name: 'app_ajouter_un_contrat' , methods: [ 'GET' , 'POST' ] ) ]
-    public function ajouterUnContrat(Request $request, EntityManagerInterface $entityManager, FileUploader $fileUploader) : Response
+    #[ Route( '/ajouterUnContrat/{id}' , name: 'app_ajouter_un_contrat' , methods: [ 'GET' , 'POST' ] ) ]
+    public function ajouterUnContrat(Request $request, EntityManagerInterface $entityManager, FileUploader $fileUploader, UtilisateurRepository $utilisateurRepository) : Response
     {
         $contrat = new Contrat();
 
@@ -43,22 +43,27 @@ class ContratController extends AbstractController {
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $utilisateur = $this->getUser();
+            $idClient = $request->attributes->get( 'id' );
 
-            $contrat->setIdUtilisateur($utilisateur);
+            $client = $utilisateurRepository->findOneBy( [ 'id' => $idClient ] );
+
+            $contrat->setIdUtilisateur( $client );
 
             $contrat->setDateHeureInsertion( new \DateTimeImmutable( 'now', new \DateTimeZone('Europe/Paris') ) );
 
             $uploadedFile = $form->get('cheminFichier')->getData();
+
             if ($uploadedFile) {
+
                 $filename = $fileUploader->upload(
                     $uploadedFile,
-                    'profiles',
+                    $client->getId(),
+                    'contrat',
                     $contrat->getCheminFichier(),
-                    true,
+                    false,
                     [300, 300]
                 );
-                // Sauvegarder le nom dans l'entité, etc.
+
                 $contrat->setCheminFichier( $filename );
 
                 $etatChoisi = $form->get('etatChoisi')->getData();
@@ -66,14 +71,15 @@ class ContratController extends AbstractController {
                 $etatContrat = new EtatContrat();
                 $etatContrat->setEtat($etatChoisi);
                 $etatContrat->setDateHeureInsertion(new \DateTimeImmutable());
-                $etatContrat->setIdUtilisateur($utilisateur); // si applicable
+                $etatContrat->setIdUtilisateur($client); // si applicable
                 
                 $contrat->addEtatContrat($etatContrat); // lie aussi l'objet au contrat
 
                 $entityManager->persist($contrat);
+
                 $entityManager->flush();
     
-                return $this->redirectToRoute('app_liste_des_contrats', [], Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_liste_des_contrats', [ 'id' => $idClient ], Response::HTTP_SEE_OTHER);
                 }
 
         }

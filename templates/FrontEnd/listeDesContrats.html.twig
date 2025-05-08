@@ -43,7 +43,7 @@
 
 {% if employeOuAdministrateur == true %}
     {# <a href="{{ path('app_ajouter_un_compte_client') }}" class="btn btn-outline-light btn-sm mt-4">Ajouter un employé</a> #}
-    <a href="{{ path('app_ajouter_un_contrat') }}" class="btn btn-outline-light btn-sm mb-4">Ajouter un contrat</a>
+    <a href="{{ path('app_ajouter_un_contrat' , {id : client.id }) }}" class="btn btn-outline-light btn-sm mb-4">Ajouter un contrat</a>
 {% endif %}
 
 <div class="container my-5">

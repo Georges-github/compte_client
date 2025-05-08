@@ -9,49 +9,52 @@ use Symfony\Component\Mime\MimeTypes;
 
 class FileUploader
 {
-    private string $targetDirectory;
+    private string $privateStorageDir;
     private SluggerInterface $slugger;
 
     private array $allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf', 'docx'];
     private int $maxFileSize = 5 * 1024 * 1024; // 5 Mo
 
-    public function __construct(string $targetDirectory, SluggerInterface $slugger)
+    public function __construct(SluggerInterface $slugger, string $privateStorageDir)
     {
-        $this->targetDirectory = rtrim($targetDirectory, '/');
         $this->slugger = $slugger;
+        $this->privateStorageDir = $privateStorageDir;
     }
 
-    // public function upload(UploadedFile $file, string $subdirectory = '', ?string $oldFilename = null, bool $generateThumbnail = false): string
     public function upload(
         UploadedFile $file,
-        string $subdirectory = '',
+        int|string $utilisateurId,
+        string $category = 'documents',
         ?string $oldFilename = null,
         bool $generateThumbnail = false,
         ?array $thumbnailSize = null
-    ): string
-        {
+    ): string {
         $this->validate($file);
-
+    
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $safeFilename = $this->slugger->slug($originalFilename);
-        $extension = $file->guessExtension() ?? 'bin';
+        //$extension = strtolower($file->guessExtension() ?? 'bin');
+        $extension = "pdf";
         $newFilename = $safeFilename . '-' . uniqid() . '.' . $extension;
-
-        $destination = $this->getTargetDirectory($subdirectory);
-
+    
+        $relativePath = 'utilisateurs/' . $utilisateurId . '/' . $category;
+    
+        $destination = $this->getSecureStorageDirectory($relativePath);
+    
+        if (!is_dir($destination)) {
+            if (!mkdir($destination, 0775, true) && !is_dir($destination)) {
+                throw new \RuntimeException("Impossible de créer le répertoire : $destination");
+            }
+        }
+    
         try {
             $file->move($destination, $newFilename);
-
-            // Supprimer l'ancien fichier si présent
+    
             if ($oldFilename) {
-                $this->delete(($subdirectory ? $subdirectory . '/' : '') . $oldFilename);
+                $this->delete($relativePath . '/' . $oldFilename);
             }
-
-            // Générer une miniature si demandé
-            // if ($generateThumbnail && in_array(strtolower($extension), ['jpg', 'jpeg', 'png'])) {
-            //     $this->generateThumbnail($destination . '/' . $newFilename, $destination . '/thumb_' . $newFilename);
-            // }
-            if ($generateThumbnail && in_array(strtolower($extension), ['jpg', 'jpeg', 'png'])) {
+    
+            if ($generateThumbnail && in_array($extension, ['jpg', 'jpeg', 'png'])) {
                 [$thumbWidth, $thumbHeight] = $thumbnailSize ?? [200, 200];
                 $this->generateThumbnail(
                     $destination . '/' . $newFilename,
@@ -60,17 +63,22 @@ class FileUploader
                     $thumbHeight
                 );
             }
-            
+    
         } catch (FileException $e) {
             throw new \RuntimeException('Échec de l’envoi du fichier : ' . $e->getMessage());
         }
-
-        return ($subdirectory ? $subdirectory . '/' : '') . $newFilename;
+    
+        return $relativePath . '/' . $newFilename;
     }
 
+    public function getSecureStorageDirectory(string $subdirectory = ''): string
+    {
+        return $this->privateStorageDir . ($subdirectory ? '/' . trim($subdirectory, '/') : '');
+    }
+    
     public function delete(string $relativePath): bool
     {
-        $fullPath = $this->targetDirectory . '/' . $relativePath;
+        $fullPath = $this->privateStorageDir . '/' . $relativePath;
         if (file_exists($fullPath)) {
             return unlink($fullPath);
         }
@@ -90,9 +98,9 @@ class FileUploader
         // }
     }
 
-    private function getTargetDirectory(string $subdirectory = ''): string
+    private function getprivateStorageDir(string $subdirectory = ''): string
     {
-        $path = $this->targetDirectory;
+        $path = $this->privateStorageDir;
         if ($subdirectory) {
             $path .= '/' . trim($subdirectory, '/');
             if (!is_dir($path)) {
@@ -124,11 +132,9 @@ class FileUploader
         $aspectRatioThumb = $width / $height;
 
         if ($aspectRatioSrc > $aspectRatioThumb) {
-            // Image plus large
             $newHeight = $height;
             $newWidth = intval($height * $aspectRatioSrc);
         } else {
-            // Image plus haute
             $newWidth = $width;
             $newHeight = intval($width / $aspectRatioSrc);
         }
@@ -136,7 +142,6 @@ class FileUploader
         $tempImage = imagecreatetruecolor($newWidth, $newHeight);
         imagecopyresampled($tempImage, $srcImage, 0, 0, 0, 0, $newWidth, $newHeight, $srcWidth, $srcHeight);
 
-        // Crop au centre
         $x = intval(($newWidth - $width) / 2);
         $y = intval(($newHeight - $height) / 2);
         imagecopy($thumbImage, $tempImage, 0, 0, $x, $y, $width, $height);
