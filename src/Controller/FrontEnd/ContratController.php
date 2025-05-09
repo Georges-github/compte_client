@@ -20,12 +20,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 use App\Form\FrontEnd\EditerUnContratType;
+use App\Repository\EtatContratRepository;
 use App\Validation\Validations;
 use App\Validation\ValidationGroups;
 
 use Symfony\Component\Form\FormError;
 
 use App\Service\FileUploader;
+
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 
 #[Route('/contrat')]
@@ -71,20 +74,56 @@ class ContratController extends AbstractController {
                 $etatContrat = new EtatContrat();
                 $etatContrat->setEtat($etatChoisi);
                 $etatContrat->setDateHeureInsertion(new \DateTimeImmutable());
-                $etatContrat->setIdUtilisateur($client); // si applicable
+                $etatContrat->setIdUtilisateur($this->getUser());
                 
-                $contrat->addEtatContrat($etatContrat); // lie aussi l'objet au contrat
+                $contrat->addEtatContrat($etatContrat);
 
                 $entityManager->persist($contrat);
 
                 $entityManager->flush();
     
                 return $this->redirectToRoute('app_liste_des_contrats', [ 'id' => $idClient ], Response::HTTP_SEE_OTHER);
-                }
+            }
 
         }
 
         return $this->render( 'FrontEnd/EditerUnContrat.html.twig' , [ 'form' => $form, 'edition' => false ] );
     }
+
+    #[Route('/voirUnContrat/{id}' , name: 'app_voir_un_contrat' , methods: [ 'GET' ])]
+    public function voirUnContrat( Request $request , ContratRepository $contratRepository , UtilisateurRepository $utilisateurRepository , EtatContratRepository $etatContratRepository ) : Response {
+
+        $idContrat = $request->attributes->get( 'id' );
+
+        $contrat = $contratRepository->findOneBy( [ 'id' => $idContrat ] );
+
+        $client = $contrat->getIdUtilisateur();
+
+        $etatsSuccessifs = $etatContratRepository->findBy( [ 'idContrat' => $idContrat ] , ['dateHeureInsertion' => 'DESC'] );
+
+        $etatsSuccessifsSpecifiesPar = [];
+        foreach( $etatsSuccessifs as $etat ) {
+            $etatsSuccessifsSpecifiesPar[] = [ 'etat' => $etat , 'specifiePar' => $etat->getIdUtilisateur() ];
+        }
+
+        return $this->render( 'FrontEnd/voirUnContrat.html.twig' , [ 'contrat' => $contrat , 'client' => $client , 'etatsSuccessifsSpecifiesPar' => $etatsSuccessifsSpecifiesPar ] );
+
+    }
+
+    #[Route('/contrat/pdf/{cheminFichier}', name: 'contrat_pdf',  requirements: ['cheminFichier' => '.+'])]
+    public function afficherPdf(string $cheminFichier): BinaryFileResponse
+    {
+        // $cheminFichier = basename($cheminFichier);
+
+        $filePath = $this->getParameter('kernel.project_dir') . '/var/storage/' . $cheminFichier;
+
+        if (!file_exists($filePath)) {
+            throw $this->createNotFoundException('Fichier non trouvé');
+        }
+
+        return new BinaryFileResponse($filePath);
+        
+    }
+
 
 }
