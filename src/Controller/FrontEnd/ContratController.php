@@ -106,16 +106,20 @@ class ContratController extends AbstractController {
             $etatsSuccessifsSpecifiesPar[] = [ 'etat' => $etat , 'specifiePar' => $etat->getIdUtilisateur() ];
         }
 
+        $private_upload_dir = str_replace( '\\', '/', $this->getParameter('app.private_upload_dir') );
+
+        // return $this->render( 'FrontEnd/voirUnContrat.html.twig' , [ 'contrat' => $contrat , 'client' => $client , 'etatsSuccessifsSpecifiesPar' => $etatsSuccessifsSpecifiesPar , 'private_upload_dir' => $private_upload_dir ] );
         return $this->render( 'FrontEnd/voirUnContrat.html.twig' , [ 'contrat' => $contrat , 'client' => $client , 'etatsSuccessifsSpecifiesPar' => $etatsSuccessifsSpecifiesPar ] );
 
     }
 
-    #[Route('/contrat/pdf/{cheminFichier}', name: 'contrat_pdf',  requirements: ['cheminFichier' => '.+'])]
+    #[Route('/pdf/{cheminFichier}', name: 'contrat_pdf',  requirements: ['cheminFichier' => '.+'])]
     public function afficherPdf(string $cheminFichier): BinaryFileResponse
     {
         // $cheminFichier = basename($cheminFichier);
+file_put_contents('var/log/trace.txt', "appelé avec : $cheminFichier");
 
-        $filePath = $this->getParameter('kernel.project_dir') . '/var/storage/' . $cheminFichier;
+        $filePath = $this->getParameter('private_upload_dir') . $cheminFichier;
 
         if (!file_exists($filePath)) {
             throw $this->createNotFoundException('Fichier non trouvé');
