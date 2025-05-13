@@ -223,6 +223,19 @@ class Contrat
         return $this;
     }
 
+    public function getDernierEtat(): ?EtatContrat
+    {
+        return $this->etatsContrat->reduce(function ($plusJeune, $etat) {
+            if ($plusJeune === null) {
+                return $etat;
+            }
+
+            return $etat->getDateHeureInsertion() > $plusJeune->getDateHeureInsertion()
+                ? $etat
+                : $plusJeune;
+        }, null);
+    }
+
     public function getIdUtilisateur(): ?Utilisateur
     {
         return $this->idUtilisateur;

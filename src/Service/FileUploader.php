@@ -21,6 +21,11 @@ class FileUploader
         $this->privateStorageDir = $privateStorageDir;
     }
 
+    public function jjddaaaa_hh_mm_ss(): string {
+        $tz = new \DateTimeZone('Europe/Paris');
+        return (new \DateTime('now', $tz))->format('dmY_H_i_s');
+    }
+
     public function upload(
         UploadedFile $file,
         int|string $utilisateurId,
@@ -35,7 +40,8 @@ class FileUploader
         $safeFilename = $this->slugger->slug($originalFilename);
         //$extension = strtolower($file->guessExtension() ?? 'bin');
         $extension = "pdf";
-        $newFilename = $safeFilename . '-' . uniqid() . '.' . $extension;
+        // $newFilename = $safeFilename . '-' . uniqid() . '.' . $extension;
+        $newFilename = $safeFilename . '-' . $this->jjddaaaa_hh_mm_ss() . '.' . $extension;
     
         $relativePath = 'utilisateurs/' . $utilisateurId . '/' . $category;
     

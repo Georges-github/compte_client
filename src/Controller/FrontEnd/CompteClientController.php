@@ -34,13 +34,21 @@ final class CompteClientController extends AbstractController {
 
         $client = $utilisateurRepository->findOneBy( [ 'id' => $id ] );
 
-        $listeDesContrats = $contratRepository->createQueryBuilder( 'c' )
-        ->andWhere( 'c.idUtilisateur = :idUtilisateur' )
-        ->setParameter( 'idUtilisateur' , $id )
-        ->getQuery()
-        ->getResult();
+        // $listeDesContrats = $contratRepository->createQueryBuilder( 'c' )
+        // ->andWhere( 'c.idUtilisateur = :idUtilisateur' )
+        // ->setParameter( 'idUtilisateur' , $id )
+        // ->getQuery()
+        // ->getResult();
 
-        /** @var Utilisateur $utilisateur */
+        $listeDesContrats = $contratRepository->createQueryBuilder('c')
+            ->leftJoin('c.etatsContrat', 'e')
+            ->addSelect('e')
+            ->andWhere('c.idUtilisateur = :idUtilisateur')
+            ->setParameter('idUtilisateur', $id)
+            ->getQuery()
+            ->getResult();
+
+            /** @var Utilisateur $utilisateur */
         $utilisateur = $this->getUser();
 
         return $this->render( 'FrontEnd/listeDesContrats.html.twig' , [ 'employeOuAdministrateur' => $utilisateur->sesRolesContiennent( 'EMPLOYE' ), 'client' => $client, 'listeDesContrats' => $listeDesContrats ] );

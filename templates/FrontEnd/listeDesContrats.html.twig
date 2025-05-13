@@ -88,7 +88,7 @@
                         <a href="{{ path('app_editer_un_compte_client' , {id : e.id}) }}" class="btn btn-outline-light btn-sm w-50">Editer</a> #}
                         <a href="{{ path( 'app_voir_un_contrat' , { id : c.id} ) }}" class="btn btn-outline-light btn-sm w-50 me-2">&nbsp;Voir&nbsp;</a>
                         {% if employeOuAdministrateur == true %}
-                            <a href="#" class="btn btn-outline-light btn-sm w-50">Editer</a>
+                            <a href="{{ path( 'app_editer_un_contrat' , { id : c.id} ) }}" class="btn btn-outline-light btn-sm w-50">Editer</a>
                         {% endif %}
                     </td>
                 </tr>

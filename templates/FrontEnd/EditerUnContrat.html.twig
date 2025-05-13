@@ -74,6 +74,26 @@
 
 <div style="" class="p-2">
 
+    {{ form_label(form.nomContratActuel) }}
+    {{ form_widget(form.nomContratActuel) }}
+    {{ form_errors(form.nomContratActuel) }}
+
+</div>
+
+{% if form.nomContratActuel %}
+    <div class="alert alert-warning mt-2" role="alert">
+        ⚠️ Un fichier est déjà enregistré (<strong> form.nomContratActuel </strong>).<br>
+        En choisissant un nouveau fichier ci-dessous, celui-ci <strong>remplacera</strong> l'ancien lors de la validation du formulaire.
+    </div>
+    <p>
+        📄 <a href="{{ asset(pathContratActuel|default('')) }}" target="_blank">
+            Télécharger le fichier existant
+        </a>
+    </p>
+{% endif %}
+
+<div style="" class="p-2">
+
     {{ form_label(form.cheminFichier) }}
     {{ form_widget(form.cheminFichier) }}
     {{ form_errors(form.cheminFichier) }}

@@ -30,6 +30,9 @@ use App\Service\FileUploader;
 
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+
 
 #[Route('/contrat')]
 #[IsGranted('IS_AUTHENTICATED_FULLY')]
@@ -57,7 +60,6 @@ class ContratController extends AbstractController {
             $uploadedFile = $form->get('cheminFichier')->getData();
 
             if ($uploadedFile) {
-
                 $filename = $fileUploader->upload(
                     $uploadedFile,
                     $client->getId(),
@@ -68,23 +70,22 @@ class ContratController extends AbstractController {
                 );
 
                 $contrat->setCheminFichier( $filename );
-
-                $etatChoisi = $form->get('etatChoisi')->getData();
-
-                $etatContrat = new EtatContrat();
-                $etatContrat->setEtat($etatChoisi);
-                $etatContrat->setDateHeureInsertion(new \DateTimeImmutable());
-                $etatContrat->setIdUtilisateur($this->getUser());
-                
-                $contrat->addEtatContrat($etatContrat);
-
-                $entityManager->persist($contrat);
-
-                $entityManager->flush();
-    
-                return $this->redirectToRoute('app_liste_des_contrats', [ 'id' => $idClient ], Response::HTTP_SEE_OTHER);
             }
 
+            $etatChoisi = $form->get('etatChoisi')->getData();
+
+            $etatContrat = new EtatContrat();
+            $etatContrat->setEtat($etatChoisi);
+            $etatContrat->setDateHeureInsertion(new \DateTimeImmutable());
+            $etatContrat->setIdUtilisateur($this->getUser());
+            
+            $contrat->addEtatContrat($etatContrat);
+
+            $entityManager->persist($contrat);
+
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_liste_des_contrats', [ 'id' => $idClient ], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render( 'FrontEnd/EditerUnContrat.html.twig' , [ 'form' => $form, 'edition' => false ] );
@@ -106,28 +107,121 @@ class ContratController extends AbstractController {
             $etatsSuccessifsSpecifiesPar[] = [ 'etat' => $etat , 'specifiePar' => $etat->getIdUtilisateur() ];
         }
 
-        $private_upload_dir = str_replace( '\\', '/', $this->getParameter('app.private_upload_dir') );
+        $pathinfo = pathinfo( $contrat->getCheminFichier() );
 
-        // return $this->render( 'FrontEnd/voirUnContrat.html.twig' , [ 'contrat' => $contrat , 'client' => $client , 'etatsSuccessifsSpecifiesPar' => $etatsSuccessifsSpecifiesPar , 'private_upload_dir' => $private_upload_dir ] );
-        return $this->render( 'FrontEnd/voirUnContrat.html.twig' , [ 'contrat' => $contrat , 'client' => $client , 'etatsSuccessifsSpecifiesPar' => $etatsSuccessifsSpecifiesPar ] );
+        $this->copyPdfToPublic( $pathinfo['dirname'] , $pathinfo['basename']);
+
+        return $this->render( 'FrontEnd/voirUnContrat.html.twig' , [
+            'contrat' => $contrat ,
+            'client' => $client ,
+            'etatsSuccessifsSpecifiesPar' => $etatsSuccessifsSpecifiesPar ] );
 
     }
 
-    #[Route('/pdf/{cheminFichier}', name: 'contrat_pdf',  requirements: ['cheminFichier' => '.+'])]
-    public function afficherPdf(string $cheminFichier): BinaryFileResponse
+    public function copyPdfToPublic(string $path , string $filename): string
     {
-        // $cheminFichier = basename($cheminFichier);
-file_put_contents('var/log/trace.txt', "appelé avec : $cheminFichier");
+        $filesystem = new Filesystem();
 
-        $filePath = $this->getParameter('private_upload_dir') . $cheminFichier;
+        $p = str_replace( '\\', '/', $this->getParameter('kernel.project_dir') );
 
-        if (!file_exists($filePath)) {
-            throw $this->createNotFoundException('Fichier non trouvé');
+        $sourcePath = $p . '/var/storage/' . $path . '/' . $filename;
+        $targetDir = $p . '/public/storage/' . $path . '/';
+        $targetPath = $targetDir . $filename;
+
+        if (!file_exists($sourcePath)) {
+            throw new \RuntimeException("Le fichier source n'existe pas : $sourcePath");
         }
 
-        return new BinaryFileResponse($filePath);
-        
+        if (!$filesystem->exists($targetDir)) {
+            $filesystem->mkdir($targetDir, 0755);
+        }
+
+        try {
+            $filesystem->copy($sourcePath, $targetPath, true); // true = overwrite
+        } catch (IOExceptionInterface $exception) {
+            throw new \RuntimeException("Erreur lors de la copie du fichier : " . $exception->getMessage());
+        }
+
+        return $targetPath;
     }
 
+//     #[Route('/pdf/{cheminFichier}', name: 'contrat_pdf',  requirements: ['cheminFichier' => '.+'])]
+//     public function afficherPdf(string $cheminFichier): BinaryFileResponse
+//     {
+//         // $cheminFichier = basename($cheminFichier);
+// file_put_contents('var/log/trace.txt', "appelé avec : $cheminFichier");
+
+//         $filePath = $this->getParameter('private_upload_dir') . $cheminFichier;
+
+//         if (!file_exists($filePath)) {
+//             throw $this->createNotFoundException('Fichier non trouvé');
+//         }
+
+//         return new BinaryFileResponse($filePath);
+        
+//     }
+
+    #[ Route( '/editerUnContrat/{id}' , name: 'app_editer_un_contrat' , methods: [ 'GET' , 'POST' ] ) ]
+    public function editerUnContrat(Request $request,
+                                    EntityManagerInterface $entityManager,
+                                    FileUploader $fileUploader,
+                                    ContratRepository $contratRepository) : Response
+    {
+        // $contrat = $contratRepository->findOneBy( [ 'id' => $request->attributes->get( 'id' ) ] );
+
+        $contrat = $contratRepository->findWithEtats( $request->attributes->get( 'id' ) );
+
+        $form = $this->createForm( EditerUnContratType::class , $contrat ,
+        [ 'etatActuel' => $contrat->getDernierEtat() !== null ? $contrat->getDernierEtat()->getEtat() : null ,
+        'nomContratActuel' => basename( $contrat->getCheminFichier() ) ] );
+
+        $form->handleRequest($request);
+
+        $pathContratActuel = pathinfo( $contrat->getCheminFichier() );
+        $this->copyPdfToPublic( $pathContratActuel['dirname'] , $pathContratActuel['basename']);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $client = $contrat->getIdUtilisateur();
+
+            $uploadedFile = $form->get('cheminFichier')->getData();
+
+            if ( $uploadedFile  &&  strcmp( $uploadedFile , $contrat->getCheminFichier() ) != 0 ) {
+
+                $filename = $fileUploader->upload(
+                    $uploadedFile,
+                    $client->getId(),
+                    'contrat',
+                    $contrat->getCheminFichier(),
+                    false,
+                    [300, 300]
+                );
+
+                $contrat->setCheminFichier( $filename );
+            }
+
+            $etatChoisi = $form->get('etatChoisi')->getData();
+
+            if ( strcmp( $etatChoisi , $contrat->getDernierEtat()->getEtat() ) != 0 ) {
+                $etatContrat = new EtatContrat();
+                $etatContrat->setEtat($etatChoisi);
+                $etatContrat->setDateHeureInsertion(new \DateTimeImmutable());
+                $etatContrat->setIdUtilisateur($this->getUser());
+
+                $contrat->addEtatContrat($etatContrat);
+            }
+
+            $contrat->setDateHeureMAJ( new \DateTimeImmutable( 'now', new \DateTimeZone('Europe/Paris') ) );
+
+            $entityManager->persist($contrat);
+
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_liste_des_contrats', [ 'id' => $client->getId() ] , Response::HTTP_SEE_OTHER);
+
+        }
+
+        return $this->render( 'FrontEnd/EditerUnContrat.html.twig' , [ 'form' => $form, 'edition' => false , 'pathContratActuel' => $pathContratActuel['dirname'] . '/' . $pathContratActuel['basename'] ] );
+    }
 
 }

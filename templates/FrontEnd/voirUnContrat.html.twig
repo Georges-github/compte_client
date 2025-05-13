@@ -44,7 +44,6 @@
                 {% endfor %}
             </ul>
         </div>
-        url = {{contrat.cheminFichier}}<br>
     </div>
 
     <div id="pdf-textlayer-container"></div>
@@ -62,9 +61,7 @@
         // If absolute URL from the remote server is provided, configure the CORS
         // header on that server.
 
-        const url = '{{ path('contrat_pdf', { cheminFichier: contrat.cheminFichier }) }}';
-
-        console.log( "url = " + url );
+        const url = "{{ asset('storage/' ~ contrat.cheminFichier) }}";
 
         // Loaded via <script> tag, create shortcut to access PDF.js exports.
         var { pdfjsLib } = globalThis;
@@ -78,7 +75,7 @@
             pageNum = 1,
             pageRendering = false,
             pageNumPending = null,
-            scale = 0.8,
+            scale = 1,
             canvas = document.getElementById('the-canvas'),
             ctx = canvas.getContext('2d');
 
@@ -155,7 +152,7 @@
         /**
         * Asynchronously downloads PDF.
         */
-        pdfjsLib.getDocument('/storage/utilisateurs/28/contrat/Ajout-Compte-client-681dbbf87ecd0.pdf').promise.then(function(pdfDoc_) {
+        pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {
             pdfDoc = pdfDoc_;
             document.getElementById('page_count').textContent = pdfDoc.numPages;
 

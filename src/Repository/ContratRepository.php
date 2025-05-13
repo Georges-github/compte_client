@@ -16,6 +16,17 @@ class ContratRepository extends ServiceEntityRepository
         parent::__construct($registry, Contrat::class);
     }
 
+    public function findWithEtats(int $id): ?Contrat
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.etatsContrat', 'e')
+            ->addSelect('e')
+            ->andWhere('c.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
 //    /**
 //     * @return Contrat[] Returns an array of Contrat objects
 //     */
