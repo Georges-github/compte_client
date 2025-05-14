@@ -64,7 +64,7 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
             }            
 
             if ( $utilisateur->sesRolesContiennent( 'CLIENT' ) ) {
-                return new RedirectResponse($this->urlGenerator->generate('app_liste_des_contrats' , [ 'id' => $utilisateur->getId() ]));
+                return new RedirectResponse($this->urlGenerator->generate('app_liste_des_contrats' , [ 'id' => $utilisateur->getId() , 'pathContratDansPublic' => '' ]));
             }            
 
         }

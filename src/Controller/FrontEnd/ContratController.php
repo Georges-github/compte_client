@@ -33,10 +33,18 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 #[Route('/contrat')]
 #[IsGranted('IS_AUTHENTICATED_FULLY')]
 class ContratController extends AbstractController {
+
+    private $params;
+
+    public function __construct(ParameterBagInterface $params)
+    {
+        $this->params = $params;
+    }
 
     #[ Route( '/ajouterUnContrat/{id}' , name: 'app_ajouter_un_contrat' , methods: [ 'GET' , 'POST' ] ) ]
     public function ajouterUnContrat(Request $request, EntityManagerInterface $entityManager, FileUploader $fileUploader, UtilisateurRepository $utilisateurRepository) : Response
@@ -85,7 +93,7 @@ class ContratController extends AbstractController {
 
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_liste_des_contrats', [ 'id' => $idClient ], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_liste_des_contrats', [ 'id' => $idClient , 'pathContratDansPublic' => '' ], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render( 'FrontEnd/EditerUnContrat.html.twig' , [ 'form' => $form, 'edition' => false ] );
@@ -229,7 +237,7 @@ class ContratController extends AbstractController {
                 unlink( $pathContratActuelDansVar );
             }
 
-            return $this->redirectToRoute('app_liste_des_contrats', [ 'id' => $client->getId() ] , Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_liste_des_contrats', [ 'id' => $client->getId() , 'pathContratDansPublic' => '' ] , Response::HTTP_SEE_OTHER);
 
         }
 
@@ -239,14 +247,24 @@ class ContratController extends AbstractController {
     #[ Route( '/supprimerUnContrat/{id}' , name: 'app_supprimer_un_contrat' , methods: [ 'POST' ] ) ]
     public function delete(Request $request, Contrat $contrat, EntityManagerInterface $entityManager): Response
     {
-        $client = $contrat->getIdUtilisateur();
-
         if ($this->isCsrfTokenValid('delete'.$contrat->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($contrat);
             $entityManager->flush();
         }
 
-            return $this->redirectToRoute('app_liste_des_contrats', [ 'id' => $client->getId() ] , Response::HTTP_SEE_OTHER);
+        $pathContratActuelDansPublic = str_replace( "//" , "/" , $this->params->get('app.public_upload_dir') . $contrat->getCheminFichier() );
+        if ( file_exists( $pathContratActuelDansPublic ) ) {
+            unlink( $pathContratActuelDansPublic );
+        }
+
+        $pathContratActuelDansPrivate = str_replace( "//" , "/" , $this->params->get('app.private_upload_dir') . $contrat->getCheminFichier() );
+        if ( file_exists( $pathContratActuelDansPrivate ) ) {
+            unlink( $pathContratActuelDansPrivate );
+        }
+
+        $client = $contrat->getIdUtilisateur();
+
+        return $this->redirectToRoute('app_liste_des_contrats', [ 'id' => $client->getId() , 'pathContratDansPublic' => '' ] , Response::HTTP_SEE_OTHER);
     }
 
 
