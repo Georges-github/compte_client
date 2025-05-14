@@ -49,7 +49,7 @@ class Contrat
     /**
      * @var Collection<int, EtatContrat>
      */
-    #[ORM\OneToMany(targetEntity: EtatContrat::class, mappedBy: 'idContrat', orphanRemoval: true, cascade: ['persist'])]
+    #[ORM\OneToMany(targetEntity: EtatContrat::class, mappedBy: 'idContrat', orphanRemoval: true, cascade: ['persist' , 'remove'])]
     private Collection $etatsContrat;
 
     #[ORM\ManyToOne(inversedBy: 'contrats')]

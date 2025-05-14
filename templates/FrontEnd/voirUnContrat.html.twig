@@ -24,6 +24,57 @@
     </a>
 </div>
 
+{% if employe %}
+{# <a href="{{ path( 'app_supprimer_un_contrat', { id: contrat.id } ) }}" class="btn btn-outline-light btn-sm mt-4">Supprimer</a> #}
+
+<!-- Le formulaire POST caché -->
+<form action="{{ path('app_supprimer_un_contrat', { 'id': contrat.id }) }}" method="POST" style="display: none;" id="deleteForm{{ contrat.id }}">
+    <button type="submit" class="btn btn-danger">Supprimer</button>
+    <!-- Token CSRF pour la sécurité -->
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ contrat.id) }}">
+</form>
+
+<!-- Le lien de suppression avec un évènement de confirmation -->
+<a href="#" class="btn btn-danger" onclick="showDeleteModal({{ contrat.id }}); return false;">Supprimer ce contrat</a>
+
+<!-- Modal de confirmation (Bootstrap) -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirmation de suppression</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Êtes-vous sûr de vouloir supprimer ce contrat ? Cette action est irréversible.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-danger" onclick="deleteContract();">Supprimer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Fonction pour afficher le modal
+    function showDeleteModal(contratId) {
+        // Enregistre l'ID du contrat pour la suppression
+        window.contractToDelete = contratId;
+        // Affiche le modal Bootstrap
+        const myModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        myModal.show();
+    }
+
+    // Fonction pour soumettre le formulaire de suppression
+    function deleteContract() {
+        const form = document.getElementById('deleteForm' + window.contractToDelete);
+        form.submit(); // Soumet le formulaire
+    }
+</script>
+
+{% endif %}
+
 <div class="container my-5">
     <div class="row justify-content-center">
         <div class="col-12 col-md-6 col-lg-5 d-flex justify-content-center">

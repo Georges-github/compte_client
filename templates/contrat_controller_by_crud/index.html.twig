@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contrat index{% endblock %}
+
+{% block body %}
+    <h1>Contrat index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>NumeroContrat</th>
+                <th>Intitule</th>
+                <th>Description</th>
+                <th>DateDebutPrevue</th>
+                <th>DateFinPrevue</th>
+                <th>DateDebut</th>
+                <th>DateFin</th>
+                <th>CheminFichier</th>
+                <th>DateHeureInsertion</th>
+                <th>DateHeureMAJ</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for contrat in contrats %}
+            <tr>
+                <td>{{ contrat.id }}</td>
+                <td>{{ contrat.numeroContrat }}</td>
+                <td>{{ contrat.intitule }}</td>
+                <td>{{ contrat.description }}</td>
+                <td>{{ contrat.dateDebutPrevue ? contrat.dateDebutPrevue|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ contrat.dateFinPrevue ? contrat.dateFinPrevue|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ contrat.dateDebut ? contrat.dateDebut|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ contrat.dateFin ? contrat.dateFin|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ contrat.cheminFichier }}</td>
+                <td>{{ contrat.dateHeureInsertion ? contrat.dateHeureInsertion|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ contrat.dateHeureMAJ ? contrat.dateHeureMAJ|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_contrat_controller_by_c_r_u_d_show', {'id': contrat.id}) }}">show</a>
+                    <a href="{{ path('app_contrat_controller_by_c_r_u_d_edit', {'id': contrat.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="12">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_contrat_controller_by_c_r_u_d_new') }}">Create new</a>
+{% endblock %}

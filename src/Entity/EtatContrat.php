@@ -35,7 +35,7 @@ class EtatContrat
     private ?Utilisateur $idUtilisateur = null;
 
     #[ORM\ManyToOne(inversedBy: 'etatsContrat')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false , onDelete: 'CASCADE')]
     private ?Contrat $idContrat = null;
 
     public function getId(): ?int

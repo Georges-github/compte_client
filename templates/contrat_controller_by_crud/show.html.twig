@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contrat{% endblock %}
+
+{% block body %}
+    <h1>Contrat</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ contrat.id }}</td>
+            </tr>
+            <tr>
+                <th>NumeroContrat</th>
+                <td>{{ contrat.numeroContrat }}</td>
+            </tr>
+            <tr>
+                <th>Intitule</th>
+                <td>{{ contrat.intitule }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ contrat.description }}</td>
+            </tr>
+            <tr>
+                <th>DateDebutPrevue</th>
+                <td>{{ contrat.dateDebutPrevue ? contrat.dateDebutPrevue|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>DateFinPrevue</th>
+                <td>{{ contrat.dateFinPrevue ? contrat.dateFinPrevue|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>DateDebut</th>
+                <td>{{ contrat.dateDebut ? contrat.dateDebut|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>DateFin</th>
+                <td>{{ contrat.dateFin ? contrat.dateFin|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>CheminFichier</th>
+                <td>{{ contrat.cheminFichier }}</td>
+            </tr>
+            <tr>
+                <th>DateHeureInsertion</th>
+                <td>{{ contrat.dateHeureInsertion ? contrat.dateHeureInsertion|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>DateHeureMAJ</th>
+                <td>{{ contrat.dateHeureMAJ ? contrat.dateHeureMAJ|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_contrat_controller_by_c_r_u_d_index') }}">back to list</a>
+
+    <a href="{{ path('app_contrat_controller_by_c_r_u_d_edit', {'id': contrat.id}) }}">edit</a>
+
+    {{ include('contrat_controller_by_crud/_delete_form.html.twig') }}
+{% endblock %}

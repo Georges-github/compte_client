@@ -114,6 +114,7 @@ class ContratController extends AbstractController {
         return $this->render( 'FrontEnd/voirUnContrat.html.twig' , [
             'contrat' => $contrat ,
             'client' => $client ,
+            'employe' => ( $this->getUser() )->sesRolesContiennent( 'EMPLOYE' ) ,
             'etatsSuccessifsSpecifiesPar' => $etatsSuccessifsSpecifiesPar ] );
 
     }
@@ -234,5 +235,19 @@ class ContratController extends AbstractController {
 
         return $this->render( 'FrontEnd/EditerUnContrat.html.twig' , [ 'form' => $form, 'edition' => false , 'pathContratActuel' => 'storage/' . $pathContratActuel['dirname'] . '/' . $pathContratActuel['basename'] ] );
     }
+
+    #[ Route( '/supprimerUnContrat/{id}' , name: 'app_supprimer_un_contrat' , methods: [ 'POST' ] ) ]
+    public function delete(Request $request, Contrat $contrat, EntityManagerInterface $entityManager): Response
+    {
+        $client = $contrat->getIdUtilisateur();
+
+        if ($this->isCsrfTokenValid('delete'.$contrat->getId(), $request->getPayload()->getString('_token'))) {
+            $entityManager->remove($contrat);
+            $entityManager->flush();
+        }
+
+            return $this->redirectToRoute('app_liste_des_contrats', [ 'id' => $client->getId() ] , Response::HTTP_SEE_OTHER);
+    }
+
 
 }
