@@ -23,12 +23,28 @@ use App\Validation\ValidationGroups;
 
 use Symfony\Component\Form\FormError;
 
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+
+
 #[Route('/client')]
 #[IsGranted('IS_AUTHENTICATED_FULLY')]
 final class CompteClientController extends AbstractController {
 
-    #[Route('/listeDesContrats/{id}' , name: 'app_liste_des_contrats', methods: 'GET')]
+    private $params;
+
+    public function __construct(ParameterBagInterface $params)
+    {
+        $this->params = $params;
+    }
+
+    #[Route('/listeDesContrats/{id}' , name: 'app_liste_des_contrats', methods: ['GET'])]
     public function listeDesContrats(Request $request, ContratRepository $contratRepository, UtilisateurRepository $utilisateurRepository) : Response {
+
+        $pathContratActuelDansPublic = str_replace( "//" , "/" , $this->params->get('app.public_upload_dir') . $request->query->get( 'pathContratDansPublic' ) );
+        $pathContratActuelDansPublic = str_replace( "/storage/" , "/" , $pathContratActuelDansPublic );
+        if ( file_exists( $pathContratActuelDansPublic ) ) {
+            unlink( $pathContratActuelDansPublic );
+        }
 
         $id = $request->attributes->get( 'id' );
 

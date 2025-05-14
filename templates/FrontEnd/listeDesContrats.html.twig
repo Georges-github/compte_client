@@ -67,6 +67,7 @@
         <thead>
             <tr>
                 <th>Contrat</th>
+                <th>Numéro</th>
                 <th>Date Prévue</th>
                 <th>Fin Prévue</th>
                 {# <th>Etat</th> #}
@@ -79,6 +80,7 @@
             {% for c in listeDesContrats %}
                 <tr>
                     <td>{{c.intitule}}</td>
+                    <td>{{c.numeroContrat}}</td>
                     <td>{{c.dateDebutPrevue ? c.dateDebutPrevue|date('Y-m-d H:i:s') : ''}}</td>
                     <td>{{c.dateFinPrevue ? c.dateFinPrevue|date('Y-m-d H:i:s') : ''}}</td>
                     <td>{{c.dateDebut ? c.dateDebut|date('Y-m-d H:i:s') : ''}}</td>

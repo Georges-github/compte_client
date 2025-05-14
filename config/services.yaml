@@ -5,7 +5,8 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     # app.private_upload_dir: '%kernel.project_dir%/var/storage/'
-    app.private_upload_dir: 'var/storage/'
+    app.private_upload_dir: '%kernel.project_dir%/var/storage/'
+    app.public_upload_dir: '%kernel.project_dir%/public/storage/'
 
 services:
     # default configuration for services in *this* file

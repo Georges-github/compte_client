@@ -43,7 +43,7 @@ class ContratController extends AbstractController {
     {
         $contrat = new Contrat();
 
-        $form = $this->createForm( EditerUnContratType::class , $contrat );
+        $form = $this->createForm( EditerUnContratType::class , $contrat , [ 'edition' => false ] );
 
         $form->handleRequest($request);
 
@@ -173,12 +173,13 @@ class ContratController extends AbstractController {
 
         $form = $this->createForm( EditerUnContratType::class , $contrat ,
         [ 'etatActuel' => $contrat->getDernierEtat() !== null ? $contrat->getDernierEtat()->getEtat() : null ,
-        'nomContratActuel' => basename( $contrat->getCheminFichier() ) ] );
+        'nomContratActuel' => basename( $contrat->getCheminFichier() ) ,
+        'edition' => true ] );
 
         $form->handleRequest($request);
 
         $pathContratActuel = pathinfo( $contrat->getCheminFichier() );
-        $this->copyPdfToPublic( $pathContratActuel['dirname'] , $pathContratActuel['basename']);
+        $pathContratActuelDansPublic = $this->copyPdfToPublic( $pathContratActuel['dirname'] , $pathContratActuel['basename']);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
@@ -186,7 +187,7 @@ class ContratController extends AbstractController {
 
             $uploadedFile = $form->get('cheminFichier')->getData();
 
-            if ( $uploadedFile  &&  strcmp( $uploadedFile , $contrat->getCheminFichier() ) != 0 ) {
+            if ( $uploadedFile ) {
 
                 $filename = $fileUploader->upload(
                     $uploadedFile,
@@ -198,6 +199,7 @@ class ContratController extends AbstractController {
                 );
 
                 $contrat->setCheminFichier( $filename );
+
             }
 
             $etatChoisi = $form->get('etatChoisi')->getData();
@@ -217,11 +219,20 @@ class ContratController extends AbstractController {
 
             $entityManager->flush();
 
+            if ( file_exists( $pathContratActuelDansPublic ) ) {
+                unlink( $pathContratActuelDansPublic );
+            }
+
+            $pathContratActuelDansVar = str_replace( "/public/" , "/var/" , $pathContratActuelDansPublic );
+            if ( file_exists( $pathContratActuelDansVar ) ) {
+                unlink( $pathContratActuelDansVar );
+            }
+
             return $this->redirectToRoute('app_liste_des_contrats', [ 'id' => $client->getId() ] , Response::HTTP_SEE_OTHER);
 
         }
 
-        return $this->render( 'FrontEnd/EditerUnContrat.html.twig' , [ 'form' => $form, 'edition' => false , 'pathContratActuel' => $pathContratActuel['dirname'] . '/' . $pathContratActuel['basename'] ] );
+        return $this->render( 'FrontEnd/EditerUnContrat.html.twig' , [ 'form' => $form, 'edition' => false , 'pathContratActuel' => 'storage/' . $pathContratActuel['dirname'] . '/' . $pathContratActuel['basename'] ] );
     }
 
 }

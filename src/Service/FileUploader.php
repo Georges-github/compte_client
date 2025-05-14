@@ -52,7 +52,7 @@ class FileUploader
                 throw new \RuntimeException("Impossible de créer le répertoire : $destination");
             }
         }
-    
+
         try {
             $file->move($destination, $newFilename);
     
