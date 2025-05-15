@@ -46,6 +46,16 @@
     <a href="{{ path('app_ajouter_un_contrat' , {id : client.id }) }}" class="btn btn-outline-light btn-sm mb-4">Ajouter un contrat</a>
 {% endif %}
 
+{% set pile = app.session.get('pile_de_pdf_dans_public', []) %}
+<h3>Contenu de la pile PDF :</h3>
+<ul>
+    {% for path in pile %}
+        <li>{{ path }}</li>
+    {% else %}
+        <li><em>(pile vide)</em></li>
+    {% endfor %}
+</ul>
+
 <div class="container my-5">
     <div class="row justify-content-center">
         <div class="col-12 col-md-6 col-lg-5 d-flex justify-content-center">

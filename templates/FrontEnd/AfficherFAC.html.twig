@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Fiche d'avancement{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-end position-fixed top-0 end-0 m-3">
+    <a href="{{ app.request.headers.get('referer') }}">
+        <img class="icon-page-precedente" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
+    </a>
+</div>
+
+<form action="{{ path('app_ajouter_une_publication') }}" method="POST">
+    <button type="submit" class="btn btn-outline-light btn-sm">Publication</button>
+</form>
+
+
+{% endblock %}

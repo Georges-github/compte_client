@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 use App\Form\FrontEnd\EditerUnCompteClientType;
+use App\Service\PileDePDFDansPublic;
 use App\Validation\Validations;
 use App\Validation\ValidationGroups;
 
@@ -38,15 +39,23 @@ final class CompteClientController extends AbstractController {
     }
 
     #[Route('/listeDesContrats/{id}' , name: 'app_liste_des_contrats', methods: ['GET'])]
-    public function listeDesContrats(Request $request, ContratRepository $contratRepository, UtilisateurRepository $utilisateurRepository) : Response {
+    public function listeDesContrats(Request $request, ContratRepository $contratRepository, UtilisateurRepository $utilisateurRepository , PileDePDFDansPublic $pileDePDFDansPublic) : Response {
 
-        if ( ! empty( $request->query->get( 'pathContratDansPublic' ) ) ) {
-            $pathContratActuelDansPublic = str_replace( "//" , "/" , $this->params->get('app.public_upload_dir') . $request->query->get( 'pathContratDansPublic' ) );
-            $pathContratActuelDansPublic = str_replace( "/storage/" , "/" , $pathContratActuelDansPublic );
-            if ( file_exists( $pathContratActuelDansPublic ) ) {
-                unlink( $pathContratActuelDansPublic );
-            }
+        dump($pileDePDFDansPublic);
+
+        $f = $pileDePDFDansPublic->peek();
+        if ( $f ) {
+            unlink( $f );
+            $pileDePDFDansPublic->pop();
         }
+
+        // if ( ! empty( $request->query->get( 'pathContratDansPublic' ) ) ) {
+        //     $pathContratActuelDansPublic = str_replace( "//" , "/" , $this->params->get('app.public_upload_dir') . $request->query->get( 'pathContratDansPublic' ) );
+        //     $pathContratActuelDansPublic = str_replace( "/storage/" , "/" , $pathContratActuelDansPublic );
+        //     if ( file_exists( $pathContratActuelDansPublic ) ) {
+        //         unlink( $pathContratActuelDansPublic );
+        //     }
+        // }
 
         $id = $request->attributes->get( 'id' );
 
