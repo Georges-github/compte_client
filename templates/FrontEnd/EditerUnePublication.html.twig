@@ -17,7 +17,22 @@
 
     {{ form_row( form.contenu ) }}
 
-    {{ form_row( form.image ) }}
+    {# {{ form_row( form.image ) }} #}
+
+    <div id="photos-collection"
+         data-prototype="{{ form_widget(form.photos.vars.prototype)|e('html_attr') }}"
+         data-index="{{ form.photos|length }}">
+        {% for photoForm in form.photos %}
+            <div class="photo-form">
+                {{ form_row(photoForm.legende) }}
+                <button type="button" class="remove-photo btn btn-danger btn-sm">Supprimer</button>
+            </div>
+        {% endfor %}
+    </div>
+
+    <button type="button" id="add-photo" class="btn btn-primary mt-3">Ajouter une photo</button>
+
+    <button type="submit" class="btn btn-success mt-3">Valider</button>
 
     {{ form_row( form.submit ) }}
 
@@ -26,5 +41,62 @@
 </div>
 
 {{ form_end(form) }}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const collectionHolder = document.getElementById('photos-collection');
+        const addButton = document.getElementById('add-photo');
+
+        let index = parseInt(collectionHolder.dataset.index);
+
+        addButton.addEventListener('click', () => {
+            const prototype = collectionHolder.dataset.prototype;
+            const newFormHtml = prototype.replace(/__name__/g, index);
+            index++;
+
+            const newFormDiv = document.createElement('div');
+            newFormDiv.classList.add('photo-form');
+            newFormDiv.innerHTML = newFormHtml;
+
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.className = 'remove-photo btn btn-danger btn-sm';
+            removeButton.innerText = 'Supprimer';
+            removeButton.addEventListener('click', () => {
+                newFormDiv.remove();
+                index--;
+            });
+
+            newFormDiv.appendChild(removeButton);
+            collectionHolder.appendChild(newFormDiv);
+            collectionHolder.dataset.index = index;
+        });
+
+        // Ajout du comportement "Supprimer" pour les éléments déjà présents
+        document.querySelectorAll('.remove-photo').forEach((btn) => {
+            btn.addEventListener('click', function () {
+                this.closest('.photo-form').remove();
+            });
+        });
+    });
+
+    document.addEventListener('change', function (event) {
+        if (event.target.matches('input[type="file"]')) {
+            const input = event.target;
+            const preview = document.createElement('img');
+            preview.style.maxWidth = '200px';
+            preview.style.marginTop = '10px';
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    preview.src = e.target.result;
+                    input.parentElement.appendChild(preview);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }   
+    });
+</script>
 
 {% endblock %}

@@ -2,6 +2,7 @@
 
 namespace App\Controller\FrontEnd;
 
+use App\Entity\Photo;
 use App\Entity\Publication;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,6 +16,8 @@ use App\Service\ContratActif;
 use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 
+use App\Utils\Tracer;
+
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/fac')]
@@ -24,9 +27,13 @@ class FACController extends AbstractController {
     // public function __construct() {}
 
     #[Route('/fac' , name: 'app_afficher_fac' , methods: ['GET'])]
-    public function afficherFAC(Request $request) : Response
+    public function afficherFAC(Request $request , ContratActif $contratActif , PublicationRepository $publicationRepository) : Response
     {
-        return $this->render( 'FrontEnd/afficherFAC.html.twig' );
+        $contrat = $contratActif->get();
+
+        $listePublications = $publicationRepository->findBy( [ 'idContrat' => $contrat->getId() ] );
+
+        return $this->render( 'FrontEnd/afficherFAC.html.twig' , [ 'listePublications' => $listePublications ] );
     }
 
     #[Route('/ajouterUnePublication' , name: 'app_ajouter_une_publication' , methods: ['POST'])]
@@ -34,7 +41,8 @@ class FACController extends AbstractController {
                                         EntityManagerInterface $entityManager,
                                         PublicationRepository $publicationRepository,
                                         FileUploader $fileUploader,
-                                        ContratActif $contratActif) : Response
+                                        ContratActif $contratActif,
+                                        Tracer $tracer) : Response
     {
         $publication = new Publication();
 
@@ -50,23 +58,41 @@ class FACController extends AbstractController {
 
             $publication->setDateHeureInsertion( new \DateTimeImmutable( 'now', new \DateTimeZone('Europe/Paris') ) );
 
-            // $photo = $form->get('cheminFichierImage')->getData();
-            // if ( $photo ) {
-            //     $filename = $fileUploader->upload(
-            //         $photo,
-            //         $utilisateur->getId(),
-            //         'photo',
-            //         $publication->getChemin(),
-            //         false,
-            //         [300, 300]
-            //     );
-
-            //     $contrat->setCheminFichier( $filename );
-            // }
-
             $contrat = $contratActif->get();
 
             $publication->setIdContrat( $contrat );
+
+            $photos = $publication->getPhotos();
+            reset($photos);
+            $photo = current($photos)[ 0 ];
+// dump($form->get('photos'));
+// dump($photos);
+// dump($photo);
+// $photo = $photos->next();
+// dd($photo);
+            foreach ($form->get('photos') as $key => $photoForm) {
+
+                $img = $photoForm->get('imageFile')->getData();
+
+                if ( $img ) {
+                    $filename = $fileUploader->upload(
+                        $img,
+                        $utilisateur->getId(),
+                        'image',
+                        'pipo',
+                        false,
+                        [300, 300]
+                    );
+                    $photo->setCheminFichierImage( $filename );
+
+                    $photo->setDateHeureInsertion( new \DateTimeImmutable( 'now', new \DateTimeZone('Europe/Paris') ) );
+
+                    $entityManager->persist( $photo );
+
+                }
+                
+                $photo = $photos->next();
+            }
 
             $entityManager->persist($publication);
 

@@ -12,7 +12,7 @@ class FileUploader
     private string $privateStorageDir;
     private SluggerInterface $slugger;
 
-    private array $allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf', 'docx'];
+    private array $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf', 'docx'];
     private int $maxFileSize = 5 * 1024 * 1024; // 5 Mo
 
     public function __construct(SluggerInterface $slugger, string $privateStorageDir)
@@ -39,7 +39,8 @@ class FileUploader
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $safeFilename = $this->slugger->slug($originalFilename);
         //$extension = strtolower($file->guessExtension() ?? 'bin');
-        $extension = "pdf";
+        $extension = strtolower($file->getClientOriginalExtension());
+        // $extension = "pdf";
         // $newFilename = $safeFilename . '-' . uniqid() . '.' . $extension;
         $newFilename = $safeFilename . '-' . $this->jjddaaaa_hh_mm_ss() . '.' . $extension;
     

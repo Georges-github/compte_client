@@ -14,4 +14,10 @@
 </form>
 
 
+{% for publication in listePublications %}
+    {{publication.titre}}<br>
+    {{publication.contenu}}<br>
+{% endfor %}
+
+
 {% endblock %}
