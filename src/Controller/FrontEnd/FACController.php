@@ -103,4 +103,80 @@ class FACController extends AbstractController {
 
         return $this->render( 'FrontEnd/EditerUnePublication.html.twig' , [ 'form' => $form, 'edition' => false ] );
     }
+
+
+    #[Route('/editerUnePublication' , name: 'app_editer_une_publication' , methods: ['POST'])]
+    public function editerUnePublication(Request $request,
+                                        EntityManagerInterface $entityManager,
+                                        PublicationRepository $publicationRepository,
+                                        FileUploader $fileUploader,
+                                        ContratActif $contratActif,
+                                        Tracer $tracer) : Response
+    {
+        $publication = $publicationRepository->find( $request->query->get( 'id' ) );
+
+        foreach ($publication->getPhotos() as $photo) {
+            if (!$entityManager->getRepository(Photo::class)->find($photo->getId())) {
+                $publication->removePhoto($photo); // Doctrine Collection -> nettoyée
+            }
+        }
+    
+        $form = $this->createForm( EditerUnePublicationType::class , $publication , [ 'edition' => true ] );
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $utilisateur = $this->getUser();
+
+            $publication->setIdUtilisateur( $utilisateur );
+
+            $publication->setDateHeureInsertion( new \DateTimeImmutable( 'now', new \DateTimeZone('Europe/Paris') ) );
+
+            $contrat = $contratActif->get();
+
+            $publication->setIdContrat( $contrat );
+
+            $photos = $publication->getPhotos();
+            reset($photos);
+            $photo = current($photos)[ 0 ];
+// dump($form->get('photos'));
+// dump($photos);
+// dump($photo);
+// $photo = $photos->next();
+// dd($photo);
+            foreach ($form->get('photos') as $key => $photoForm) {
+
+                $img = $photoForm->get('imageFile')->getData();
+
+                if ( $img ) {
+                    $filename = $fileUploader->upload(
+                        $img,
+                        $utilisateur->getId(),
+                        'image',
+                        'pipo',
+                        false,
+                        [300, 300]
+                    );
+                    $photo->setCheminFichierImage( $filename );
+
+                    $photo->setDateHeureInsertion( new \DateTimeImmutable( 'now', new \DateTimeZone('Europe/Paris') ) );
+
+                    $entityManager->persist( $photo );
+
+                }
+                
+                $photo = $photos->next();
+            }
+
+            $entityManager->persist($publication);
+
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_afficher_fac', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render( 'FrontEnd/EditerUnePublication.html.twig' , [ 'form' => $form, 'photos' => $publication->getPhotos() , 'edition' => true ] );
+    }
+
 }

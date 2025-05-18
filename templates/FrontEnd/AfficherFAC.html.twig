@@ -10,13 +10,17 @@
 </div>
 
 <form action="{{ path('app_ajouter_une_publication') }}" method="POST">
-    <button type="submit" class="btn btn-outline-light btn-sm">Publication</button>
+    <button type="submit" class="btn btn-outline-light btn-sm mb-5">Publication</button>
 </form>
 
 
 {% for publication in listePublications %}
     {{publication.titre}}<br>
     {{publication.contenu}}<br>
+    <form action="{{ path('app_editer_une_publication' , {id: publication.id}) }}" method="POST">
+        <button type="submit" class="btn btn-outline-light btn-sm">Editer</button>
+    </form>
+    <br><br>
 {% endfor %}
 
 

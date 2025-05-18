@@ -9,6 +9,39 @@
     </a>
 </div>
 
+<!-- Modal Bootstrap de confirmation -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="confirmDeleteLabel">Confirmer la suppression</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        Voulez-vous vraiment supprimer cette photo ? Cette action est irréversible.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-danger" id="modal-confirm-delete">Supprimer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% for photo in photos %}
+    <div id="photo-{{ photo.id }}">
+        <img src="{{ path('serve_image', { filename: photo.cheminFichierImage }) }}" alt="Image" width="150">
+        <p>{{ photo.legende }}</p>
+        <button
+            class="btn btn-danger btn-delete-photo"
+            data-id="{{ photo.id }}"
+            data-token="{{ csrf_token('delete-photo-' ~ photo.id) }}"
+        >
+            🗑 Supprimer
+        </button>
+    </div>
+{% endfor %}
+
 {{ form_start(form) }}
 
 <div style="" class="p-2">
@@ -22,12 +55,13 @@
     <div id="photos-collection"
          data-prototype="{{ form_widget(form.photos.vars.prototype)|e('html_attr') }}"
          data-index="{{ form.photos|length }}">
-        {% for photoForm in form.photos %}
-            <div class="photo-form">
-                {{ form_row(photoForm.legende) }}
-                <button type="button" class="remove-photo btn btn-danger btn-sm">Supprimer</button>
-            </div>
-        {% endfor %}
+{% for photoForm in form.photos %}
+    <div class="photo-form" data-photo-id="{{ photoForm.vars.data.id }}">
+        {{ form_row(photoForm.legende) }}
+        {{ form_row(photoForm.imageFile) }}
+        <button type="button" class="remove-photo btn btn-danger btn-sm">Supprimer</button>
+    </div>
+{% endfor %}
     </div>
 
     <button type="button" id="add-photo" class="btn btn-primary mt-3">Ajouter une photo</button>
@@ -97,6 +131,56 @@
             }
         }   
     });
+
+let deletePhotoId = null;
+let deletePhotoToken = null;
+
+// Initialiser le modal Bootstrap
+const deleteModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+
+// Lorsqu'on clique sur un bouton de suppression
+document.querySelectorAll('.btn-delete-photo').forEach(button => {
+    button.addEventListener('click', function () {
+        deletePhotoId = this.dataset.id;
+        deletePhotoToken = this.dataset.token;
+        deleteModal.show(); // Ouvrir le modal Bootstrap
+    });
+});
+
+// Lorsqu'on confirme dans le modal
+document.getElementById('modal-confirm-delete').addEventListener('click', function () {
+    if (!deletePhotoId || !deletePhotoToken) return;
+
+    fetch(`/photo/delete/${deletePhotoId}`, {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': deletePhotoToken
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const photoElement = document.getElementById(`photo-${deletePhotoId}`);
+            if (photoElement) photoElement.remove();
+
+            const formElement = document.querySelector(`.photo-form[data-photo-id="${deletePhotoId}"]`);
+            if (formElement) formElement.remove();
+        } else {
+            alert(data.error || 'Erreur lors de la suppression.');
+        }
+
+        deleteModal.hide();
+        deletePhotoId = null;
+        deletePhotoToken = null;
+    })
+    .catch(() => {
+        alert('Une erreur est survenue.');
+        deleteModal.hide();
+        deletePhotoId = null;
+        deletePhotoToken = null;
+    });
+});
 </script>
 
 {% endblock %}
