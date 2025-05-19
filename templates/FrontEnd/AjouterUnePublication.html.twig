@@ -28,20 +28,6 @@
   </div>
 </div>
 
-{% for photo in photos %}
-    <div id="photo-{{ photo.id }}">
-        <img src="{{ path('serve_image', { filename: photo.cheminFichierImage }) }}" alt="Image" width="150">
-        <p>{{ photo.legende }}</p>
-        <button
-            class="btn btn-danger btn-delete-photo"
-            data-id="{{ photo.id }}"
-            data-token="{{ csrf_token('delete-photo-' ~ photo.id) }}"
-        >
-            🗑 Supprimer
-        </button>
-    </div>
-{% endfor %}
-
 {{ form_start(form) }}
 
 <div style="" class="p-2">
@@ -149,7 +135,7 @@ document.querySelectorAll('.btn-delete-photo').forEach(button => {
 });
 
 // Lorsqu'on confirme dans le modal
-document.getElementById('btn-delete-photo').addEventListener('click', function () {
+document.getElementById('modal-confirm-delete').addEventListener('click', function () {
     if (!deletePhotoId || !deletePhotoToken) return;
 
     fetch(`/photo/delete/${deletePhotoId}`, {

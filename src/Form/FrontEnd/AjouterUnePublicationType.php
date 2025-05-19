@@ -18,7 +18,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 use Symfony\Component\Validator\Constraints\File;
 
-class EditerUnePublicationType extends AbstractType {
+class AjouterUnePublicationType extends AbstractType {
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -27,23 +27,25 @@ class EditerUnePublicationType extends AbstractType {
         $builder
         ->add( 'titre' , TextType::class , [ 'label' => 'Titre' ] )
         ->add( 'contenu' , TextareaType::class , [ 'label' => 'Contenu' ] )
-        ->add( 'image' , ButtonType::class , [ 'label' => 'Ajouter une image' ,
-        'attr' => ['class' => 'btn btn-outline-light btn-sm mt-3'] ] )
-        ->add( 'cheminFichierImage' , FileType::class ,
-        [ 'label' => 'Image'  ,
-        'mapped' => false ,
-        'required' => false ,
-        'constraints' => [
-            new File([
-                        'maxSize' => '5M',
-                        'mimeTypes' => [
-                            'image/jpeg',
-                            'image/png',
-                            'image/gif',
-                        ],
-                        'mimeTypesMessage' => 'Fichiers jpg, png, gif valides uniquement.',
-                    ])
-        ] ] )
+        // ->add( 'image' , ButtonType::class , [ 'label' => 'Ajouter une image' ,
+        // 'attr' => ['class' => 'btn btn-outline-light btn-sm mt-3'] ] )
+
+        // ->add( 'cheminFichierImage' , FileType::class ,
+        // [ 'label' => 'Image'  ,
+        // 'mapped' => false ,
+        // 'required' => false ,
+        // 'constraints' => [
+        //     new File([
+        //                 'maxSize' => '5M',
+        //                 'mimeTypes' => [
+        //                     'image/jpeg',
+        //                     'image/png',
+        //                     'image/gif',
+        //                 ],
+        //                 'mimeTypesMessage' => 'Fichiers jpg, png, gif valides uniquement.',
+        //             ])
+        // ] ] )
+
         ->add('photos', CollectionType::class, [
             'entry_type' => PhotoType::class,
             'entry_options' => ['label' => false],

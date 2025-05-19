@@ -1,0 +1,204 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% if edition == true %}Editer{% else %}Ajouter{% endif %} une publication{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .photo-form {
+      margin: 15px 0;
+      padding: 10px;
+      border: 1px solid #ccc;
+      background: #f1f1f1;
+      position: relative;
+    }
+    .photo-form button.remove-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: #ff4c4c;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+    .preview {
+      margin-top: 10px;
+      max-width: 200px;
+      max-height: 150px;
+      display: block;
+    }
+    #limit-message {
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
+{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-end position-fixed top-0 end-0 m-3">
+    <a href="{{ app.request.headers.get('referer') }}">
+        <img class="icon-page-precedente" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
+    </a>
+</div>
+
+<!-- Modal Bootstrap de confirmation -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="confirmDeleteLabel">Confirmer la suppression</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        Voulez-vous vraiment supprimer cette photo ? Cette action est irréversible.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-danger" id="modal-confirm-delete">Supprimer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{ form_start(form) }}
+
+<div style="" class="p-2">
+
+    {{ form_row( form.titre ) }}
+
+    {{ form_row( form.contenu ) }}
+
+
+{# {% for photoForm in form.photos %}
+    <div class="photo-form" data-photo-id="{{ photoForm.vars.data.id }}">
+        {{ form_row(photoForm.legende) }}
+        {{ form_row(photoForm.imageFile) }}
+        <button type="button" class="remove-photo btn btn-danger btn-sm">Supprimer</button>
+    </div>
+{% endfor %} #}
+
+    <div id="photos-collection">
+    </div>
+
+    <div id="photo-container"></div>
+
+    <button id="add-photo-btn" class="btn btn-primary mt-3">Ajouter une photo</button>
+    <div id="limit-message"></div>
+
+    {{ form_row( form.submit ) }}
+
+    {{ form_row(form.annuler) }}
+
+</div>
+
+{{ form_end(form) }}
+
+  <script>
+    let photoIndex = 0;
+    const maxPhotos = 5; // 🔢 Limite ici
+    const container = document.getElementById('photo-container');
+    const addBtn = document.getElementById('add-photo-btn');
+    const limitMessage = document.getElementById('limit-message');
+
+    addBtn.addEventListener('click', function () {
+      const currentCount = container.querySelectorAll('.photo-form').length;
+
+      if (currentCount >= maxPhotos) {
+        limitMessage.textContent = `Vous ne pouvez ajouter que ${maxPhotos} photos.`;
+        return;
+      } else {
+        limitMessage.textContent = '';
+      }
+
+      const form = document.createElement('div');
+      form.classList.add('photo-form');
+      form.dataset.index = photoIndex;
+
+      // Champ légende
+      const legendLabel = document.createElement('label');
+      legendLabel.textContent = 'Légende : ';
+      const legendInput = document.createElement('input');
+      legendInput.type = 'text';
+      legendInput.name = `legende[${photoIndex}]`;
+      legendLabel.appendChild(legendInput);
+
+      // Champ fichier
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.accept = '.jpg,.jpeg';
+      fileInput.name = `photo[${photoIndex}]`;
+
+      // Aperçu image
+      const imgPreview = document.createElement('img');
+      imgPreview.classList.add('preview');
+      imgPreview.style.display = 'none';
+
+      fileInput.addEventListener('change', function () {
+        const file = fileInput.files[0];
+        if (!file || !file.type.startsWith('image/jpeg')) return;
+
+        // Afficher aperçu
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          imgPreview.src = e.target.result;
+          imgPreview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+
+        // Envoi fichier
+        const formData = new FormData();
+        formData.append('photo', file);
+        formData.append('index', photoIndex);
+
+        fetch('/upload-photo', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => {
+          if (!response.ok) throw new Error('Erreur serveur');
+          return response.json();
+        })
+        .then(data => {
+          console.log('Upload réussi:', data);
+        })
+        .catch(error => {
+          console.error('Erreur:', error);
+        });
+      });
+
+      // Bouton de suppression
+      const removeBtn = document.createElement('button');
+      removeBtn.textContent = 'Supprimer';
+      removeBtn.classList.add('remove-btn');
+
+      removeBtn.addEventListener('click', function () {
+        fetch('/supprimer-photo', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ index: photoIndex })
+        })
+        .then(res => res.json())
+        .then(data => {
+          console.log('Suppression:', data);
+          container.removeChild(form);
+          limitMessage.textContent = ''; // enlever l'avertissement si suppression
+        })
+        .catch(err => console.error('Erreur suppression:', err));
+      });
+
+      // Ajout des éléments au bloc formulaire
+      form.appendChild(legendLabel);
+      form.appendChild(document.createElement('br'));
+      form.appendChild(fileInput);
+      form.appendChild(imgPreview);
+      form.appendChild(removeBtn);
+
+      container.appendChild(form);
+      photoIndex++;
+    });
+  </script>
+
+{% endblock %}
