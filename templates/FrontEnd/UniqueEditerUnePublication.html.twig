@@ -2,16 +2,6 @@
 
 {% block title %}Editer une publication{% endblock %}
 
-{% block stylesheet %}
-{ parent() }
-<style>
-    .fade-out {
-        opacity: 0;
-        transition: opacity 0.5s ease;
-    }
-</style>
-{% endblock %}
-
 {% block body %}
 <div class="d-flex justify-content-end position-fixed top-0 end-0 m-3">
     <a href="{{ app.request.headers.get('referer') }}">
@@ -20,42 +10,38 @@
 </div>
 
 {{ form_start(form) }}
-
 <div style="" class="p-2">
-{% if publication.photos|length > 0 %}
+
+    {% if publication.photos|length > 0 %}
     {{ publication.photos[0].cheminFichierImage }}
-<div id="photo-{{ publication.photos[0].id }}">
-    <img src="{{ path('serve_image', { filename: publication.photos[0].cheminFichierImage }) }}" alt="Image" width="150">
-    <p>{{ publication.photos[0].legende }}</p>
-            <button
-            type="button"
-            class="btn btn-danger btn-delete-photo"
-            data-id="{{ publication.photos[0].id }}"
-            data-token="{{ csrf_token('delete-photo-' ~ publication.photos[0].id) }}"
-        >
-            🗑 Supprimer
+    <div id="photo-{{ publication.photos[0].id }}">
+        <img src="{{ path('serve_image', { filename: publication.photos[0].cheminFichierImage }) }}" alt="Image" width="150">
+        <p>{{ publication.photos[0].legende }}</p>
+        <button
+        type="button"
+        class="btn btn-danger btn-delete-photo"
+        data-id="{{ publication.photos[0].id }}"
+        data-token="{{ csrf_token('delete-photo-' ~ publication.photos[0].id) }}">
+        🗑 Supprimer
         </button>
-</div>
-{% endif %}
+    </div>
+    {% endif %}
 
     {{ form_row( form.titre ) }}
-
     {{ form_row( form.contenu ) }}
 
-    {{ form_row( form.legende ) }}
-
-    {{ form_row( form.photo ) }}
+    <div id="formPhoto" style="display: block;">
+        {{ form_row( form.legende ) }}
+        {{ form_row( form.photo ) }}
+    </div>
 
     {{ form_row( form.submit ) }}
-
-    {{ form_row(form.annuler) }}
+    <a href="{{ path('app_afficher_fac') }}" class="btn btn-outline-light btn-sm mt-3">Annuler</a>
 
 </div>
-
 {{ form_end(form) }}
 
 {% if publication.photos|length > 0 %}
-<!-- Modal Bootstrap de confirmation -->
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -77,62 +63,61 @@
 
 {% if publication.photos|length > 0 %}
 <script>
+    document.getElementById('formPhoto').style.display = "none";
 
-let deletePhotoId = null;
-let deletePhotoToken = null;
+    const deleteModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
 
-// Initialiser le modal Bootstrap
-const deleteModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+    let deletePhotoId = null;
+    let deletePhotoToken = null;
 
-// Lorsqu'on clique sur un bouton de suppression
-document.querySelectorAll('.btn-delete-photo').forEach(button => {
-    button.addEventListener('click', function () {
-        deletePhotoId = this.dataset.id;
-        deletePhotoToken = this.dataset.token;
-        deleteModal.show(); // Ouvrir le modal Bootstrap
+    document.querySelectorAll('.btn-delete-photo').forEach(button => {
+        button.addEventListener('click', function () {
+            deletePhotoId = this.dataset.id;
+            deletePhotoToken = this.dataset.token;
+            deleteModal.show(); // Ouvrir le modal Bootstrap
+        });
     });
-});
 
-// Lorsqu'on confirme dans le modal
-document.getElementById('modal-confirm-delete').addEventListener('click', function () {
-    if (!deletePhotoId || !deletePhotoToken) return;
+    document.getElementById('modal-confirm-delete').addEventListener('click', function () {
+        if (!deletePhotoId || !deletePhotoToken) return;
 
-    fetch(`/photo/delete/${deletePhotoId}`, {
-        method: 'POST',
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRF-TOKEN': deletePhotoToken
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            const photoElement = document.getElementById(`photo-${deletePhotoId}`);
-            if (photoElement) {
-                photoElement.classList.add('fade-out');
-                setTimeout(() => photoElement.remove(), 500); // attendre la fin de l'animation
+        fetch(`/photo/delete/${deletePhotoId}`, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': deletePhotoToken
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const photoElement = document.getElementById(`photo-${deletePhotoId}`);
+                if (photoElement) {
+                    setTimeout(() => photoElement.remove(), 500); // attendre la fin de l'animation
+                }
+
+                const formElement = document.querySelector(`.photo-form[data-photo-id="${deletePhotoId}"]`);
+                if (formElement) {
+                    setTimeout(() => formElement.remove(), 500);
+                }
+
+                document.getElementById('formPhoto').style.display = "block";
+            } else {
+                alert(data.error || 'Erreur lors de la suppression.');
             }
 
-            const formElement = document.querySelector(`.photo-form[data-photo-id="${deletePhotoId}"]`);
-            if (formElement) {
-                formElement.classList.add('fade-out');
-                setTimeout(() => formElement.remove(), 500);
-            }
-        } else {
-            alert(data.error || 'Erreur lors de la suppression.');
-        }
-
-        deleteModal.hide();
-        deletePhotoId = null;
-        deletePhotoToken = null;
-    })
-    .catch(() => {
-        alert('Une erreur est survenue.');
-        deleteModal.hide();
-        deletePhotoId = null;
-        deletePhotoToken = null;
+            deleteModal.hide();
+            deletePhotoId = null;
+            deletePhotoToken = null;
+        })
+        .catch(() => {
+            alert('Une erreur est survenue.');
+            deleteModal.hide();
+            deletePhotoId = null;
+            deletePhotoToken = null;
+        });
     });
-});
 </script>
 {% endif %}
+
 {% endblock %}

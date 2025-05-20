@@ -24,7 +24,6 @@ class PhotoController extends AbstractController
             return new JsonResponse(['success' => false, 'error' => 'Token CSRF invalide'], Response::HTTP_FORBIDDEN);
         }
 
-        // Suppression du fichier physique
         $chemin = $photo->getCheminFichierImage();
         $fullPath = $this->getParameter('kernel.project_dir') . '/var/storage/' . $chemin;
 
@@ -32,7 +31,6 @@ class PhotoController extends AbstractController
             unlink($fullPath);
         }
 
-        // Suppression en base
         $em->remove($photo);
         $em->flush();
 

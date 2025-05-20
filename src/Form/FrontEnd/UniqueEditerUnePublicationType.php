@@ -46,8 +46,6 @@ class UniqueEditerUnePublicationType extends AbstractType {
         ])
         ->add( 'submit', SubmitType::class, [ 'label' => 'Valider' ,
         'attr' => ['class' => 'btn btn-outline-light btn-sm mt-3'] ] )
-        ->add( 'annuler' , ButtonType::class , [ 'label' => 'Annuler' ,
-        'attr' => ['class' => 'btn btn-outline-light btn-sm mt-3'] ] )
         ;
     }
 

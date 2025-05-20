@@ -1,0 +1,5 @@
+services:
+    App\Tests\Fake\FakeFileUploader:
+        decorates: App\Service\FileUploader
+        arguments:
+            - '@App\Tests\Fake\FakeFileUploader.inner'

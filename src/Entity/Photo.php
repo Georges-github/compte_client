@@ -27,7 +27,7 @@ class Photo
     private ?\DateTimeInterface $dateHeureMAJ = null;
 
     #[ORM\ManyToOne(inversedBy: 'photos')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Publication $idPublication = null;
 
     #[ORM\ManyToOne(inversedBy: 'photos')]

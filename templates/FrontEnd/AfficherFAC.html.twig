@@ -10,17 +10,33 @@
 </div>
 
 <form action="{{ path('app_unique_ajouter_une_publication') }}" method="POST">
-    <button type="submit" class="btn btn-outline-light btn-sm mb-5">Publication</button>
+    <button type="submit" class="btn btn-outline-light btn-sm mb-3">Ajouter une publication</button>
 </form>
+
+<form action="{{ path('app_generer_pdf_fac', {id: idContrat}) }}" method="post">
+    <input type="hidden" name="_token" value="{{ csrf_token('generer_pdf_fac_' ~ idContrat) }}">
+    <button type="submit" class="btn  btn-outline-danger btn-sm">Générer PDF</button>
+</form>
+<br><br>
 
 
 {% for publication in listePublications %}
     {{publication.titre}}<br>
-    {{publication.contenu}}<br>
+    {{publication.contenu}}<br><br>
     <form action="{{ path('app_unique_editer_une_publication' , {id: publication.id}) }}" method="POST">
         <button type="submit" class="btn btn-outline-light btn-sm">Editer</button>
     </form>
-    <br><br>
+    <br>
+    <form action="{{ path('app_supprimer_une_publication', {id: publication.id}) }}" method="post" onsubmit="return confirm('Supprimer cette publication ?');">
+        <input type="hidden" name="_token" value="{{ csrf_token('supprimer_une_publication_' ~ publication.id) }}">
+        <button type="submit" class="btn  btn-outline-danger btn-sm">Supprimer</button>
+    </form>
+    <br>
+    <form action="{{ path('app_ajouter_un_commentaire_a_une_publication', {idPublication: publication.id}) }}" method="post">
+        <input type="hidden" name="_token" value="{{ csrf_token('ajouter_un_commentaire_' ~ publication.id) }}">
+        <button type="submit" class="btn  btn-outline-light btn-sm">Ajouter un commentaire</button>
+    </form>
+    <br>
 {% endfor %}
 
 

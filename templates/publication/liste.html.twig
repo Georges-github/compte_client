@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un commentaire{% endblock %}
+
+{% block body %}
+
+{% if publications is defined and publications|length > 0 and publications[0].idContrat is not null %}
+    {% set idContrat = publications[0].idContrat.id %}
+    <form action="{{ path('app_generer_pdf_fac', {id: idContrat}) }}" method="post">
+        <input type="hidden" name="_token" value="{{ csrf_token('generer_pdf_fac_' ~ idContrat) }}">
+        <button type="submit" class="btn btn-outline-danger btn-sm">Générer PDF</button>
+    </form>
+{% else %}
+    <p class="text-danger">Aucun contrat associé pour générer un PDF.</p>
+{% endif %}
+
+
+{% for publication in publications %}
+    <h2>{{ publication.titre }}</h2>
+    <p>{{ publication.contenu }}</p>
+
+    {# Affichage des photos de la publication #}
+    {% for photo in publication.photos %}
+        {# <img src="{{ asset(photo.cheminFichierImage) }}" alt="{{ photo.legende }}" style="max-width: 200px;"> #}
+        <img src="{{ path('serve_image', { filename: photo.cheminFichierImage }) }}" alt="Image" width="150">
+        <p>{{ photo.legende }}</p>
+
+        <form action="{{ path('app_unique_editer_une_publication' , {id: publication.id}) }}" method="POST">
+            <button type="submit" class="btn btn-outline-light btn-sm">Editer cette publication</button>
+        </form>
+        <br>
+        <form action="{{ path('app_supprimer_une_publication', {id: publication.id}) }}" method="post" onsubmit="return confirm('Supprimer cette publication ?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('supprimer_une_publication_' ~ publication.id) }}">
+            <button type="submit" class="btn  btn-outline-danger btn-sm">Supprimer cette publication</button>
+        </form>
+        <br>
+        <form action="{{ path('app_ajouter_un_commentaire_a_une_publication', {idPublication: publication.id}) }}" method="post">
+            <input type="hidden" name="_token" value="{{ csrf_token('ajouter_un_commentaire_' ~ publication.id) }}">
+            <button type="submit" class="btn  btn-outline-light btn-sm">Ajouter un commentaire</button>
+        </form>
+        <br>
+
+    {% endfor %}
+
+    <h3>Commentaires :</h3>
+    {% for commentaire in publication.commentairesArbre %}
+        {% include 'commentaire/_commentaire_recursive.html.twig' with { commentaire: commentaire, idPublication: publication.id, niveau: 0 } %}
+    {% endfor %}
+{% endfor %}
+
+{% endblock %}

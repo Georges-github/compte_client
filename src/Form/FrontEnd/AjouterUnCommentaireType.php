@@ -2,7 +2,7 @@
 
 namespace App\Form\FrontEnd;
 
-use App\Entity\Publication;
+use App\Entity\Commentaire;
 
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
@@ -18,13 +18,12 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 use Symfony\Component\Validator\Constraints\File;
 
-class UniqueAjouterUnePublicationType extends AbstractType {
+class AjouterUnCommentaireType extends AbstractType {
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-        ->add( 'titre' , TextType::class , [ 'label' => 'Titre' ] )
-        ->add( 'contenu' , TextareaType::class , [ 'label' => 'Contenu' ] )
+        ->add( 'texte' , TextareaType::class , [ 'label' => 'Commentaire' ] )
         ->add('legende', TextType::class, [
             'label' => 'Légende',
             'mapped' => false,
@@ -49,6 +48,6 @@ class UniqueAjouterUnePublicationType extends AbstractType {
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults( [ 'data_class' => Publication::class ] );
+        $resolver->setDefaults( [ 'data_class' => Commentaire::class ] );
     }
 }
