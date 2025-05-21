@@ -12,7 +12,7 @@
 {{ form_start(form) }}
 <div style="" class="p-2">
 
-    {% if publication.photos|length > 0 %}
+    {% if publication is defined and publication.photos|length > 0 %}
     {{ publication.photos[0].cheminFichierImage }}
     <div id="photo-{{ publication.photos[0].id }}">
         <img src="{{ path('serve_image', { filename: publication.photos[0].cheminFichierImage }) }}" alt="Image" width="150">
@@ -41,7 +41,7 @@
 </div>
 {{ form_end(form) }}
 
-{% if publication.photos|length > 0 %}
+{% if publication is defined and publication.photos|length > 0 %}
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -61,7 +61,7 @@
 </div>
 {% endif %}
 
-{% if publication.photos|length > 0 %}
+{% if publication is defined and publication.photos|length > 0 %}
 <script>
     document.getElementById('formPhoto').style.display = "none";
 
@@ -74,7 +74,7 @@
         button.addEventListener('click', function () {
             deletePhotoId = this.dataset.id;
             deletePhotoToken = this.dataset.token;
-            deleteModal.show(); // Ouvrir le modal Bootstrap
+            deleteModal.show();
         });
     });
 
@@ -93,7 +93,7 @@
             if (data.success) {
                 const photoElement = document.getElementById(`photo-${deletePhotoId}`);
                 if (photoElement) {
-                    setTimeout(() => photoElement.remove(), 500); // attendre la fin de l'animation
+                    setTimeout(() => photoElement.remove(), 500);
                 }
 
                 const formElement = document.querySelector(`.photo-form[data-photo-id="${deletePhotoId}"]`);

@@ -1,0 +1,27 @@
+<div style="margin-left: {{ niveau * 20 }}px; margin-top: 20px; border-left: 1px solid rgb(248,249,250); padding-left: 10px;">
+    <p><strong>Commentaire :</strong> {{ commentaire.texte }}</p>
+
+    {% for photo in commentaire.photos %}
+
+        <img src="{{ path('serve_image', { filename: photo.cheminFichierImage }) }}" alt="Image" width="150">
+        <p class="fs-6 fst-italic">{{ photo.legende }}</p>
+
+    {% endfor %}
+
+    <div class="d-flex flex-row mb-3">
+        <form action="{{ path('app_ajouter_un_commentaire_a_un_commentaire', {idCommentaire: commentaire.id, idPublication: idPublication}) }}" method="post">
+            <input type="hidden" name="_token" value="{{ csrf_token('ajouter_un_commentaire_' ~ commentaire.id) }}">
+            <button type="submit" class="btn btn-outline-light btn-sm me-3">Commentaire</button>
+        </form>
+
+        <form action="{{ path('app_supprimer_un_commentaire', {id: commentaire.id}) }}" method="post" onsubmit="return confirm('Supprimer cette publication ?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('supprimer_un_commentaire_' ~ commentaire.id) }}">
+            <button type="submit" class="btn btn-outline-danger btn-sm">Supprimer</button>
+        </form>
+    </div>
+
+    {# Affichage récursif des sous-commentaires #}
+    {% for child in commentaire.children %}
+        {% include 'FrontEnd/_commentaire_recursive.html.twig' with { commentaire: child, niveau: niveau + 1 } %}
+    {% endfor %}
+</div>

@@ -268,7 +268,7 @@ class ContratController extends AbstractController {
     #[ Route( '/supprimerUnContrat/{id}' , name: 'app_supprimer_un_contrat' , methods: [ 'POST' ] ) ]
     public function delete(Request $request, Contrat $contrat, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$contrat->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('supprimer_un_contrat_'.$contrat->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($contrat);
             $entityManager->flush();
         }

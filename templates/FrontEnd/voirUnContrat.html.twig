@@ -24,7 +24,7 @@
     </a>
 </div>
 
-{% set pile = app.session.get('pile_de_pdf_dans_public', []) %}
+{# {% set pile = app.session.get('pile_de_pdf_dans_public', []) %}
 <h3>Contenu de la pile PDF :</h3>
 <ul>
     {% for path in pile %}
@@ -32,23 +32,19 @@
     {% else %}
         <li><em>(pile vide)</em></li>
     {% endfor %}
-</ul>
+</ul> #}
 
 
 {% if employe %}
-{# <a href="{{ path( 'app_supprimer_un_contrat', { id: contrat.id } ) }}" class="btn btn-outline-light btn-sm mt-4">Supprimer</a> #}
 
-<!-- Le formulaire POST caché -->
-<form action="{{ path('app_supprimer_un_contrat', { 'id': contrat.id }) }}" method="POST" style="display: none;" id="deleteForm{{ contrat.id }}">
-    <button type="submit" class="btn btn-danger">Supprimer</button>
-    <!-- Token CSRF pour la sécurité -->
-    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ contrat.id) }}">
-</form>
-
-<!-- Le lien de suppression avec un évènement de confirmation -->
-<a href="#" class="btn btn-danger" onclick="showDeleteModal({{ contrat.id }}); return false;">Supprimer ce contrat</a>
-
-<!-- Modal de confirmation (Bootstrap) -->
+<div class="d-flex justify-content-around">
+    <a href="{{ path('app_afficher_fac') }}" class="btn btn-sm btn-outline-primary">Consulter la fiche d'avancement du chantier</a>
+    <form action="{{ path('app_supprimer_un_contrat', { 'id': contrat.id }) }}" method="POST" style="display: none;" id="deleteForm{{ contrat.id }}">
+        <button type="submit" class="btn btn-danger">Supprimer</button>
+        <input type="hidden" name="_token" value="{{ csrf_token('supprimer_un_contrat' ~ contrat.id) }}">
+    </form>
+    <a href="#" class="btn btn-outline-danger btn-sm" onclick="showDeleteModal({{ contrat.id }}); return false;">Supprimer ce contrat</a>
+</div>
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -66,29 +62,23 @@
         </div>
     </div>
 </div>
-
 <script>
-    // Fonction pour afficher le modal
     function showDeleteModal(contratId) {
-        // Enregistre l'ID du contrat pour la suppression
         window.contractToDelete = contratId;
-        // Affiche le modal Bootstrap
         const myModal = new bootstrap.Modal(document.getElementById('deleteModal'));
         myModal.show();
     }
 
-    // Fonction pour soumettre le formulaire de suppression
     function deleteContract() {
         const form = document.getElementById('deleteForm' + window.contractToDelete);
-        form.submit(); // Soumet le formulaire
+        form.submit();
     }
 </script>
 
 {% endif %}
 
-<a href="{{ path('app_afficher_fac') }}">FAC</a>
-
 <div class="container my-5">
+
     <div class="row justify-content-center">
         <div class="col-12 col-md-6 col-lg-5 d-flex justify-content-center">
             <div class="card bg-transparent" style="width: 18rem;">
@@ -99,47 +89,42 @@
                     <span class="card-text">{{client.rueEtNumero}}, {{client.codePostal}} {{client.ville}}</span>
                     <span class="card-text">Société : {{client.societe}}</span>
                     <br>
-                    <span class="card-text">Contrat : {{contrat.numeroContrat}}</span>
+                    <span class="card-text">Contrat No : {{contrat.numeroContrat}}</span>
                 </div>
             </div>
-            <ul>
-                {% for etat in etatsSuccessifsSpecifiesPar %}
-                    <li>{{ etat.etat.etat }} - spécifié par {{ etat.specifiePar.prenom }} {{ etat.specifiePar.nom }} le {{ etat.etat.dateHeureInsertion |format_datetime(locale='fr', pattern='EEEE d MMMM y à HH:mm') }}</li>
-                {% endfor %}
-            </ul>
         </div>
     </div>
 
-    <strong> {{ contrat.cheminFichier|split('/')|last }} </strong><br>
+{% if etatsSuccessifsSpecifiesPar is defined and etatsSuccessifsSpecifiesPar|length > 0 %}
+    <p class="mt-5 fs-5 fw-semibold">Etats successifs du contrat :</p>
+    <ul>
+        {% for etat in etatsSuccessifsSpecifiesPar %}
+            <li>{{ etat.etat.etat }} - spécifié par {{ etat.specifiePar.prenom }} {{ etat.specifiePar.nom }} le {{ etat.etat.dateHeureInsertion |format_datetime(locale='fr', pattern='EEEE d MMMM y à HH:mm') }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
 
-    <div id="pdf-textlayer-container"></div>
+{% if contrat.cheminFichier is defined and contrat.cheminFichier is not null %}
+    <p class="fs-4 fw-semibold"> {{ contrat.cheminFichier|split('/')|last }} </p>
 
-    <a href="{{ path('app_liste_des_contrats', {
-        id: client.id,
-        pathContratDansPublic: asset('storage/' ~ contrat.cheminFichier)
-    }) }}" class="btn btn-outline-light btn-sm mt-4">Retour</a>
+    {# <div id="pdf-textlayer-container" class="border border-success border-5 border-opacity-50 rounded"></div> #}
 
     <div>
         <button id="prev" class='btn btn-outline-light btn-sm mb-1'>Précédente</button>
-        <button id="next" class='btn btn-outline-light btn-sm mb-1'>Suivante</button>
         &nbsp; &nbsp;
         <span>Page: <span id="page_num"></span> / <span id="page_count"></span></span>
+        &nbsp; &nbsp;
+        <button id="next" class='btn btn-outline-light btn-sm mb-1'>Suivante</button>
     </div>
-    <canvas id="the-canvas"></canvas>
+    <canvas id="the-canvas" class="border border-primary border-5 border-opacity-50 rounded"></canvas>
 
     <script type="module">
-        // If absolute URL from the remote server is provided, configure the CORS
-        // header on that server.
 
         const url = "{{ asset('storage/' ~ contrat.cheminFichier) }}";
 
-        // Loaded via <script> tag, create shortcut to access PDF.js exports.
         var { pdfjsLib } = globalThis;
 
-        // The workerSrc property shall be specified.
-        {# pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.mjs'; #}
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
 
         var pdfDoc = null,
             pageNum = 1,
@@ -149,37 +134,28 @@
             canvas = document.getElementById('the-canvas'),
             ctx = canvas.getContext('2d');
 
-        /**
-        * Get page info from document, resize canvas accordingly, and render page.
-        * @param num Page number.
-        */
         function renderPage(num) {
             pageRendering = true;
-            // Using promise to fetch the page
             pdfDoc.getPage(num).then(function(page) {
-            var viewport = page.getViewport({scale: scale});
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
+                var viewport = page.getViewport({scale: scale});
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
 
-            // Render PDF page into canvas context
-            var renderContext = {
-                canvasContext: ctx,
-                viewport: viewport
-            };
-            var renderTask = page.render(renderContext);
+                var renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
+                var renderTask = page.render(renderContext);
 
-            // Wait for rendering to finish
-            renderTask.promise.then(function() {
-                pageRendering = false;
-                if (pageNumPending !== null) {
-                // New page rendering is pending
-                renderPage(pageNumPending);
-                pageNumPending = null;
-                }
-            });
+                renderTask.promise.then(function() {
+                    pageRendering = false;
+                    if (pageNumPending !== null) {
+                    renderPage(pageNumPending);
+                    pageNumPending = null;
+                    }
+                });
             });
 
-            // Update page counters
             document.getElementById('page_num').textContent = num;
         }
 
@@ -230,6 +206,14 @@
             renderPage(pageNum);
         });
   </script>
+
+{% endif %}
+
+    <br>
+    <a href="{{ path('app_liste_des_contrats', {
+        id: client.id,
+        pathContratDansPublic: asset('storage/' ~ contrat.cheminFichier)
+    }) }}" class="btn btn-outline-light btn-sm mt-4">Retour</a>
 
 </div>
 

@@ -27,6 +27,8 @@ use App\Service\FileUploader;
 use App\Service\CommentaireTreeBuilder;
 use Doctrine\ORM\EntityManagerInterface;
 
+use App\Service\PdfWithFooter;
+
 use FPDF;
 
 
@@ -41,8 +43,28 @@ class FACController extends AbstractController {
 
     // public function __construct() {}
 
-    #[Route('/fac' , name: 'app_afficher_fac' , methods: ['GET'])]
-    public function afficherFAC(Request $request , ContratActif $contratActif , PublicationRepository $publicationRepository) : Response
+    #[Route('/ficheAvancementChantier', name: 'app_afficher_fac')]
+    public function afficherFAC(Request $request, ContratActif $contratActif, PublicationRepository $publicationRepository, CommentaireTreeBuilder $commentaireTreeBuilder
+    ): Response {
+
+        $idContrat = $contratActif->get()->getId();
+
+        // Charge les publications avec leurs photos et commentaires (sans jointures récursives)
+        $publications = $publicationRepository->findBy(['idContrat' => $idContrat]);
+
+        foreach ($publications as $publication) {
+            // Liste plate des commentaires liés à cette publication
+            $commentaires = $publication->getCommentaires()->toArray();
+
+            // Arbre structuré à profondeur illimitée
+            $publication->commentairesArbre = $commentaireTreeBuilder->buildTree($commentaires);
+        }
+
+        return $this->render('FrontEnd/afficherFAC.html.twig', ['idContrat' => $idContrat  , 'publications' => $publications]);
+    }
+
+    #[Route('/fac' , name: 'app_ancien_afficher_fac' , methods: ['GET'])]
+    public function ancien_afficherFAC(Request $request , ContratActif $contratActif , PublicationRepository $publicationRepository , CommentaireTreeBuilder $commentaireTreeBuilder) : Response
     {
         $contrat = $contratActif->get();
 
@@ -196,13 +218,11 @@ class FACController extends AbstractController {
 
     private function supprimerCommentaireRecursif(Commentaire $commentaire, EntityManagerInterface $entityManager, FileUploader $fileUploader): void
     {
-        // Supprimer les photos du commentaire
         foreach ($commentaire->getPhotos() as $photo) {
             $fileUploader->delete($photo->getCheminFichierImage());
             $entityManager->remove($photo);
         }
 
-        // Supprimer les sous-commentaires (réponses)
         foreach ($commentaire->getCommentaires() as $sousCommentaire) {
             $this->supprimerCommentaireRecursif($sousCommentaire, $entityManager, $fileUploader);
         }
@@ -223,23 +243,19 @@ class FACController extends AbstractController {
             throw $this->createNotFoundException('Publication non trouvée.');
         }
 
-        // Vérification du token CSRF
         if (!$this->isCsrfTokenValid('supprimer_publication_' . $publication->getId(), $request->request->get('_token'))) {
             throw $this->createAccessDeniedException('Jeton CSRF invalide.');
         }
 
-        // 1. Supprimer les photos liées à la publication
         foreach ($publication->getPhotos() as $photo) {
             $fileUploader->delete($photo->getCheminFichierImage());
             $entityManager->remove($photo);
         }
 
-        // 2. Supprimer les commentaires liés (récursivement)
         foreach ($publication->getCommentaires() as $commentaire) {
             $this->supprimerCommentaireRecursif($commentaire, $entityManager, $fileUploader);
         }
 
-        // 3. Supprimer la publication elle-même
         $entityManager->remove($publication);
         $entityManager->flush();
 
@@ -511,6 +527,103 @@ class FACController extends AbstractController {
         return $this->render( 'FrontEnd/AjouterUnCommentaire.html.twig' , [ 'form' => $form ] );
     }
 
+    private function ajouterCommentaires(\FPDF $pdf, array $commentaires, string $projectDir, int $niveau): void
+    {
+        foreach ($commentaires as $commentaire) {
+            $indent = 10 + ($niveau * 10);
+            $pdf->SetX($indent);
+            $pdf->SetDrawColor(220, 220, 220);
+            $pdf->SetLineWidth(0.3);
+            $yBefore = $pdf->GetY();
+            $pdf->SetFont('Arial', 'B', 11);
+            $pdf->SetTextColor(40, 40, 40);
+            $pdf->Cell(0, 6, utf8_decode("Commentaire #" . $commentaire->getId()), 0, 1);
+            $pdf->SetFont('Arial', '', 11);
+            $pdf->SetX($indent);
+            $pdf->MultiCell(0, 6, utf8_decode($commentaire->getTexte()));
+            $pdf->Ln(2);
+
+            $pdf->SetDrawColor(200, 200, 200);
+            $pdf->Line($indent, $pdf->GetY(), 200, $pdf->GetY());
+            $pdf->Ln(2);
+
+            foreach ($commentaire->getPhotos() as $photo) {
+                $chemin = $projectDir . '/var/storage/' . $photo->getCheminFichierImage();
+                if (file_exists($chemin)) {
+                    $pdf->SetX($indent);
+                    $pdf->Image($chemin, $indent, null, 50);
+                    $pdf->Ln(5);
+                    $pdf->SetFont('Arial', 'I', 9);
+                    $pdf->SetX($indent);
+                    $pdf->MultiCell(0, 0, utf8_decode($photo->getLegende()));
+                    $pdf->Ln(3);
+                }
+            }
+
+            if (!empty($commentaire->children)) {
+                $this->ajouterCommentaires($pdf, $commentaire->children, $projectDir, $niveau + 1);
+            }
+
+            $pdf->Ln(5);
+
+        }
+    }
+
+    #[Route('/pdf/contrat/{id}', name: 'app_generer_pdf_fac')]
+    public function genererPdfFac(
+        int $id,
+        PublicationRepository $publicationRepository,
+        CommentaireTreeBuilder $commentaireTreeBuilder
+    ): Response {
+
+        $projectDir = $this->getParameter('kernel.project_dir');
+
+        $publications = $publicationRepository->findBy(['idContrat' => $id]);
+
+        foreach ($publications as $publication) {
+            $commentaires = $publication->getCommentaires()->toArray();
+            $publication->commentairesArbre = $commentaireTreeBuilder->buildTree($commentaires);
+        }
+
+        // Création du PDF
+        $pdf = new PdfWithFooter();
+        $pdf->AliasNbPages();
+        $pdf->AddPage();
+        $pdf->SetFont('Arial', 'B', 14);
+
+        foreach ($publications as $publication) {
+            $pdf->SetFont('Arial', 'B', 14);
+            $pdf->SetTextColor(0);
+            $pdf->Cell(0, 10, utf8_decode('Publication : ' . $publication->getTitre()), 0, 1, 'L');
+            $pdf->SetFont('Arial', '', 12);
+            $pdf->MultiCell(0, 8, utf8_decode($publication->getContenu()));
+            $pdf->Ln(3);
+
+            $pdf->SetDrawColor(180, 180, 180);
+            $pdf->Line(10, $pdf->GetY(), 200, $pdf->GetY());
+            $pdf->Ln(4);
+
+            foreach ($publication->getPhotos() as $photo) {
+                $cheminImage = $projectDir . '/var/storage/' . $photo->getCheminFichierImage();
+                if (file_exists($cheminImage)) {
+                    $x = $pdf->GetX();
+                    $pdf->Image($cheminImage, $x, null, 50);
+                    $pdf->Ln(5); // hauteur estimée pour image + texte
+                    $pdf->SetFont('Arial', 'I', 10);
+                    $pdf->MultiCell(0, 0, utf8_decode($photo->getLegende()));
+                    $pdf->Ln(5);
+                }
+            }
+
+            $this->ajouterCommentaires($pdf, $publication->commentairesArbre, $projectDir, 0);
+
+            $pdf->AddPage();
+        }
+
+        return new Response($pdf->Output('I', 'publication.pdf', true), 200, [
+            'Content-Type' => 'application/pdf',
+        ]);
+    }
 
 
 

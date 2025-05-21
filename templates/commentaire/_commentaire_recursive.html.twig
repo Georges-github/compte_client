@@ -1,27 +1,68 @@
 <div style="margin-left: {{ niveau * 20 }}px; margin-top: 10px; border-left: 1px solid #ccc; padding-left: 10px;">
+ 
     <p><strong>{{ commentaire.id }} - Commentaire :</strong> {{ commentaire.texte }}</p>
 
-    {# Affichage des photos du commentaire #}
     {% for photo in commentaire.photos %}
-        {# <img src="{{ asset(photo.cheminFichierImage) }}" alt="{{ photo.legende }}" style="max-width: 150px;"> #}
+
         <img src="{{ path('serve_image', { filename: photo.cheminFichierImage }) }}" alt="Image" width="150">
         <p>{{ photo.legende }}</p>
 
-        <form action="{{ path('app_supprimer_un_commentaire', {id: commentaire.id}) }}" method="post" onsubmit="return confirm('Supprimer cette publication ?');">
-            <input type="hidden" name="_token" value="{{ csrf_token('supprimer_un_commentaire_' ~ commentaire.id) }}">
-            <button type="submit" class="btn  btn-outline-danger btn-sm">Supprimer ce commentaire</button>
-        </form>
-        <br>
-        <form action="{{ path('app_ajouter_un_commentaire_a_un_commentaire', {idCommentaire: commentaire.id, idPublication: idPublication}) }}" method="post">
-            <input type="hidden" name="_token" value="{{ csrf_token('ajouter_un_commentaire_' ~ commentaire.id) }}">
-            <button type="submit" class="btn  btn-outline-light btn-sm">Ajouter un commentaire</button>
-        </form>
-        <br>
-
     {% endfor %}
 
-    {# Affichage récursif des sous-commentaires #}
+    <div class="d-flex flex-row mb-3">
+
+        <form action="{{ path('app_ajouter_un_commentaire_a_un_commentaire', {idCommentaire: commentaire.id, idPublication: idPublication}) }}" method="post">
+            <input type="hidden" name="_token" value="{{ csrf_token('ajouter_un_commentaire_' ~ commentaire.id) }}">
+            <button type="submit" class="btn btn-outline-light btn-sm me-4">Commentaire</button>
+        </form>
+
+        <form action="{{ path('app_supprimer_un_commentaire', {id: commentaire.id}) }}" method="post" class="delete-form">
+            <input type="hidden" name="_token" value="{{ csrf_token('supprimer_un_commentaire_' ~ commentaire.id) }}">
+            <button type="button" class="btn btn-outline-danger btn-sm btn-delete" data-publication-id="{{ commentaire.id }}">Supprimer</button>
+        </form>
+
+    </div>
+
     {% for child in commentaire.children %}
         {% include 'commentaire/_commentaire_recursive.html.twig' with { commentaire: child, niveau: niveau + 1 } %}
     {% endfor %}
+
 </div>
+
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="confirmDeleteLabel">Confirmer la suppression</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        Voulez-vous vraiment supprimer ce commentaire ? Cette action est irréversible.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-danger" id="modal-confirm-delete">Supprimer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    const deleteModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+
+    let formToSubmit = null;
+
+    document.querySelectorAll('.btn-delete').forEach(button => {
+        button.addEventListener('click', function () {
+            formToSubmit = this.closest('form');
+            deleteModal.show();
+        });
+    });
+
+    document.getElementById('modal-confirm-delete').addEventListener('click', function () {
+        if (formToSubmit) {
+            formToSubmit.submit();
+        }
+    });
+</script>
+
