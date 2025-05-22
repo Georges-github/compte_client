@@ -47,10 +47,10 @@ class FACController extends AbstractController {
     public function afficherFAC(Request $request, ContratActif $contratActif, PublicationRepository $publicationRepository, CommentaireTreeBuilder $commentaireTreeBuilder
     ): Response {
 
-        $idContrat = $contratActif->get()->getId();
+        $contrat = $contratActif->get();
 
         // Charge les publications avec leurs photos et commentaires (sans jointures récursives)
-        $publications = $publicationRepository->findBy(['idContrat' => $idContrat]);
+        $publications = $publicationRepository->findBy(['idContrat' => $contrat->getId()]);
 
         foreach ($publications as $publication) {
             // Liste plate des commentaires liés à cette publication
@@ -60,7 +60,7 @@ class FACController extends AbstractController {
             $publication->commentairesArbre = $commentaireTreeBuilder->buildTree($commentaires);
         }
 
-        return $this->render('FrontEnd/afficherFAC.html.twig', ['idContrat' => $idContrat  , 'publications' => $publications]);
+        return $this->render('FrontEnd/afficherFAC.html.twig', ['contrat' => $contrat  , 'publications' => $publications]);
     }
 
     #[Route('/fac' , name: 'app_ancien_afficher_fac' , methods: ['GET'])]
@@ -230,6 +230,23 @@ class FACController extends AbstractController {
         $entityManager->remove($commentaire);
     }
 
+    private function supprimerLaPublication( Publication $publication,
+                                            EntityManagerInterface $entityManager,
+                                            FileUploader $fileUploader ) : void
+    {
+        foreach ($publication->getPhotos() as $photo) {
+            $fileUploader->delete($photo->getCheminFichierImage());
+            $entityManager->remove($photo);
+        }
+
+        foreach ($publication->getCommentaires() as $commentaire) {
+            $this->supprimerCommentaireRecursif($commentaire, $entityManager, $fileUploader);
+        }
+
+        $entityManager->remove($publication);
+        $entityManager->flush();
+    }
+
     #[Route('/supprimerUnePublication/{id}', name: 'app_supprimer_une_publication', methods: ['POST'])]
     public function supprimerUnePublication(
         Request $request,
@@ -247,17 +264,7 @@ class FACController extends AbstractController {
             throw $this->createAccessDeniedException('Jeton CSRF invalide.');
         }
 
-        foreach ($publication->getPhotos() as $photo) {
-            $fileUploader->delete($photo->getCheminFichierImage());
-            $entityManager->remove($photo);
-        }
-
-        foreach ($publication->getCommentaires() as $commentaire) {
-            $this->supprimerCommentaireRecursif($commentaire, $entityManager, $fileUploader);
-        }
-
-        $entityManager->remove($publication);
-        $entityManager->flush();
+        $this->supprimerLaPublication( $publication , $entityManager , $fileUploader );
 
         $this->addFlash('success', 'Publication et ses dépendances supprimées avec succès.');
 
@@ -624,6 +631,42 @@ class FACController extends AbstractController {
             'Content-Type' => 'application/pdf',
         ]);
     }
+
+    #[Route('/supprimerUneFAC', name: 'app_supprimer_une_fac', methods: 'GET')]
+    public function supprimerUneFAC(Request $request,
+                                    EntityManagerInterface $entityManager,
+                                    PublicationRepository $publicationRepository,
+                                    ContratActif $contratActif,
+                                    FileUploader $fileUploader) : Response
+    {
+        return $this->redirectToRoute('app_afficher_fac', [], Response::HTTP_SEE_OTHER);
+
+        if (!$this->isCsrfTokenValid('supprimer_une_fac', $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
+        }
+
+        $idContrat = $contratActif->get()->getId();
+
+        $publications = $publicationRepository->findBy(['idContrat' => $idContrat]);
+
+        foreach ($publications as $publication) {
+            $this->supprimerLaPublication( $publication , $entityManager , $fileUploader );
+        }
+
+        return $this->redirectToRoute('app_voir_un_contrat', [ 'id' => $idContrat ], Response::HTTP_SEE_OTHER);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

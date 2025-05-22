@@ -108,15 +108,18 @@
     <p class="fs-4 fw-semibold"> {{ contrat.cheminFichier|split('/')|last }} </p>
 
     {# <div id="pdf-textlayer-container" class="border border-success border-5 border-opacity-50 rounded"></div> #}
-
-    <div>
+<div class="d-flex flex-column">
+    <div class="d-flex justify-content-center d-inline-block">
         <button id="prev" class='btn btn-outline-light btn-sm mb-1'>Précédente</button>
         &nbsp; &nbsp;
         <span>Page: <span id="page_num"></span> / <span id="page_count"></span></span>
         &nbsp; &nbsp;
         <button id="next" class='btn btn-outline-light btn-sm mb-1'>Suivante</button>
     </div>
-    <canvas id="the-canvas" class="border border-primary border-5 border-opacity-50 rounded"></canvas>
+    <div class="d-flex justify-content-center">
+        <canvas id="the-canvas" class="border border-primary border-5 border-opacity-50 rounded"></canvas>
+    </div>
+</div>
 
     <script type="module">
 

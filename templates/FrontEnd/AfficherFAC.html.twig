@@ -5,17 +5,31 @@
 {% block body %}
 
 <div class="d-flex justify-content-end position-fixed top-0 end-0 m-3">
-    <a href="{{ path('app_voir_un_contrat' , { id : idContrat }) }}">
+    <a href="{{ path('app_voir_un_contrat' , { id : contrat.id }) }}">
         <img class="icon-page-precedente" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
     </a>
 </div>
 
 {% if publications is defined and publications|length > 0 %}
 
-<form action="{{ path('app_generer_pdf_fac', {id: idContrat}) }}" method="post" target="_blank">
-    <input type="hidden" name="_token" value="{{ csrf_token('generer_pdf_fac_' ~ idContrat) }}">
-    <button type="submit" class="btn btn-outline-danger btn-sm">Générer PDF</button>
-</form>
+<div class="d-flex justify-content-between">
+    <div class="d-flex justify-content-start">
+        <form action="{{ path('app_unique_ajouter_une_publication') }}" method="POST">
+            <input type="hidden" name="_token" value="{{ csrf_token('ajouter_une_publication') }}">
+            <button type="submit" class="btn btn-outline-light btn-sm mb-3 me-5">Ajouter une publication</button>
+        </form>
+
+        <form action="{{ path('app_generer_pdf_fac', {id: contrat.id}) }}" method="post" target="_blank">
+            <input type="hidden" name="_token" value="{{ csrf_token('generer_pdf_fac_' ~ contrat.id) }}">
+            <button type="submit" class="btn btn-outline-danger btn-sm">Générer PDF</button>
+        </form>
+    </div>
+
+    <form action="{{ path('app_supprimer_une_fac') }}" method="POST">
+        <input type="hidden" name="_token" value="{{ csrf_token('supprimer_une_fac') }}">
+        <button type="submit" class="btn btn-outline-light btn-sm mb-3 me-5" onclick="return confirm('Supprimer ?');">Supprimer la fiche d'avancement</button>
+    </form>
+</div>
 
 {% set noPublication = 1 %}
 {% for publication in publications %}
@@ -43,7 +57,7 @@
 
         <form action="{{ path('app_supprimer_une_publication', {id: publication.id}) }}" method="post" class="delete-form">
             <input type="hidden" name="_token" value="{{ csrf_token('supprimer_une_publication_' ~ publication.id) }}">
-            <button type="button" class="btn btn-outline-danger btn-sm btn-delete" data-publication-id="{{ publication.id }}">Supprimer</button>
+            <button type="button" class="btn btn-outline-danger btn-sm btn-delete" onclick="return confirm('Supprimer ?');">Supprimer</button>
         </form>
     </div>
 
@@ -55,44 +69,7 @@
 
 {% endfor %}
 
-<a href="{{ path('app_voir_un_contrat', { id: idContrat }) }}" class="btn btn-outline-light btn-sm mt-4">Retour</a>
-
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header bg-danger text-white">
-        <h5 class="modal-title" id="confirmDeleteLabel">Confirmer la suppression</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-      </div>
-      <div class="modal-body">
-        Voulez-vous vraiment supprimer cette publication ? Cette action est irréversible.
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-        <button type="button" class="btn btn-danger" id="modal-confirm-delete">Supprimer</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-    const deleteModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
-
-    let formToSubmit = null;
-
-    document.querySelectorAll('.btn-delete').forEach(button => {
-        button.addEventListener('click', function () {
-            formToSubmit = this.closest('form');
-            deleteModal.show();
-        });
-    });
-
-    document.getElementById('modal-confirm-delete').addEventListener('click', function () {
-        if (formToSubmit) {
-            formToSubmit.submit();
-        }
-    });
-</script>
+<a href="{{ path('app_voir_un_contrat', { id: contrat.id }) }}" class="btn btn-outline-light btn-sm mt-4">Retour</a>
 
 {% else %}
     <p class="text-danger">Aucune publication</p>
