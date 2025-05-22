@@ -25,8 +25,8 @@ class UniqueEditerUnePublicationType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-        ->add( 'titre' , TextType::class , [ 'label' => 'Titre' ] )
-        ->add( 'contenu' , TextareaType::class , [ 'label' => 'Contenu' ] )
+        ->add( 'titre' , TextType::class , [ 'label' => 'Titre' , 'attr' => ['class' => 'w-50'] ] )
+        ->add( 'contenu' , TextareaType::class , [ 'label' => 'Contenu' , 'attr' => ['class' => 'w-50'] ] )
         ->add('legende', TextType::class, [
             'label' => 'Légende',
             'mapped' => false,
@@ -45,7 +45,7 @@ class UniqueEditerUnePublicationType extends AbstractType {
             ],
         ])
         ->add( 'submit', SubmitType::class, [ 'label' => 'Valider' ,
-        'attr' => ['class' => 'btn btn-outline-light btn-sm mt-3'] ] )
+        'attr' => ['class' => 'btn btn-outline-light btn-sm'] ] )
         ;
     }
 

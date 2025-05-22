@@ -4,20 +4,28 @@
     {% for photo in commentaire.photos %}
 
         <img src="{{ path('serve_image', { filename: photo.cheminFichierImage }) }}" alt="Image" width="150">
-        <p class="fs-6 fst-italic">{{ photo.legende }}</p>
+        <p class="fs-6 fst-italic fw-light">{{ photo.legende }}</p>U+2795
 
     {% endfor %}
 
     <div class="d-flex flex-row mb-3">
         <form action="{{ path('app_ajouter_un_commentaire_a_un_commentaire', {idCommentaire: commentaire.id, idPublication: idPublication}) }}" method="post">
             <input type="hidden" name="_token" value="{{ csrf_token('ajouter_un_commentaire_' ~ commentaire.id) }}">
-            <button type="submit" class="btn btn-outline-light btn-sm me-3">Commentaire</button>
+            <button type="submit" class="btn btn-outline-light btn-sm me-3">&#x2795;</button>
         </form>
 
-        <form action="{{ path('app_supprimer_un_commentaire', {id: commentaire.id}) }}" method="post" onsubmit="return confirm('Supprimer cette publication ?');">
+        <form id="delete-form-{{ commentaire.id }}" action="{{ path('app_supprimer_un_commentaire', {id: commentaire.id}) }}" method="post">
             <input type="hidden" name="_token" value="{{ csrf_token('supprimer_un_commentaire_' ~ commentaire.id) }}">
-            <button type="submit" class="btn btn-outline-danger btn-sm">Supprimer</button>
         </form>
+        <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-{{ commentaire.id }}">
+            &#x1f5d1;
+        </button>
+        {% include 'Composants/_confirm_delete_modal.html.twig' with {
+            id: commentaire.id,
+            modalTitle: 'Supprimer le commentaire',
+            modalMessage: 'Voulez-vous vraiment supprimer le commentaire ? Cette action est irréversible.',
+            confirmButtonLabel: 'Oui, supprimer'
+        } %}
     </div>
 
     {# Affichage récursif des sous-commentaires #}

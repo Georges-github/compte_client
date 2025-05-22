@@ -13,16 +13,15 @@
 <div style="" class="p-2">
 
     {% if publication is defined and publication.photos|length > 0 %}
-    {{ publication.photos[0].cheminFichierImage }}
     <div id="photo-{{ publication.photos[0].id }}">
         <img src="{{ path('serve_image', { filename: publication.photos[0].cheminFichierImage }) }}" alt="Image" width="150">
-        <p>{{ publication.photos[0].legende }}</p>
+        <p class="fw-light fst-italic">{{ publication.photos[0].legende }}</p>
         <button
         type="button"
-        class="btn btn-danger btn-delete-photo"
+        class="btn btn-outline-danger btn-sm btn-delete-photo mb-3"
         data-id="{{ publication.photos[0].id }}"
         data-token="{{ csrf_token('delete-photo-' ~ publication.photos[0].id) }}">
-        🗑 Supprimer
+        &#x1f5d1;
         </button>
     </div>
     {% endif %}
@@ -35,8 +34,10 @@
         {{ form_row( form.photo ) }}
     </div>
 
-    {{ form_row( form.submit ) }}
-    <a href="{{ path('app_afficher_fac') }}" class="btn btn-outline-light btn-sm mt-3">Annuler</a>
+    <div class="d-flex justify-content-start">
+        {{ form_row( form.submit ) }}
+        <button href="{{ path('app_afficher_fac') }}" class="btn btn-outline-light btn-sm ms-3">Annuler</button>
+    </div>
 
 </div>
 {{ form_end(form) }}
