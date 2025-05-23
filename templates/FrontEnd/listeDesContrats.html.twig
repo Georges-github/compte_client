@@ -30,42 +30,39 @@
 {% block body %}
 
 <div class="d-flex justify-content-end position-fixed top-0 end-0 m-3">
-    {% if employeOuAdministrateur == true %}
+{% if employeOuAdministrateur == true %}
         <a href="{{ path('app_liste_des_comptes_clients') }}">
-            <img class="icon-page-precedente" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé.">
-        </a>
-    {% else %}
+{% else %}
         <a href="{{ path('app_login') }}">
+{% endif %}
             <img class="icon-page-precedente" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé.">
         </a>
-    {% endif %}
 </div>
 
 {% if employeOuAdministrateur == true %}
-    {# <a href="{{ path('app_ajouter_un_compte_client') }}" class="btn btn-outline-light btn-sm mt-4">Ajouter un employé</a> #}
-    <a href="{{ path('app_ajouter_un_contrat' , {id : client.id }) }}" class="btn btn-outline-light btn-sm mb-4">Ajouter un contrat</a>
+    <a href="{{ path('app_ajouter_un_contrat' , {id : client.id }) }}" class="btn btn-outline-light btn-sm shadow" data-bs-custom-class="custom-tooltip-ajout shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Ajouter un contrat">&#x2795;</a>
 {% endif %}
 
-{% set pile = app.session.get('pile_de_pdf_dans_public', []) %}
+{# {% set pile = app.session.get('pile_de_pdf_dans_public', []) %}
 <h3>Contenu de la pile PDF :</h3>
 <ul>
-    {% for path in pile %}
+{% for path in pile %}
         <li>{{ path }}</li>
-    {% else %}
+{% else %}
         <li><em>(pile vide)</em></li>
-    {% endfor %}
-</ul>
+{% endfor %}
+</ul> #}
 
 <div class="container my-5">
     <div class="row justify-content-center">
         <div class="col-12 col-md-6 col-lg-5 d-flex justify-content-center">
             <div class="card bg-transparent" style="width: 18rem;">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title mx-auto mb-3">{{client.prenom}} {{client.nom}}</h5>
-                    <span class="card-text">Fixe : {{client.telephoneFixe}}</span>
-                    <span class="card-text">Mobile : {{client.telephoneMobile}}</span>
-                    <span class="card-text">{{client.rueEtNumero}}, {{client.codePostal}} {{client.ville}}</span>
-                    <span class="card-text">Société : {{client.societe}}</span>
+                <div class="card-body d-flex flex-column shadow">
+                    <span class="card-title mx-auto mb-3 fs-2 fw-light">{{client.prenom}} {{client.nom}}</span>
+                    <span class="card-text"><span class="fw-bold">Fixe :</span> {{client.telephoneFixe}}</span>
+                    <span class="card-text"><span class="fw-bold">Mobile :</span> {{client.telephoneMobile}}</span>
+                    <span class="card-text mt-2 mb-2">{{client.rueEtNumero}}, {{client.codePostal}} {{client.ville}}</span>
+                    <span class="card-text"><span class="fw-bold">Société :</span> {{client.societe}}</span>
                 </div>
             </div>
         </div>
@@ -73,7 +70,7 @@
 </div>
 
 <div id="table-desktop" class="d-none d-md-block">
-    <table id="employes" class="table table-striped">
+    <table id="employes" class="table table-striped shadow">
         <thead>
             <tr>
                 <th>Contrat</th>
@@ -98,9 +95,9 @@
                     <td class="d-flex justify-content-between">
                         {# <a href="{{ path('app_liste_des_contrats' , {id : e.id}) }}" class="btn btn-outline-light btn-sm w-50 me-2">&nbsp;Voir&nbsp;</a>
                         <a href="{{ path('app_editer_un_compte_client' , {id : e.id}) }}" class="btn btn-outline-light btn-sm w-50">Editer</a> #}
-                        <a href="{{ path( 'app_voir_un_contrat' , { id : c.id} ) }}" class="btn btn-outline-light btn-sm w-50 me-2">&nbsp;Voir&nbsp;</a>
+                        <a href="{{ path( 'app_voir_un_contrat' , { id : c.id} ) }}" class="btn btn-outline-light btn-sm shadow w-50 me-2" data-bs-custom-class="custom-tooltip-edition shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Voir">&#x1f50d</a>
                         {% if employeOuAdministrateur == true %}
-                            <a href="{{ path( 'app_editer_un_contrat' , { id : c.id} ) }}" class="btn btn-outline-light btn-sm w-50">Editer</a>
+                            <a href="{{ path( 'app_editer_un_contrat' , { id : c.id} ) }}" class="btn btn-outline-light btn-sm shadow w-50" data-bs-custom-class="custom-tooltip-edition shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Editer">&#x1f4dd;</a>
                         {% endif %}
                     </td>
                 </tr>
@@ -126,9 +123,11 @@
 </div> #}
 
 {% if employeOuAdministrateur == true %}
-    <a href="{{ path('app_liste_des_comptes_clients') }}" class="btn btn-outline-light btn-sm mt-4">Retour</a>
+    <a href="{{ path('app_liste_des_comptes_clients') }}" class="btn btn-outline-light btn-sm shadow mt-4">Retour</a>
 {% else %}
-    <a href="{{ path('app_login') }}" class="btn btn-outline-light btn-sm mt-4">Retour</a>
+    <a href="{{ path('app_login') }}" class="btn btn-outline-light btn-sm shadow mt-4">Retour</a>
 {% endif %}
+
+<br><br>
 
 {% endblock %}

@@ -4,7 +4,7 @@
 
 {% block body %}
 <div class="d-flex justify-content-end position-fixed top-0 end-0 m-3">
-    <a href="{{ app.request.headers.get('referer') }}">
+    <a href="{{ path('app_liste_des_employes') }}">
         <img class="icon-page-precedente" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
     </a>
 </div>
@@ -56,9 +56,11 @@
   </div>  
 
   <div class="p-2">
-    {{ form_label(form.courriel) }}
-    {{ form_widget(form.courriel) }}
-    {{ form_errors(form.courriel) }}
+    <div class="p-2">
+      {{ form_label(form.courriel) }}
+      {{ form_widget(form.courriel) }}
+      {{ form_errors(form.courriel) }}
+    </div>
   </div>
 
   <div class="p-2">
@@ -127,11 +129,13 @@
 
 </div>
 
-    {# {{ form_row(form.genre) }} #}
-    {# <button class="btn">{{ button_label|default('Save') }}</button> #}
-    {# <button class="btn">Save</button> #}
-    {{ form_row( form.submit ) }}
+<div class="d-flex align-items-start justify-content-start">
+  {{ form_row(form.submit) }}
+  <a type="button" onclick="window.location.href='{{ path('app_liste_des_employes') }}'" class="btn btn-outline-light btn-sm shadow ms-5">Abandonner</a>
+</div>
+
 {{ form_end(form) }}
 
-<a href="{{ app.request.headers.get('referer') }}" class="btn btn-outline-light btn-sm mt-4">Abandonner</a>
+<br><br>
+
 {% endblock %}

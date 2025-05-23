@@ -16,12 +16,12 @@
     <div class="d-flex justify-content-start">
         <form action="{{ path('app_unique_ajouter_une_publication') }}" method="POST">
             <input type="hidden" name="_token" value="{{ csrf_token('ajouter_une_publication') }}">
-            <button type="submit" class="btn btn-outline-light btn-sm me-5">Ajouter une publication</button>
+            <button type="submit" class="btn btn-outline-light btn-sm shadow me-5">Ajouter une publication</button>
         </form>
 
         <form action="{{ path('app_generer_pdf_fac', {id: contrat.id}) }}" method="post" target="_blank">
             <input type="hidden" name="_token" value="{{ csrf_token('generer_pdf_fac_' ~ contrat.id) }}">
-            <button type="submit" class="btn btn-outline-danger btn-sm">Générer PDF</button>
+            <button type="submit" class="btn btn-outline-danger btn-sm shadow">Générer PDF</button>
         </form>
     </div>
 
@@ -29,9 +29,9 @@
         <form id="delete-form-FAC" action="{{ path('app_supprimer_une_fac') }}" method="POST">
             <input type="hidden" name="_token" value="{{ csrf_token('supprimer_une_fac') }}">
         </form>
-        <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-FAC">
-            Supprimer cette fiche d'avancement
-        </button>
+        <div data-bs-custom-class="custom-tooltip-delete" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Supprimer la fiche">
+            <button type="button" class="btn btn-outline-danger btn-sm shadow" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-FAC">&#x1f5d1;</button>
+        </div>
         {% include 'Composants/_confirm_delete_modal.html.twig' with {
             id: "FAC",
             modalTitle: "Supprimer la fiche d'avancement",
@@ -59,20 +59,22 @@
 
     <div class="d-flex flex-row mb-3">
         <form action="{{ path('app_unique_editer_une_publication' , {id: publication.id}) }}" method="POST">
-            <button type="submit" class="btn btn-outline-light btn-sm me-3">&#x1f4dd;</button>
+            <button type="submit" class="btn btn-outline-light btn-sm me-3" data-bs-custom-class="custom-tooltip-edition" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Editer la publication">&#x1f4dd;</button>
         </form>
 
         <form action="{{ path('app_ajouter_un_commentaire_a_une_publication', {idPublication: publication.id}) }}" method="post">
             <input type="hidden" name="_token" value="{{ csrf_token('ajouter_un_commentaire_' ~ publication.id) }}">
-            <button type="submit" class="btn btn-outline-light btn-sm me-3">&#x2795;</button>
+            <button type="submit" class="btn btn-outline-light btn-sm me-3" data-bs-custom-class="custom-tooltip-ajout" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Ajouter un commentaire">&#x2795;</button>
         </form>
 
         <form id="delete-form-{{ publication.id }}" action="{{ path('app_supprimer_une_publication', {id: publication.id}) }}" method="post">
             <input type="hidden" name="_token" value="{{ csrf_token('supprimer_une_publication_' ~ publication.id) }}">
         </form>
-        <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-{{ publication.id }}">
-            &#x1f5d1;
-        </button>
+        <div data-bs-custom-class="custom-tooltip-delete" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Supprimer la publication">
+            <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-{{ publication.id }}">
+                &#x1f5d1;
+            </button>
+        </div>
         {% include 'Composants/_confirm_delete_modal.html.twig' with {
             id: publication.id,
             modalTitle: 'Supprimer la publication',
@@ -89,7 +91,8 @@
 
 {% endfor %}
 
-<a href="{{ path('app_voir_un_contrat', { id: contrat.id }) }}" class="btn btn-outline-light btn-sm mt-4">Retour</a>
+<a href="{{ path('app_voir_un_contrat', { id: contrat.id }) }}" class="btn btn-outline-light btn-sm shadow mt-4">Retour</a>
+<br><br>
 
 {% else %}
     <p class="text-danger">Aucune publication</p>

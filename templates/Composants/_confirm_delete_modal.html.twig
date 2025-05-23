@@ -1,5 +1,5 @@
 <div class="modal fade" id="confirmDeleteModal-{{ id }}" tabindex="-1" aria-labelledby="confirmDeleteLabel-{{ id }}" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog modal-sm modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header bg-danger text-white">
         <h5 class="modal-title" id="confirmDeleteLabel-{{ id }}">
@@ -11,8 +11,8 @@
         {{ modalMessage|default('Voulez-vous vraiment supprimer cet élément ? Cette action est irréversible.') }}
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-        <button type="button" class="btn btn-danger" onclick="document.getElementById('delete-form-{{ id }}').submit();">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-danger btn-sm" onclick="document.getElementById('delete-form-{{ id }}').submit();">
           {{ confirmButtonLabel|default('Supprimer') }}
         </button>
       </div>

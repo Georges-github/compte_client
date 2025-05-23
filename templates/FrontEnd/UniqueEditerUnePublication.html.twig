@@ -10,19 +10,24 @@
 </div>
 
 {{ form_start(form) }}
-<div style="" class="p-2">
+<div class="p-2">
 
     {% if publication is defined and publication.photos|length > 0 %}
     <div id="photo-{{ publication.photos[0].id }}">
-        <img src="{{ path('serve_image', { filename: publication.photos[0].cheminFichierImage }) }}" alt="Image" width="150">
+        <div class="border border-primary border-2">
+            <img src="{{ path('serve_image', { filename: publication.photos[0].cheminFichierImage }) }}" alt="Image" width="150">
+        </div>
         <p class="fw-light fst-italic">{{ publication.photos[0].legende }}</p>
-        <button
-        type="button"
-        class="btn btn-outline-danger btn-sm btn-delete-photo mb-3"
-        data-id="{{ publication.photos[0].id }}"
-        data-token="{{ csrf_token('delete-photo-' ~ publication.photos[0].id) }}">
-        &#x1f5d1;
-        </button>
+        <p class="fw-light fs-6">Pour remplacer l'image par une autre, d'abord supprimer l'image actuelle.</p>
+        <span data-bs-custom-class="custom-tooltip-delete" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Supprimer l'image">
+            <button
+            type="button"
+            class="btn btn-outline-danger btn-sm btn-delete-photo mb-3"
+            data-id="{{ publication.photos[0].id }}"
+            data-token="{{ csrf_token('delete-photo-' ~ publication.photos[0].id) }}">
+            &#x1f5d1;
+            </button>
+        </span>
     </div>
     {% endif %}
 
@@ -34,16 +39,16 @@
         {{ form_row( form.photo ) }}
     </div>
 
-    <div class="d-flex justify-content-start">
+    <div class="d-flex align-items-start justify-content-start">
         {{ form_row( form.submit ) }}
-        <button href="{{ path('app_afficher_fac') }}" class="btn btn-outline-light btn-sm ms-3">Annuler</button>
+        <a href="{{ path('app_afficher_fac') }}" class="btn btn-outline-light btn-sm shadow ms-3">Abandonner</a>
     </div>
 
 </div>
 {{ form_end(form) }}
 
 {% if publication is defined and publication.photos|length > 0 %}
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+<div class="modal modal-sm fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header bg-danger text-white">

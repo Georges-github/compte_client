@@ -30,13 +30,16 @@
 {% block body %}
 
 <div class="d-flex justify-content-end position-fixed top-0 end-0 m-3">
+{% if admin %}
     <a href="{{ path('app_accueil_administrateur') }}">
+{% else %}
+    <a href="{{ path('app_login') }}">
+{% endif %}
         <img class="icon-page-precedente" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
     </a>
 </div>
 
-{# <a href="{{ path('app_ajouter_un_compte_client') }}" class="btn btn-outline-light btn-sm mt-4">Ajouter un employé</a> #}
-<a href="{{ path('app_ajouter_un_compte_client') }}" class="btn btn-outline-light btn-sm mb-4">Ajouter un compte client</a>
+<a href="{{ path('app_ajouter_un_compte_client') }}" class="btn btn-outline-light btn-sm shadow mb-4" data-bs-custom-class="custom-tooltip-ajout shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Ajouter un compte client">&#x2795;</a>
 
 <div id="table-desktop" class="d-none d-md-block">
     <table id="employes" class="table table-striped">
@@ -59,8 +62,8 @@
                     <td class="d-flex justify-content-between">
                         {# <a href="{{ path('app_liste_des_contrats' , {id : e.id}) }}" class="btn btn-outline-light btn-sm w-50 me-2">&nbsp;Voir&nbsp;</a>
                         <a href="{{ path('app_editer_un_compte_client' , {id : e.id}) }}" class="btn btn-outline-light btn-sm w-50">Editer</a> #}
-                        <a href="{{ path('app_liste_des_contrats' , {id : cc.client.id , pathContratDansPublic : '' }) }}" class="btn btn-outline-light btn-sm w-50 me-2">&nbsp;Voir&nbsp;</a>
-                        <a href="{{ path( 'app_editer_un_compte_client' , { id : cc.client.id }) }}" class="btn btn-outline-light btn-sm w-50">Editer</a>
+                        <a href="{{ path('app_liste_des_contrats' , {id : cc.client.id , pathContratDansPublic : '' }) }}" class="btn btn-outline-light btn-sm shadow w-50 me-2" data-bs-custom-class="custom-tooltip-edition shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Voir">&#x1f50d</a>
+                        <a href="{{ path( 'app_editer_un_compte_client' , { id : cc.client.id }) }}" class="btn btn-outline-light btn-sm shadow w-50" data-bs-custom-class="custom-tooltip-edition shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Editer">&#x1f4dd;</a>
                     </td>
                 </tr>
             {% endfor %}
@@ -84,6 +87,10 @@
     {% endfor %}
 </div> #}
 
-<a href="{{ path('app_accueil_administrateur') }}" class="btn btn-outline-light btn-sm mt-4">Retour</a>
+{% if admin %}
+<a href="{{ path('app_accueil_administrateur') }}" class="btn btn-outline-light btn-sm shadow mt-4">Retour</a>
+{% else %}
+<a href="{{ path('app_login') }}" class="btn btn-outline-light btn-sm shadow mt-4">Retour</a>
+{% endif %}
 
 {% endblock %}

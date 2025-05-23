@@ -38,9 +38,9 @@ final class EmployeController extends AbstractController
 
         }
 
-        return $this->render( 'BackEnd/listeDesComptesClients.html.twig' , [
-            'listeDesComptesClients' => $listeDesComptesClients
-        ] );
+        return $this->render( 'BackEnd/listeDesComptesClients.html.twig' ,
+        ['listeDesComptesClients' => $listeDesComptesClients ,
+        'admin' => $this->getUser()->sesRolesContiennent( 'ADMINISTRATEUR' )] );
 
     }
     

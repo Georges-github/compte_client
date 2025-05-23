@@ -13,20 +13,21 @@
     <div class="row justify-content-center">
         <div class="col-12 col-md-6 col-lg-5 d-flex justify-content-center">
             <div class="card bg-transparent" style="width: 18rem;">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title mx-auto mb-3">{{employe.prenom}} {{employe.nom}}</h5>
-                    <h6 class="card-subtitle mb-2 text-body-secondary">{% for r in employe.roles %}{{r|replace({'ROLE_':''})|replace({'_':' '})|lower|capitalize}}{% if not(loop.last) %} , {% endif %}{% endfor %}</h6>
-                    <span class="card-text">Fixe : {{employe.telephoneFixe}}</span>
-                    <span class="card-text">Mobile : {{employe.telephoneMobile}}</span>
-                    <span class="card-text">Médias de contact : {% for m in employe.mediasDeContact %}{{m|lower|capitalize}}{% if not(loop.last) %} , {% endif %}{% endfor %}</span>
-                    <span class="card-text">{{employe.rueEtNumero}}, {{employe.codePostal}} {{employe.ville}}</span>
-                    <span class="card-text">Société : {{employe.societe}}</span>
-                    <a href="{{ path('app_editer_un_employe' , {id : employe.id}) }}" class="btn btn-outline-secondary btn-sm w-50 mx-auto mt-4">Editer</a>
+                <div class="card-body d-flex flex-column shadow">
+                    <span class="card-title mx-auto mb-3 fs-2 fw-light">{{employe.prenom}} {{employe.nom}}</span>
+                    <span class="card-subtitle mb-2 text-body-secondary">{% for r in employe.roles %}{{r|replace({'ROLE_':''})|replace({'_':' '})|lower|capitalize}}{% if not(loop.last) %} , {% endif %}{% endfor %}</span>
+                    <span class="card-text"><span class="fw-bold">Fixe :</span> {{employe.telephoneFixe}}</span>
+                    <span class="card-text"><span class="fw-bold">Mobile :</span> {{employe.telephoneMobile}}</span>
+                    <span class="card-text"><span class="fw-bold">Médias de contact :</span> {% for m in employe.mediasDeContact %}{{m|lower|capitalize}}{% if not(loop.last) %} , {% endif %}{% endfor %}</span>
+                    <span class="card-text mt-2 mb-2">{{employe.rueEtNumero}}, {{employe.codePostal}} {{employe.ville}}</span>
+                    <span class="card-text"><span class="fw-bold">Société :</span> {{employe.societe}}</span>
+                    <a href="{{ path('app_editer_un_employe' , {id : employe.id}) }}" class="btn btn-outline-light btn-sm w-25 mx-auto shadow mt-4" class="btn btn-outline-light btn-sm w-50" data-bs-custom-class="custom-tooltip-edition shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Editer">&#x1f4dd;</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<a href="{{ path('app_liste_des_employes') }}" class="btn btn-outline-light btn-sm mt-4">Retour</a>
+<a href="{{ path('app_liste_des_employes') }}" class="btn btn-outline-light btn-sm shadow mt-4">Retour</a>
+
 {% endblock %}

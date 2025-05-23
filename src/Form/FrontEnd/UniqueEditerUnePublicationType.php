@@ -31,11 +31,13 @@ class UniqueEditerUnePublicationType extends AbstractType {
             'label' => 'Légende',
             'mapped' => false,
             'required' => false,
+            'attr' => ['class' => 'w-50']
         ])
         ->add('photo', FileType::class, [
         'label' => 'Photo',
         'mapped' => false,
         'required' => false,
+        'attr' => ['class' => 'w-50'],
         'constraints' => [
             new File([
                 'maxSize' => '2M',
@@ -45,7 +47,7 @@ class UniqueEditerUnePublicationType extends AbstractType {
             ],
         ])
         ->add( 'submit', SubmitType::class, [ 'label' => 'Valider' ,
-        'attr' => ['class' => 'btn btn-outline-light btn-sm'] ] )
+        'attr' => ['class' => 'btn btn-outline-light btn-sm shadow'] ] )
         ;
     }
 

@@ -60,3 +60,24 @@ body {
     transform: scale(1.1);
     opacity: 0.8;
 }
+
+/* ------------------- */
+/* Style des tooltips. */
+/* ------------------- */
+.custom-tooltip-ajout {
+  --bs-tooltip-bg: #6f42c1;
+  --bs-tooltip-color: #c9beaf;
+  --bs-tooltip-opacity: 1;
+}
+
+.custom-tooltip-edition {
+  --bs-tooltip-bg: #f8f9fa;
+  --bs-tooltip-color: #c9beaf;
+  --bs-tooltip-opacity: 1;
+}
+
+.custom-tooltip-delete {
+  --bs-tooltip-bg: #dc3545;
+  --bs-tooltip-color: #c9beaf;
+  --bs-tooltip-opacity: 1;
+}
