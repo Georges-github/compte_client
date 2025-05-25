@@ -11,14 +11,16 @@
     <div class="d-flex flex-row mb-3">
         <form action="{{ path('app_ajouter_un_commentaire_a_un_commentaire', {idCommentaire: commentaire.id, idPublication: idPublication}) }}" method="post">
             <input type="hidden" name="_token" value="{{ csrf_token('ajouter_un_commentaire_' ~ commentaire.id) }}">
-            <button type="submit" class="btn btn-outline-light btn-sm me-3" data-bs-custom-class="custom-tooltip-ajout" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Répondre au commentaire">&#x2795;</button>
+            <button type="submit" class="btn btn-sm shadow me-3" data-bs-custom-class="custom-tooltip-ajout" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Répondre au commentaire">
+            {# &#x2795; #}<img class="icone-cliquable" src="{{ asset('assets/images/icone_ajouter.png') }}" alt="Icône non trouvé."></img>
+            </button>
         </form>
 
         <form id="delete-form-{{ commentaire.id }}" action="{{ path('app_supprimer_un_commentaire', {id: commentaire.id}) }}" method="post">
             <input type="hidden" name="_token" value="{{ csrf_token('supprimer_un_commentaire_' ~ commentaire.id) }}">
         </form>
         <div data-bs-custom-class="custom-tooltip-delete" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Supprimer le commentaire">
-            <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-{{ commentaire.id }}">
+            <button type="button" class="btn btn-sm shadow" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-{{ commentaire.id }}">
                 &#x1f5d1;
             </button>
         </div>

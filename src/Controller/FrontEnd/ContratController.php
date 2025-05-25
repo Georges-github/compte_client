@@ -58,9 +58,10 @@ class ContratController extends AbstractController {
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        $idClient = $request->attributes->get( 'id' );
 
-            $idClient = $request->attributes->get( 'id' );
+
+        if ($form->isSubmitted() && $form->isValid()) {
 
             $client = $utilisateurRepository->findOneBy( [ 'id' => $idClient ] );
 
@@ -99,7 +100,7 @@ class ContratController extends AbstractController {
             return $this->redirectToRoute('app_liste_des_contrats', [ 'id' => $idClient , 'pathContratDansPublic' => '' ], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render( 'FrontEnd/EditerUnContrat.html.twig' , [ 'form' => $form, 'edition' => false ] );
+        return $this->render( 'FrontEnd/EditerUnContrat.html.twig' , [ 'form' => $form, 'edition' => false, 'id' => $idClient ] );
     }
 
     #[Route('/voirUnContrat/{id}' , name: 'app_voir_un_contrat' , methods: [ 'GET' ])]
@@ -190,6 +191,8 @@ class ContratController extends AbstractController {
 
         $contrat = $contratRepository->findWithEtats( $request->attributes->get( 'id' ) );
 
+        $client = $contrat->getIdUtilisateur();
+
         $form = $this->createForm( EditerUnContratType::class , $contrat ,
         [ 'etatActuel' => $contrat->getDernierEtat() !== null ? $contrat->getDernierEtat()->getEtat() : null ,
         'nomContratActuel' => basename( $contrat->getCheminFichier() ) ,
@@ -201,8 +204,6 @@ class ContratController extends AbstractController {
         $pathContratActuelDansPublic = $this->copyPdfToPublic( $pathContratActuel['dirname'] , $pathContratActuel['basename']);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-            $client = $contrat->getIdUtilisateur();
 
             $uploadedFile = $form->get('cheminFichier')->getData();
 
@@ -258,11 +259,14 @@ class ContratController extends AbstractController {
             //     unlink( $pathContratActuelDansVar );
             // }
 
-            return $this->redirectToRoute('app_liste_des_contrats', [ 'id' => $client->getId() , 'pathContratDansPublic' => '' ] , Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('', [ 'id' => $client->getId() , 'pathContratDansPublic' => '' ] , Response::HTTP_SEE_OTHER);
 
         }
 
-        return $this->render( 'FrontEnd/EditerUnContrat.html.twig' , [ 'form' => $form, 'edition' => false , 'pathContratActuel' => 'storage/' . $pathContratActuel['dirname'] . '/' . $pathContratActuel['basename'] ] );
+        return $this->render( 'FrontEnd/EditerUnContrat.html.twig' , [ 'form' => $form,
+        'edition' => false ,
+        'pathContratActuel' => 'storage/' . $pathContratActuel['dirname'] . '/' . $pathContratActuel['basename'] ,
+        'id' => $client->getId() ] );
     }
 
     #[ Route( '/supprimerUnContrat/{id}' , name: 'app_supprimer_un_contrat' , methods: [ 'POST' ] ) ]
@@ -285,7 +289,7 @@ class ContratController extends AbstractController {
 
         $client = $contrat->getIdUtilisateur();
 
-        return $this->redirectToRoute('app_liste_des_contrats', [ 'id' => $client->getId() , 'pathContratDansPublic' => '' ] , Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('', [ 'id' => $client->getId() , 'pathContratDansPublic' => '' ] , Response::HTTP_SEE_OTHER);
     }
 
 

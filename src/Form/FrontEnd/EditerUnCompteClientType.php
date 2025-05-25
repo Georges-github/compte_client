@@ -56,7 +56,7 @@ class EditerUnCompteClientType extends AbstractType
             ->add('ville')
             ->add('societe')
             ->add('submit', SubmitType::class, [ 'label' => 'Mettre à jour' ,
-            'attr' => ['class' => 'btn btn-outline-light btn-sm'] ])
+            'attr' => ['class' => 'btn btn-outline-light btn-sm shadow'] ])
             // ->add('dateHeureInsertion', null, [
             //     'widget' => 'single_text',
             // ])

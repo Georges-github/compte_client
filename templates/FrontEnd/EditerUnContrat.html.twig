@@ -4,13 +4,13 @@
 
 {% block body %}
 
-<div class="d-flex justify-content-end position-fixed top-0 end-0 m-3">
-    <a href="{{ app.request.headers.get('referer') }}">
-        <img class="icon-page-precedente" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
+<div class="d-flex justify-content-end position-fixed top-0 start-0 m-3">
+    <a href="{{ path('app_liste_des_contrats' , { id: id }) }}">
+        <img class="icone-cliquable" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
     </a>
 </div>
 
-{% set pile = app.session.get('pile_de_pdf_dans_public', []) %}
+{# {% set pile = app.session.get('pile_de_pdf_dans_public', []) %}
 <h3>Contenu de la pile PDF :</h3>
 <ul>
     {% for path in pile %}
@@ -18,7 +18,7 @@
     {% else %}
         <li><em>(pile vide)</em></li>
     {% endfor %}
-</ul>
+</ul> #}
 
 {{ form_start(form) }}
 
@@ -99,8 +99,9 @@
     </div>
     <p>
         📄 <a href="{{ asset(pathContratActuel|default('')) }}" target="_blank">
-            Télécharger le contrat actuel
-        </a>
+                Télécharger le contrat actuel
+            </a>
+             : <strong> {{ pathContratActuel|split('/')|last }} </strong> .
     </p>
 {% endif %}
 
@@ -112,10 +113,11 @@
 
 </div>
 
+<div class="d-flex align-items-start justify-content-start mt-4">
 {{ form_row( form.submit ) }}
+<a href="{{ path('app_liste_des_contrats' , { id: id }) }}" class="btn btn-outline-light btn-sm shadow ms-4">Abandonner</a>
+</div>
 
 {{ form_end(form) }}
-
-<a href="{{ app.request.headers.get('referer') }}" class="btn btn-outline-light btn-sm mt-4">Abandonner</a>
 
 {% endblock %}

@@ -1,11 +1,11 @@
-{% extends 'base.html.twig' %}
+{# {% extends 'base.html.twig' %}
 
 {% block title %}Ajouter un commentaire{% endblock %}
 
 {% block body %}
-<div class="d-flex justify-content-end position-fixed top-0 end-0 m-3">
+<div class="d-flex justify-content-end position-fixed top-0 start-0 m-3">
     <a href="{{ app.request.headers.get('referer') }}">
-        <img class="icon-page-precedente" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
+        <img class="icone-cliquable" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
     </a>
 </div>
 
@@ -14,9 +14,44 @@
     {{ form_row( form.texte ) }}
     {{ form_row( form.legende ) }}
     {{ form_row( form.photo ) }}
-    {{ form_row( form.submit ) }}
-    <a href="{{ path('app_afficher_fac') }}" class="btn btn-outline-light btn-sm mt-3">Annuler</a>
+    <div class="d-flex align-items-start justify-content-start">
+        {{ form_row( form.submit ) }}
+        <a href="{{ path('app_afficher_fac') }}" class="btn btn-outline-light btn-sm shadow ms-4">Abandonner</a>
+    </div>
 </div>
 {{ form_end(form) }}
 
+{% endblock %} #}
+
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un commentaire{% endblock %}
+
+{% block body %}
+<!-- Bouton "retour" -->
+<div class="position-fixed top-0 start-0 m-3">
+    <a href="{{ app.request.headers.get('referer') }}">
+        <img class="icone-cliquable" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvée.">
+    </a>
+</div>
+
+<!-- Conteneur principal responsive et centré -->
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
+
+            {{ form_start(form) }}
+            {{ form_row( form.texte ) }}
+            {{ form_row( form.legende ) }}
+            {{ form_row( form.photo ) }}
+            <div class="d-flex align-items-start justify-content-start mt-3">
+                {{ form_row( form.submit ) }}
+                <a href="{{ path('app_afficher_fac') }}" class="btn btn-outline-light btn-sm shadow ms-4">Abandonner</a>
+            </div>
+            {{ form_end(form) }}
+
+        </div>
+    </div>
+</div>
 {% endblock %}

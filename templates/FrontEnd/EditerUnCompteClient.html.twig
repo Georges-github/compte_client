@@ -3,9 +3,9 @@
 {% block title %}{% if edition == true %}Editer{% else %}Ajouter{% endif %} un client{% endblock %}
 
 {% block body %}
-<div class="d-flex justify-content-end position-fixed top-0 end-0 m-3">
+<div class="d-flex justify-content-end position-fixed top-0 start-0 m-3">
     <a href="{{ app.request.headers.get('referer') }}">
-        <img class="icon-page-precedente" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
+        <img class="icone-cliquable" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
     </a>
 </div>
 
@@ -130,9 +130,13 @@
     {# {{ form_row(form.genre) }} #}
     {# <button class="btn">{{ button_label|default('Save') }}</button> #}
     {# <button class="btn">Save</button> #}
-    {{ form_row( form.submit ) }}
-    
+<div class="d-flex align-items-start justify-content-start">
+  {{ form_row( form.submit ) }}
+  <a href="{{ app.request.headers.get('referer') }}" class="btn btn-outline-light btn-sm shadow ms-4">Abandonner</a>
+</div>
+
 {{ form_end(form) }}
 
-<a href="{{ app.request.headers.get('referer') }}" class="btn btn-outline-light btn-sm mt-4">Abandonner</a>
+<br><br>
+
 {% endblock %}

@@ -29,17 +29,19 @@
 
 {% block body %}
 
-<div class="d-flex justify-content-end position-fixed top-0 end-0 m-3">
+<div class="d-flex justify-content-end position-fixed top-0 start-0 m-3">
 {% if admin %}
     <a href="{{ path('app_accueil_administrateur') }}">
 {% else %}
     <a href="{{ path('app_login') }}">
 {% endif %}
-        <img class="icon-page-precedente" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
+        <img class="icone-cliquable" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
     </a>
 </div>
 
-<a href="{{ path('app_ajouter_un_compte_client') }}" class="btn btn-outline-light btn-sm shadow mb-4" data-bs-custom-class="custom-tooltip-ajout shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Ajouter un compte client">&#x2795;</a>
+<a href="{{ path('app_ajouter_un_compte_client') }}" class="btn btn-outline-light btn-sm shadow mb-4" data-bs-custom-class="custom-tooltip-ajout shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Ajouter un compte client">
+{# &#x2795; #}<img class="icone-cliquable" src="{{ asset('assets/images/icone_ajouter.png') }}" alt="Icône non trouvé."></img>
+</a>
 
 <div id="table-desktop" class="d-none d-md-block">
     <table id="employes" class="table table-striped">
@@ -60,10 +62,16 @@
                     <td>{{cc.client.societe}}</td>
                     <td>{{cc.nbContrats}}</td>
                     <td class="d-flex justify-content-between">
-                        {# <a href="{{ path('app_liste_des_contrats' , {id : e.id}) }}" class="btn btn-outline-light btn-sm w-50 me-2">&nbsp;Voir&nbsp;</a>
-                        <a href="{{ path('app_editer_un_compte_client' , {id : e.id}) }}" class="btn btn-outline-light btn-sm w-50">Editer</a> #}
-                        <a href="{{ path('app_liste_des_contrats' , {id : cc.client.id , pathContratDansPublic : '' }) }}" class="btn btn-outline-light btn-sm shadow w-50 me-2" data-bs-custom-class="custom-tooltip-edition shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Voir">&#x1f50d</a>
-                        <a href="{{ path( 'app_editer_un_compte_client' , { id : cc.client.id }) }}" class="btn btn-outline-light btn-sm shadow w-50" data-bs-custom-class="custom-tooltip-edition shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Editer">&#x1f4dd;</a>
+                        <div class="d-flex justify-content-between">
+                            {# <a href="{{ path('app_liste_des_contrats' , {id : e.id}) }}" class="btn btn-outline-light btn-sm w-50 me-2">&nbsp;Voir&nbsp;</a>
+                            <a href="{{ path('app_editer_un_compte_client' , {id : e.id}) }}" class="btn btn-outline-light btn-sm w-50">Editer</a> #}
+                            <a href="{{ path('app_liste_des_contrats' , {id : cc.client.id , pathContratDansPublic : '' }) }}" class="btn btn-outline-light btn-sm shadow w-50 me-2" data-bs-custom-class="custom-tooltip-edition shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Voir">
+                            {# &#x1f50d; #}<img class="icone-cliquable" src="{{ asset('assets/images/icone_loupe.png') }}" alt="Icône non trouvé."></img>
+                            </a>
+                            <a href="{{ path( 'app_editer_un_compte_client' , { id : cc.client.id }) }}" class="btn btn-outline-light btn-sm shadow w-50" data-bs-custom-class="custom-tooltip-edition shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Editer">
+                            {# &#x1f4dd; #}<img class="icone-cliquable" src="{{ asset('assets/images/icone_edition.png') }}" alt="Icône non trouvé."></img>
+                            </a>
+                        </div>
                     </td>
                 </tr>
             {% endfor %}

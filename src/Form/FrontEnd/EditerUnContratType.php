@@ -52,18 +52,18 @@ class EditerUnContratType extends AbstractType {
                     ])
         ] ] )
         ->add('submit', SubmitType::class, [ 'label' => $labelSubmit ,
-        'attr' => ['class' => 'btn btn-outline-light btn-sm mt-3'] ])
+        'attr' => ['class' => 'btn btn-outline-light btn-sm shadow'] ])
         ;
 
-        if ( $options['edition'] ) {
-            $b->add('nomContratActuel', TextType::class, [
-                    'label' => 'Contrat actuel',
-                    'mapped' => false,
-                    'data' => $options['nomContratActuel'],
-                    'disabled' => true,
-                    'required' => false,
-            ]);
-        }
+        // if ( $options['edition'] ) {
+        //     $b->add('nomContratActuel', TextType::class, [
+        //             'label' => 'Contrat actuel',
+        //             'mapped' => false,
+        //             'data' => $options['nomContratActuel'],
+        //             'disabled' => true,
+        //             'required' => false,
+        //     ]);
+        // }
 
     }
 

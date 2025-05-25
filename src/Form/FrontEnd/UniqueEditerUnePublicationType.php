@@ -25,19 +25,17 @@ class UniqueEditerUnePublicationType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-        ->add( 'titre' , TextType::class , [ 'label' => 'Titre' , 'attr' => ['class' => 'w-50'] ] )
-        ->add( 'contenu' , TextareaType::class , [ 'label' => 'Contenu' , 'attr' => ['class' => 'w-50'] ] )
+        ->add( 'titre' , TextType::class , [ 'label' => 'Titre' ] )
+        ->add( 'contenu' , TextareaType::class , [ 'label' => 'Contenu' ] )
         ->add('legende', TextType::class, [
             'label' => 'Légende',
             'mapped' => false,
-            'required' => false,
-            'attr' => ['class' => 'w-50']
+            'required' => false
         ])
         ->add('photo', FileType::class, [
         'label' => 'Photo',
         'mapped' => false,
         'required' => false,
-        'attr' => ['class' => 'w-50'],
         'constraints' => [
             new File([
                 'maxSize' => '2M',

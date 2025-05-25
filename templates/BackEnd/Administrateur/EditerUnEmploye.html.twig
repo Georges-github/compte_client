@@ -3,9 +3,9 @@
 {% block title %}{% if edition == true %}Editer{% else %}Ajouter{% endif %} un employé{% endblock %}
 
 {% block body %}
-<div class="d-flex justify-content-end position-fixed top-0 end-0 m-3">
+<div class="d-flex justify-content-end position-fixed top-0 start-0 m-3">
     <a href="{{ path('app_liste_des_employes') }}">
-        <img class="icon-page-precedente" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
+        <img class="icone-cliquable" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
     </a>
 </div>
 
@@ -131,7 +131,7 @@
 
 <div class="d-flex align-items-start justify-content-start">
   {{ form_row(form.submit) }}
-  <a type="button" onclick="window.location.href='{{ path('app_liste_des_employes') }}'" class="btn btn-outline-light btn-sm shadow ms-5">Abandonner</a>
+  <a type="button" onclick="window.location.href='{{ path('app_liste_des_employes') }}'" class="btn btn-outline-light btn-sm shadow ms-4">Abandonner</a>
 </div>
 
 {{ form_end(form) }}

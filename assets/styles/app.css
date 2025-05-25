@@ -46,7 +46,7 @@ body {
 /* ---------------------------------- */
 /* Style de l'icône "page précédente" */
 /* ---------------------------------- */
-.icon-page-precedente {
+.icone-cliquable {
     width: 24px;
     height: 24px;
     object-fit: contain;
@@ -56,7 +56,7 @@ body {
     transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
-.icon-page-precedente:hover {
+.icone-cliquable:hover {
     transform: scale(1.1);
     opacity: 0.8;
 }
@@ -64,8 +64,9 @@ body {
 /* ------------------- */
 /* Style des tooltips. */
 /* ------------------- */
-.custom-tooltip-ajout {
-  --bs-tooltip-bg: #6f42c1;
+.custom-tooltip-ajout {	
+  /* --bs-tooltip-bg: #6f42c1; */
+  --bs-tooltip-bg: 		#4682B4;
   --bs-tooltip-color: #c9beaf;
   --bs-tooltip-opacity: 1;
 }

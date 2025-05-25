@@ -29,13 +29,15 @@
 
 {% block body %}
 
-<div class="d-flex justify-content-end position-fixed top-0 end-0 m-3">
+<div class="d-flex justify-content-end position-fixed top-0 start-0 m-3">
     <a href="{{ path('app_accueil_administrateur') }}">
-        <img class="icon-page-precedente" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
+        <img class="icone-cliquable" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
     </a>
 </div>
 
-<a href="{{ path('app_ajouter_un_employe') }}" class="btn btn-outline-light btn-sm shadow mb-4" data-bs-custom-class="custom-tooltip-ajout shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Ajouter un employé">&#x2795;</a>
+<a href="{{ path('app_ajouter_un_employe') }}" class="btn btn-outline-light btn-sm shadow mb-4" data-bs-custom-class="custom-tooltip-ajout shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Ajouter un employé">
+{# &#x2795; #}<img class="icone-cliquable" src="{{ asset('assets/images/icone_ajouter.png') }}" alt="Icône non trouvé."></img>
+</a>
 
 <div id="table-desktop" class="d-none d-md-block">
     <table id="employes" class="table table-striped shadow">
@@ -55,9 +57,15 @@
                     <td>{{e.nom}}</td>
                     <td>{% for r in e.roles %}{{r|replace({'ROLE_': ''})|replace({'_':' '})|lower|capitalize}}{% if not(loop.last) %} , {% endif %}{% endfor %}</td>
                     <td>{{e.Courriel}}</td>
-                    <td class="d-flex justify-content-between">
-                        <a href="{{ path('app_voir_un_employe' , {id : e.id}) }}" class="btn btn-outline-light btn-sm shadow w-50 me-2" data-bs-custom-class="custom-tooltip-edition shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Voir">&#x1f50d</a>
-                        <a href="{{ path('app_editer_un_employe' , {id : e.id}) }}" class="btn btn-outline-light btn-sm shadow w-50" data-bs-custom-class="custom-tooltip-edition shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Editer">&#x1f4dd;</a>
+                    <td style="vertical-align: middle;">
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ path('app_voir_un_employe' , {id : e.id}) }}" class="btn btn-outline-light btn-sm shadow w-50 me-2" data-bs-custom-class="custom-tooltip-edition shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Voir">
+                            {# &#x1f50d; #}<img class="icone-cliquable" src="{{ asset('assets/images/icone_loupe.png') }}" alt="Icône non trouvé."></img>
+                            </a>
+                            <a href="{{ path('app_editer_un_employe' , {id : e.id}) }}" class="btn btn-outline-light btn-sm shadow w-50" data-bs-custom-class="custom-tooltip-edition shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Editer">
+                            {# &#x1f4dd; #}<img class="icone-cliquable" src="{{ asset('assets/images/icone_edition.png') }}" alt="Icône non trouvé."></img>
+                            </a>
+                        </div>
                     </td>
                 </tr>
             {% endfor %}

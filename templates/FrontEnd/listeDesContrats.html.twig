@@ -29,18 +29,20 @@
  
 {% block body %}
 
-<div class="d-flex justify-content-end position-fixed top-0 end-0 m-3">
+<div class="d-flex justify-content-end position-fixed top-0 start-0 m-3">
 {% if employeOuAdministrateur == true %}
         <a href="{{ path('app_liste_des_comptes_clients') }}">
 {% else %}
         <a href="{{ path('app_login') }}">
 {% endif %}
-            <img class="icon-page-precedente" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé.">
+            <img class="icone-cliquable" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé.">
         </a>
 </div>
 
 {% if employeOuAdministrateur == true %}
-    <a href="{{ path('app_ajouter_un_contrat' , {id : client.id }) }}" class="btn btn-outline-light btn-sm shadow" data-bs-custom-class="custom-tooltip-ajout shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Ajouter un contrat">&#x2795;</a>
+    <a href="{{ path('app_ajouter_un_contrat' , {id : client.id }) }}" class="btn btn-outline-light btn-sm shadow" data-bs-custom-class="custom-tooltip-ajout shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Ajouter un contrat">
+    {# &#x2795; #}<img class="icone-cliquable" src="{{ asset('assets/images/icone_ajouter.png') }}" alt="Icône non trouvé."></img>
+    </a>
 {% endif %}
 
 {# {% set pile = app.session.get('pile_de_pdf_dans_public', []) %}
@@ -88,17 +90,23 @@
                 <tr>
                     <td>{{c.intitule}}</td>
                     <td>{{c.numeroContrat}}</td>
-                    <td>{{c.dateDebutPrevue ? c.dateDebutPrevue|date('Y-m-d H:i:s') : ''}}</td>
-                    <td>{{c.dateFinPrevue ? c.dateFinPrevue|date('Y-m-d H:i:s') : ''}}</td>
-                    <td>{{c.dateDebut ? c.dateDebut|date('Y-m-d H:i:s') : ''}}</td>
-                    <td>{{c.dateFin ? c.dateFin|date('Y-m-d H:i:s') : ''}}</td>
-                    <td class="d-flex justify-content-between">
-                        {# <a href="{{ path('app_liste_des_contrats' , {id : e.id}) }}" class="btn btn-outline-light btn-sm w-50 me-2">&nbsp;Voir&nbsp;</a>
-                        <a href="{{ path('app_editer_un_compte_client' , {id : e.id}) }}" class="btn btn-outline-light btn-sm w-50">Editer</a> #}
-                        <a href="{{ path( 'app_voir_un_contrat' , { id : c.id} ) }}" class="btn btn-outline-light btn-sm shadow w-50 me-2" data-bs-custom-class="custom-tooltip-edition shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Voir">&#x1f50d</a>
-                        {% if employeOuAdministrateur == true %}
-                            <a href="{{ path( 'app_editer_un_contrat' , { id : c.id} ) }}" class="btn btn-outline-light btn-sm shadow w-50" data-bs-custom-class="custom-tooltip-edition shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Editer">&#x1f4dd;</a>
-                        {% endif %}
+                    <td>{{c.dateDebutPrevue ? c.dateDebutPrevue|date('d-m-Y') : ''}}</td>
+                    <td>{{c.dateFinPrevue ? c.dateFinPrevue|date('d-m-Y') : ''}}</td>
+                    <td>{{c.dateDebut ? c.dateDebut|date('d-m-Y') : ''}}</td>
+                    <td>{{c.dateFin ? c.dateFin|date('d-m-Y') : ''}}</td>
+                    <td style="vertical-align: middle;">
+                        <div class="d-flex justify-content-between align-items-center">
+                            {# <a href="{{ path('app_liste_des_contrats' , {id : e.id}) }}" class="btn btn-outline-light btn-sm w-50 me-2">&nbsp;Voir&nbsp;</a>
+                            <a href="{{ path('app_editer_un_compte_client' , {id : e.id}) }}" class="btn btn-outline-light btn-sm w-50">Editer</a> #}
+                            <a href="{{ path( 'app_voir_un_contrat' , { id : c.id} ) }}" class="btn btn-sm shadow w-50 me-2" data-bs-custom-class="custom-tooltip-edition shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Voir">
+                            {# &#x1f50d; #}<img class="icone-cliquable" src="{{ asset('assets/images/icone_loupe.png') }}" alt="Icône non trouvé."></img>
+                            </a>
+                            {% if employeOuAdministrateur == true %}
+                                <a href="{{ path( 'app_editer_un_contrat' , { id : c.id} ) }}" class="btn btn-sm shadow w-50" data-bs-custom-class="custom-tooltip-edition shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Editer">
+                                {# &#x1f4dd; #}<img class="icone-cliquable" src="{{ asset('assets/images/icone_edition.png') }}" alt="Icône non trouvé."></img>
+                                </a>
+                            {% endif %}
+                        </div>
                     </td>
                 </tr>
             {% endfor %}

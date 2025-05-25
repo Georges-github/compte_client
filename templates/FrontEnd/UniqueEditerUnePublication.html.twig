@@ -3,13 +3,58 @@
 {% block title %}Editer une publication{% endblock %}
 
 {% block body %}
-<div class="d-flex justify-content-end position-fixed top-0 end-0 m-3">
+<div class="d-flex justify-content-end position-fixed top-0 start-0 m-3">
     <a href="{{ app.request.headers.get('referer') }}">
-        <img class="icon-page-precedente" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
+        <img class="icone-cliquable" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
     </a>
 </div>
 
-{{ form_start(form) }}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
+
+            {{ form_start(form) }}
+
+            {% if publication is defined and publication.photos|length > 0 %}
+            <div id="photo-{{ publication.photos[0].id }}">
+                <div class="border border-primary border-2">
+                    <img src="{{ path('serve_image', { filename: publication.photos[0].cheminFichierImage }) }}" alt="Image" width="150">
+                </div>
+                <p class="fw-light fst-italic">{{ publication.photos[0].legende }}</p>
+                <p class="fw-light fs-6">Pour remplacer l'image par une autre, d'abord supprimer l'image actuelle.</p>
+                <span data-bs-custom-class="custom-tooltip-delete" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Supprimer l'image">
+                    <button
+                    type="button"
+                    class="btn btn-outline-danger btn-sm shadow btn-delete-photo mb-3"
+                    data-id="{{ publication.photos[0].id }}"
+                    data-token="{{ csrf_token('delete-photo-' ~ publication.photos[0].id) }}">
+                    &#x1f5d1;
+                    </button>
+                </span>
+            </div>
+            {% endif %}
+
+            {{ form_row( form.titre ) }}
+            {{ form_row( form.contenu ) }}
+
+            <div id="formPhoto" style="display: block;">
+                {{ form_row( form.legende ) }}
+                {{ form_row( form.photo ) }}
+            </div>
+
+            <div class="d-flex align-items-start justify-content-start">
+                {{ form_row( form.submit ) }}
+                <a href="{{ path('app_afficher_fac') }}" class="btn btn-outline-light btn-sm shadow ms-4">Abandonner</a>
+            </div>
+
+            {{ form_end(form) }}
+
+        </div>
+    </div>
+</div>
+
+
+{# {{ form_start(form) }}
 <div class="p-2">
 
     {% if publication is defined and publication.photos|length > 0 %}
@@ -41,11 +86,11 @@
 
     <div class="d-flex align-items-start justify-content-start">
         {{ form_row( form.submit ) }}
-        <a href="{{ path('app_afficher_fac') }}" class="btn btn-outline-light btn-sm shadow ms-3">Abandonner</a>
+        <a href="{{ path('app_afficher_fac') }}" class="btn btn-outline-light btn-sm shadow ms-4">Abandonner</a>
     </div>
 
 </div>
-{{ form_end(form) }}
+{{ form_end(form) }} #}
 
 {% if publication is defined and publication.photos|length > 0 %}
 <div class="modal modal-sm fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">

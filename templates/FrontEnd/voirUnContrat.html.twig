@@ -18,9 +18,9 @@
 {% block title %}Voir un contrat{% endblock %}
 
 {% block body %}
-<div class="d-flex justify-content-end position-fixed top-0 end-0 m-3">
+<div class="d-flex justify-content-end position-fixed top-0 start-0 m-3">
     <a href="{{ path('app_liste_des_contrats' , { id : client.id , pathContratDansPublic: asset('storage/' ~ contrat.cheminFichier) }) }}">
-        <img class="icon-page-precedente" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
+        <img class="icone-cliquable" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
     </a>
 </div>
 
@@ -38,14 +38,16 @@
 {% if employe %}
 
 <div class="d-flex justify-content-around">
-    <a href="{{ path('app_afficher_fac') }}" class="btn btn-sm btn-outline-primary">Consulter la fiche d'avancement du chantier</a>
+    <a href="{{ path('app_afficher_fac') }}" class="btn btn-sm btn-outline-primary shadow">Consulter la fiche d'avancement du chantier</a>
 
     <form id="delete-form-{{ contrat.id }}" action="{{ path('app_supprimer_un_contrat', {id: contrat.id}) }}" method="post">
         <input type="hidden" name="_token" value="{{ csrf_token('supprimer_un_contrat_' ~ contrat.id) }}">
     </form>
-    <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-{{ contrat.id }}">
-        &#x1f5d1;
-    </button>
+        <div data-bs-custom-class="custom-tooltip-delete" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Supprimer la fiche">
+            <button type="button" class="btn btn-outline-danger btn-sm shadow" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-{{ contrat.id }}">
+                &#x1f5d1;
+            </button>
+        </div>
     {% include 'Composants/_confirm_delete_modal.html.twig' with {
         id: contrat.id,
         modalTitle: 'Supprimer le contrat',
@@ -106,7 +108,7 @@
                     <span class="card-text">{{client.rueEtNumero}}, {{client.codePostal}} {{client.ville}}</span>
                     <span class="card-text"><span class="fw-bold">Société :</span> {{client.societe}}</span>
                     <br>
-                    <span class="card-text">Contrat No : {{contrat.numeroContrat}}</span>
+                    <span class="card-text"><span class="fw-bold">Contrat No :</span> {{contrat.numeroContrat}}</span>
                 </div>
             </div>
         </div>
@@ -116,13 +118,13 @@
     <p class="mt-5 fs-5 fw-semibold">Etats successifs du contrat :</p>
     <ul>
         {% for etat in etatsSuccessifsSpecifiesPar %}
-            <li>{{ etat.etat.etat }} - spécifié par {{ etat.specifiePar.prenom }} {{ etat.specifiePar.nom }} le {{ etat.etat.dateHeureInsertion |format_datetime(locale='fr', pattern='EEEE d MMMM y à HH:mm') }}</li>
+            <li>{{ etat.etat.etat }} - spécifié par {{ etat.specifiePar.prenom }} {{ etat.specifiePar.nom }} le {{ etat.etat.dateHeureInsertion |format_datetime(locale='fr', pattern='EEEE d MMMM y à HH:mm') }} .</li>
         {% endfor %}
     </ul>
 {% endif %}
 
 {% if contrat.cheminFichier is defined and contrat.cheminFichier is not null %}
-    <p class="fs-4 fw-semibold"> {{ contrat.cheminFichier|split('/')|last }} </p>
+    <span class="fw-bold">Intitulé : </span><span class="fs-4 fw-semibold"> {{ contrat.cheminFichier|split('/')|last }} </span>
 
     {# <div id="pdf-textlayer-container" class="border border-success border-5 border-opacity-50 rounded"></div> #}
 <div class="d-flex flex-column">
@@ -233,7 +235,7 @@
     <a href="{{ path('app_liste_des_contrats', {
         id: client.id,
         pathContratDansPublic: asset('storage/' ~ contrat.cheminFichier)
-    }) }}" class="btn btn-outline-light btn-sm mt-4">Retour</a>
+    }) }}" class="btn btn-outline-light btn-sm shadow mt-4">Retour</a>
 
 </div>
 
