@@ -1,0 +1,141 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% if edition == true %}Editer{% else %}Ajouter{% endif %} un client{% endblock %}
+
+{% block body %}
+
+<div class="d-flex justify-content-end position-fixed top-0 start-0 m-3">
+    <a href="{{ app.request.headers.get('referer') }}">
+        <img class="icone-cliquable" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
+    </a>
+</div>
+
+{{ form_start(form) }}
+
+<div class="form-group">
+    {{ form_label(form.genre) }}
+    <div class="d-flex gap-3">
+        {% for choix in form.genre %}
+            <div class="form-check form-check-inline">
+                {{ form_widget(choix, {'attr': {'class': 'form-check-input'}}) }}
+                {{ form_label(choix, null, {'attr': {'class': 'form-check-label'}}) }}
+            </div>
+        {% endfor %}
+    </div>
+    {{ form_errors(form.genre) }}
+</div>
+
+<div style="grid-template-columns: 1fr 1fr;" class="d-grid gap-3">
+
+  <div class="p-2">
+    {{ form_label(form.prenom) }}
+    {{ form_widget(form.prenom) }}
+    {{ form_errors(form.prenom) }}
+  </div>
+
+  <div class="p-2">
+    {{ form_label(form.nom) }}
+    {{ form_widget(form.nom) }}
+    {{ form_errors(form.nom) }}
+  </div>
+
+  <div class="p-2">
+        <div style="grid-template-columns: 1fr 1fr;" class="d-grid gap-3">
+            <div class="p-2">
+                {{ form_label(form.telephoneFixe) }}
+                {{ form_widget(form.telephoneFixe) }}
+                {{ form_errors(form.telephoneFixe) }}
+            </div>
+            <div class="p-2">
+                {{ form_label(form.telephoneMobile) }}
+                {{ form_widget(form.telephoneMobile) }}
+                {{ form_errors(form.telephoneMobile) }}
+            </div>
+        </div>
+  </div>  
+
+  <div class="p-2">
+    {{ form_label(form.courriel) }}
+    {{ form_widget(form.courriel) }}
+    {{ form_errors(form.courriel) }}
+  </div>
+
+  <div class="p-2">
+    <div class="form-group">
+        {{ form_label(form.mediasDeContact) }}
+        <div class="d-flex gap-3">
+            {% for choix in form.mediasDeContact %}
+                <div class="form-check form-check-inline">
+                    {{ form_widget(choix, {'attr': {'class': 'form-check-input'}}) }}
+                    {{ form_label(choix, null, {'attr': {'class': 'form-check-label'}}) }}
+                </div>
+            {% endfor %}
+        </div>
+        {{ form_errors(form.mediasDeContact) }}
+    </div>
+  </div>
+
+  <div class="p-2">
+        <div style="grid-template-columns: 1fr 1fr;" class="d-grid gap-3">
+            <div class="p-2">
+                {{ form_label(form.plainPassword.first) }}
+                {{ form_widget(form.plainPassword.first) }}
+                {{ form_errors(form.plainPassword.first) }}
+            </div>
+            <div class="p-2">
+                {{ form_label(form.plainPassword.second) }}
+                {{ form_widget(form.plainPassword.second) }}
+                {{ form_errors(form.plainPassword.second) }}
+            </div>
+        </div>
+  </div>
+
+</div>
+
+<div class="p-2">
+{{ form_label(form.rueEtNumero) }}
+{{ form_widget(form.rueEtNumero) }}
+{{ form_errors(form.rueEtNumero) }}
+</div>
+
+<div style="grid-template-columns: 1fr 1fr;" class="d-grid gap-3">
+
+  <div class="p-2">
+    {{ form_label(form.codePostal) }}
+    {{ form_widget(form.codePostal) }}
+    {{ form_errors(form.codePostal) }}
+  </div>
+
+  <div class="p-2">
+    {{ form_label(form.ville) }}
+    {{ form_widget(form.ville) }}
+    {{ form_errors(form.ville) }}
+  </div>
+
+  <div class="p-2">
+    {{ form_label(form.societe) }}
+    {{ form_widget(form.societe) }}
+    {{ form_errors(form.societe) }}
+  </div>
+
+  <div class="p-2">
+    {{ form_label(form.roles) }}
+    {{ form_widget(form.roles) }}
+    {{ form_errors(form.roles) }}
+  </div>
+
+</div>
+
+    {# {{ form_row(form.genre) }} #}
+    {# <button class="btn">{{ button_label|default('Save') }}</button> #}
+    {# <button class="btn">Save</button> #}
+<div class="d-flex align-items-start justify-content-start">
+  {{ form_row( form.submit ) }}
+  <a href="{{ app.request.headers.get('referer') }}" class="btn btn-outline-light btn-sm shadow ms-4">Abandonner</a>
+</div>
+
+{{ form_end(form) }}
+
+<br><br>
+
+{% endblock %}
