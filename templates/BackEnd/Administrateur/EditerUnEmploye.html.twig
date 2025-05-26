@@ -3,6 +3,7 @@
 {% block title %}{% if edition == true %}Editer{% else %}Ajouter{% endif %} un employé{% endblock %}
 
 {% block body %}
+
 <div class="d-flex justify-content-end position-fixed top-0 start-0 m-3">
     <a href="{{ path('app_liste_des_employes') }}">
         <img class="icone-cliquable" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
@@ -11,13 +12,12 @@
 
 {{ form_start(form) }}
 
-    {# {{ form_widget(form) }} #}
-
-<div class="form-group">
+{# GENRE #}
+<div class="mb-3">
     {{ form_label(form.genre) }}
-    <div class="d-flex gap-3">
+    <div class="d-flex flex-wrap gap-3">
         {% for choix in form.genre %}
-            <div class="form-check form-check-inline">
+            <div class="form-check">
                 {{ form_widget(choix, {'attr': {'class': 'form-check-input'}}) }}
                 {{ form_label(choix, null, {'attr': {'class': 'form-check-label'}}) }}
             </div>
@@ -26,116 +26,110 @@
     {{ form_errors(form.genre) }}
 </div>
 
-<div style="grid-template-columns: 1fr 1fr;" class="d-grid gap-3">
-
-  <div class="p-2">
-    {{ form_label(form.prenom) }}
-    {{ form_widget(form.prenom) }}
-    {{ form_errors(form.prenom) }}
-  </div>
-
-  <div class="p-2">
-    {{ form_label(form.nom) }}
-    {{ form_widget(form.nom) }}
-    {{ form_errors(form.nom) }}
-  </div>
-
-  <div class="p-2">
-        <div style="grid-template-columns: 1fr 1fr;" class="d-grid gap-3">
-            <div class="p-2">
-                {{ form_label(form.telephoneFixe) }}
-                {{ form_widget(form.telephoneFixe) }}
-                {{ form_errors(form.telephoneFixe) }}
-            </div>
-            <div class="p-2">
-                {{ form_label(form.telephoneMobile) }}
-                {{ form_widget(form.telephoneMobile) }}
-                {{ form_errors(form.telephoneMobile) }}
-            </div>
-        </div>
-  </div>  
-
-  <div class="p-2">
-    <div class="p-2">
-      {{ form_label(form.courriel) }}
-      {{ form_widget(form.courriel) }}
-      {{ form_errors(form.courriel) }}
+{# PRENOM + NOM #}
+<div class="row g-3">
+    <div class="col-12 col-md-6">
+        {{ form_label(form.prenom) }}
+        {{ form_widget(form.prenom) }}
+        {{ form_errors(form.prenom) }}
     </div>
-  </div>
-
-  <div class="p-2">
-    <div class="form-group">
-        {{ form_label(form.mediasDeContact) }}
-        <div class="d-flex gap-3">
-            {% for choix in form.mediasDeContact %}
-                <div class="form-check form-check-inline">
-                    {{ form_widget(choix, {'attr': {'class': 'form-check-input'}}) }}
-                    {{ form_label(choix, null, {'attr': {'class': 'form-check-label'}}) }}
-                </div>
-            {% endfor %}
-        </div>
-        {{ form_errors(form.mediasDeContact) }}
+    <div class="col-12 col-md-6">
+        {{ form_label(form.nom) }}
+        {{ form_widget(form.nom) }}
+        {{ form_errors(form.nom) }}
     </div>
-  </div>
+</div>
 
-  <div class="p-2">
-        <div style="grid-template-columns: 1fr 1fr;" class="d-grid gap-3">
-            <div class="p-2">
-                {{ form_label(form.plainPassword.first) }}
-                {{ form_widget(form.plainPassword.first) }}
-                {{ form_errors(form.plainPassword.first) }}
+{# TELEPHONES #}
+<div class="row g-3 mt-3">
+    <div class="col-12 col-md-6">
+        {{ form_label(form.telephoneFixe) }}
+        {{ form_widget(form.telephoneFixe) }}
+        {{ form_errors(form.telephoneFixe) }}
+    </div>
+    <div class="col-12 col-md-6">
+        {{ form_label(form.telephoneMobile) }}
+        {{ form_widget(form.telephoneMobile) }}
+        {{ form_errors(form.telephoneMobile) }}
+    </div>
+</div>
+
+{# COURRIEL #}
+<div class="mt-3">
+    {{ form_label(form.courriel) }}
+    {{ form_widget(form.courriel) }}
+    {{ form_errors(form.courriel) }}
+</div>
+
+{# MEDIAS DE CONTACT #}
+<div class="mt-3">
+    {{ form_label(form.mediasDeContact) }}
+    <div class="d-flex flex-wrap gap-3">
+        {% for choix in form.mediasDeContact %}
+            <div class="form-check">
+                {{ form_widget(choix, {'attr': {'class': 'form-check-input'}}) }}
+                {{ form_label(choix, null, {'attr': {'class': 'form-check-label'}}) }}
             </div>
-            <div class="p-2">
-                {{ form_label(form.plainPassword.second) }}
-                {{ form_widget(form.plainPassword.second) }}
-                {{ form_errors(form.plainPassword.second) }}
-            </div>
-        </div>
-  </div>
-
+        {% endfor %}
+    </div>
+    {{ form_errors(form.mediasDeContact) }}
 </div>
 
-<div class="p-2">
-{{ form_label(form.rueEtNumero) }}
-{{ form_widget(form.rueEtNumero) }}
-{{ form_errors(form.rueEtNumero) }}
+{# PASSWORDS #}
+<div class="row g-3 mt-3">
+    <div class="col-12 col-md-6">
+        {{ form_label(form.plainPassword.first) }}
+        {{ form_widget(form.plainPassword.first) }}
+        {{ form_errors(form.plainPassword.first) }}
+    </div>
+    <div class="col-12 col-md-6">
+        {{ form_label(form.plainPassword.second) }}
+        {{ form_widget(form.plainPassword.second) }}
+        {{ form_errors(form.plainPassword.second) }}
+    </div>
 </div>
 
-<div style="grid-template-columns: 1fr 1fr;" class="d-grid gap-3">
-
-  <div class="p-2">
-    {{ form_label(form.codePostal) }}
-    {{ form_widget(form.codePostal) }}
-    {{ form_errors(form.codePostal) }}
-  </div>
-
-  <div class="p-2">
-    {{ form_label(form.ville) }}
-    {{ form_widget(form.ville) }}
-    {{ form_errors(form.ville) }}
-  </div>
-
-  <div class="p-2">
-    {{ form_label(form.societe) }}
-    {{ form_widget(form.societe) }}
-    {{ form_errors(form.societe) }}
-  </div>
-
-  <div class="p-2">
-    {{ form_label(form.roles) }}
-    {{ form_widget(form.roles) }}
-    {{ form_errors(form.roles) }}
-  </div>
-
+{# ADRESSE RUE #}
+<div class="mt-3">
+    {{ form_label(form.rueEtNumero) }}
+    {{ form_widget(form.rueEtNumero) }}
+    {{ form_errors(form.rueEtNumero) }}
 </div>
 
-<div class="d-flex align-items-start justify-content-start">
-  {{ form_row(form.submit) }}
-  <a type="button" onclick="window.location.href='{{ path('app_liste_des_employes') }}'" class="btn btn-outline-light btn-sm shadow ms-4">Abandonner</a>
+{# CODE POSTAL / VILLE / SOCIETE / ROLES #}
+<div class="row g-3 mt-3">
+    <div class="col-12 col-md-6">
+        {{ form_label(form.codePostal) }}
+        {{ form_widget(form.codePostal) }}
+        {{ form_errors(form.codePostal) }}
+    </div>
+    <div class="col-12 col-md-6">
+        {{ form_label(form.ville) }}
+        {{ form_widget(form.ville) }}
+        {{ form_errors(form.ville) }}
+    </div>
+    <div class="col-12 col-md-6">
+        {{ form_label(form.societe) }}
+        {{ form_widget(form.societe) }}
+        {{ form_errors(form.societe) }}
+    </div>
+    <div class="col-12 col-md-6">
+        {{ form_label(form.roles) }}
+        {{ form_widget(form.roles) }}
+        {{ form_errors(form.roles) }}
+    </div>
+</div>
+
+{# BOUTONS #}
+<div class="d-flex align-items-start justify-content-start mt-4">
+    {{ form_row(form.submit) }}
+    <a type="button"
+       href="{{ path('app_liste_des_employes') }}"
+       class="btn btn-outline-secondary btn-sm ms-4">
+        Abandonner
+    </a>
 </div>
 
 {{ form_end(form) }}
-
-<br><br>
 
 {% endblock %}
