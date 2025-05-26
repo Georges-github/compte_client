@@ -19,7 +19,7 @@
 
 {% block body %}
 <div class="d-flex justify-content-end position-fixed top-0 start-0 m-3">
-    <a href="{{ path('app_liste_des_contrats' , { id : client.id , pathContratDansPublic: asset('storage/' ~ contrat.cheminFichier) }) }}">
+    <a href="{{ path('app_liste_des_contrats' , { id : client.id }) }}">
         <img class="icone-cliquable" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
     </a>
 </div>
@@ -115,28 +115,31 @@
     </div>
 
 {% if etatsSuccessifsSpecifiesPar is defined and etatsSuccessifsSpecifiesPar|length > 0 %}
-    <p class="mt-5 fs-5 fw-semibold">Etats successifs du contrat :</p>
+    <p class="mt-6 fs-5 fw-semibold mt-3">Etats successifs du contrat :</p>
     <ul>
         {% for etat in etatsSuccessifsSpecifiesPar %}
-            <li>{{ etat.etat.etat }} - spécifié par {{ etat.specifiePar.prenom }} {{ etat.specifiePar.nom }} le {{ etat.etat.dateHeureInsertion |format_datetime(locale='fr', pattern='EEEE d MMMM y à HH:mm') }} .</li>
+            <li><span class="badge text-bg-light">{{ etat.etat.etat }}</span> - spécifié par {{ etat.specifiePar.prenom }} {{ etat.specifiePar.nom }} le {{ etat.etat.dateHeureInsertion |format_datetime(locale='fr', pattern='EEEE d MMMM y à HH:mm') }} .</li>
         {% endfor %}
     </ul>
 {% endif %}
 
 {% if contrat.cheminFichier is defined and contrat.cheminFichier is not null %}
-    <span class="fw-bold">Intitulé : </span><span class="fs-4 fw-semibold"> {{ contrat.cheminFichier|split('/')|last }} </span>
-
-    {# <div id="pdf-textlayer-container" class="border border-success border-5 border-opacity-50 rounded"></div> #}
-<div class="d-flex flex-column">
-    <div class="d-flex justify-content-center d-inline-block">
-        <button id="prev" class='btn btn-outline-light btn-sm mb-1'>Précédente</button>
-        &nbsp; &nbsp;
-        <span>Page: <span id="page_num"></span> / <span id="page_count"></span></span>
-        &nbsp; &nbsp;
-        <button id="next" class='btn btn-outline-light btn-sm mb-1'>Suivante</button>
+    <div class="d-flex justify-content-center mb-4">
+        <span class="fs-5 fw-semibold">{{ contrat.cheminFichier|split('/')|last }}</span>
     </div>
-    <div class="d-flex justify-content-center">
-        <canvas id="the-canvas" class="border border-primary border-5 border-opacity-50 rounded"></canvas>
+
+<div class="d-flex justify-content-center">
+    <div class="d-flex flex-column" style="width: fit-content">
+        <div class="d-flex justify-content-between d-inline-block mb-1">
+            <button id="prev" class='btn btn-outline-primary btn-sm shadow mb-1'>Page précédente</button>
+            &nbsp; &nbsp;
+            <span>Page: <span id="page_num"></span> / <span id="page_count"></span></span>
+            &nbsp; &nbsp;
+            <button id="next" class='btn btn-outline-primary btn-sm shadow mb-1'>Page suivante</button>
+        </div>
+        <div class="d-flex justify-content-center">
+            <canvas id="the-canvas" class="border border-primary border-5 border-opacity-50 rounded"></canvas>
+        </div>
     </div>
 </div>
 
@@ -232,10 +235,7 @@
 {% endif %}
 
     <br>
-    <a href="{{ path('app_liste_des_contrats', {
-        id: client.id,
-        pathContratDansPublic: asset('storage/' ~ contrat.cheminFichier)
-    }) }}" class="btn btn-outline-light btn-sm shadow mt-4">Retour</a>
+    <a href="{{ path('app_liste_des_contrats', { id: client.id }) }}" class="btn btn-outline-light btn-sm shadow mt-4">Retour</a>
 
 </div>
 

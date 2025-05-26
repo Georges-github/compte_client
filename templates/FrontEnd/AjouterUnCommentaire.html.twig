@@ -36,7 +36,6 @@
     </a>
 </div>
 
-<!-- Conteneur principal responsive et centré -->
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
@@ -45,7 +44,7 @@
             {{ form_row( form.texte ) }}
             {{ form_row( form.legende ) }}
             {{ form_row( form.photo ) }}
-            <div class="d-flex align-items-start justify-content-start mt-3">
+            <div class="d-flex align-items-start justify-content-start mt-4">
                 {{ form_row( form.submit ) }}
                 <a href="{{ path('app_afficher_fac') }}" class="btn btn-outline-light btn-sm shadow ms-4">Abandonner</a>
             </div>

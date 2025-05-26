@@ -17,20 +17,22 @@
 
             {% if publication is defined and publication.photos|length > 0 %}
             <div id="photo-{{ publication.photos[0].id }}">
-                <div class="border border-primary border-2">
+                <div class="d-flex flex-column align-items-center">
                     <img src="{{ path('serve_image', { filename: publication.photos[0].cheminFichierImage }) }}" alt="Image" width="150">
+                    <p class="fw-light fst-italic">{{ publication.photos[0].legende }}</p>
                 </div>
-                <p class="fw-light fst-italic">{{ publication.photos[0].legende }}</p>
-                <p class="fw-light fs-6">Pour remplacer l'image par une autre, d'abord supprimer l'image actuelle.</p>
-                <span data-bs-custom-class="custom-tooltip-delete" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Supprimer l'image">
-                    <button
-                    type="button"
-                    class="btn btn-outline-danger btn-sm shadow btn-delete-photo mb-3"
-                    data-id="{{ publication.photos[0].id }}"
-                    data-token="{{ csrf_token('delete-photo-' ~ publication.photos[0].id) }}">
-                    &#x1f5d1;
-                    </button>
-                </span>
+                <div class="d-flex justify-content-between align-items-start">
+                    <span data-bs-custom-class="custom-tooltip-delete" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Supprimer l'image">
+                        <button
+                        type="button"
+                        class="btn btn-outline-danger btn-sm shadow btn-delete-photo mt-2"
+                        data-id="{{ publication.photos[0].id }}"
+                        data-token="{{ csrf_token('delete-photo-' ~ publication.photos[0].id) }}">
+                        &#x1f5d1;
+                        </button>
+                    </span>
+                    <p class="fw-light fs-6 ms-3">Pour remplacer l'image par une autre, d'abord supprimer l'image actuelle.</p>
+                </div>
             </div>
             {% endif %}
 
@@ -42,7 +44,7 @@
                 {{ form_row( form.photo ) }}
             </div>
 
-            <div class="d-flex align-items-start justify-content-start">
+            <div class="d-flex align-items-start justify-content-start mt-4">
                 {{ form_row( form.submit ) }}
                 <a href="{{ path('app_afficher_fac') }}" class="btn btn-outline-light btn-sm shadow ms-4">Abandonner</a>
             </div>

@@ -92,30 +92,34 @@
 </div>
 {% endif %}
 
-{% if pathContratActuel is defined and pathContratActuel is not null %}
-    <div class="alert alert-warning mt-2" role="alert">
-        ⚠️ Un contrat est déjà enregistré (<strong> {{ pathContratActuel|split('/')|last }} </strong>).<br>
-        En choisissant un nouveau contrat ci-dessous, celui-ci <strong>remplacera</strong> l'ancien lors de la validation du formulaire.
+<div style="grid-template-columns: 1fr 1fr;" class="d-grid gap-3">
+    <div style="" class="p-2">
+
+        {{ form_label(form.cheminFichier) }}
+        {{ form_widget(form.cheminFichier) }}
+        {{ form_errors(form.cheminFichier) }}
+
+        <div class="d-flex align-items-start justify-content-start mt-5">
+            {{ form_row( form.submit ) }}
+            <a href="{{ path('app_liste_des_contrats' , { id: id }) }}" class="btn btn-outline-light btn-sm shadow ms-4">Abandonner</a>
+        </div>
+
+
     </div>
-    <p>
-        📄 <a href="{{ asset(pathContratActuel|default('')) }}" target="_blank">
-                Télécharger le contrat actuel
-            </a>
-             : <strong> {{ pathContratActuel|split('/')|last }} </strong> .
-    </p>
-{% endif %}
-
-<div style="" class="p-2">
-
-    {{ form_label(form.cheminFichier) }}
-    {{ form_widget(form.cheminFichier) }}
-    {{ form_errors(form.cheminFichier) }}
-
-</div>
-
-<div class="d-flex align-items-start justify-content-start mt-4">
-{{ form_row( form.submit ) }}
-<a href="{{ path('app_liste_des_contrats' , { id: id }) }}" class="btn btn-outline-light btn-sm shadow ms-4">Abandonner</a>
+    <div style="" class="p-2">
+        {% if pathContratActuel is defined and pathContratActuel is not null %}
+            <div class="alert alert-warning fs-6 mt-2" role="alert">
+                ⚠️ Un contrat est déjà enregistré (<strong> {{ pathContratActuel|split('/')|last }} </strong>).<br>
+                En choisissant un nouveau contrat, celui-ci <strong>remplacera</strong> l'ancien lors de la validation du formulaire.
+            </div>
+            <p>
+                📄 <a href="{{ asset(pathContratActuel|default('')) }}" target="_blank">
+                        Télécharger le contrat actuel
+                    </a>
+                    : <strong> {{ pathContratActuel|split('/')|last }} </strong> .
+            </p>
+        {% endif %}
+    </div>
 </div>
 
 {{ form_end(form) }}

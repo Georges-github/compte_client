@@ -79,7 +79,7 @@
                 <th>Numéro</th>
                 <th>Date Prévue</th>
                 <th>Fin Prévue</th>
-                {# <th>Etat</th> #}
+                <th>Etat</th>
                 <th>Début effectif</th>
                 <th>Fin effective</th>
                 <th></th>
@@ -87,11 +87,13 @@
         </thead>
         <tbody>
             {% for c in listeDesContrats %}
+                {% set etat = c.etatsContrat|last %}
                 <tr>
                     <td>{{c.intitule}}</td>
                     <td>{{c.numeroContrat}}</td>
                     <td>{{c.dateDebutPrevue ? c.dateDebutPrevue|date('d-m-Y') : ''}}</td>
                     <td>{{c.dateFinPrevue ? c.dateFinPrevue|date('d-m-Y') : ''}}</td>
+                    <td>{{ etat.etat }}</td>
                     <td>{{c.dateDebut ? c.dateDebut|date('d-m-Y') : ''}}</td>
                     <td>{{c.dateFin ? c.dateFin|date('d-m-Y') : ''}}</td>
                     <td style="vertical-align: middle;">
@@ -114,21 +116,49 @@
     </table>
 </div>
 
-{# <div id="table-mobile" class="d-block d-md-none">
-    {% for e in listeDesEmployes %}
-        <div class="d-flex justify-content-start mb-3">
-            <div class="w-75">
-                <span class="fw-bold fs-3">{{e.prenom}} {{e.nom}}</span><br>
-                {% for r in e.roles %}<span class="fs-6 fs-italic">{{r|replace({'ROLE_':''})|replace({'_':' '})|lower|capitalize}}{% if not(loop.last) %} ,<br>{% endif %}</span>{% endfor %}<br>
-                {{e.Courriel}}
+<div id="table-mobile" class="d-block d-md-none">
+    {% for c in listeDesContrats %}
+        {% set etat = c.etatsContrat|last %}
+            <span class="fw-bold fs-6">{{c.numeroContrat}}</span><br>
+            <div class="row">
+                <div class="col-1"></div>
+                <div class="col-5 fw-bold">Début prévu :</div>
+                <div class="col-6">{{ c.dateDebutPrevue ? c.dateDebutPrevue|date('d-m-Y') : '' }}</div>
             </div>
-            <div class="d-flex flex-column align-items-center justify-content-center">
-                <a href="{{ path('app_voir_un_employe' , {id : e.id}) }}" class="btn btn-outline-light btn-sm w-100 mb-3">Voir</a>
-                <a href="" class="btn btn-outline-light btn-sm w-100">Editer</a>
+            <div class="row">
+                <div class="col-1"></div>
+                <div class="col-5 fw-bold">Fin prévue :</div>
+                <div class="col-6">{{ c.dateFinPrevue ? c.dateFinPrevue|date('d-m-Y') : '' }}</div>
             </div>
-        </div>
+            <div class="row">
+                <div class="col-1"></div>
+                <div class="col-5 fw-bold">État :</div>
+                <div class="col-6">{{ etat.etat }}</div>
+            </div>
+            <div class="row">
+                <div class="col-1"></div>
+                <div class="col-5 fw-bold">Début :</div>
+                <div class="col-6">{{ c.dateDebut ? c.dateDebut|date('d-m-Y') : '' }}</div>
+            </div>
+            <div class="row">
+                <div class="col-1"></div>
+                <div class="col-5 fw-bold">Fin :</div>
+                <div class="col-6">{{ c.dateFin ? c.dateFin|date('d-m-Y') : '' }}</div>
+            </div>
+
+            <div class="d-flex align-items-center justify-content-around mt-3">
+                <a href="{{ path('app_voir_un_contrat' , {id : c.id}) }}" class="btn btn-outline-light btn-sm shadow" data-bs-custom-class="custom-tooltip-edition shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Voir">
+                {# Voir #}<img class="icone-cliquable" src="{{ asset('assets/images/icone_loupe.png') }}" alt="Icône non trouvé."></img>
+                </a>
+                {% if employeOuAdministrateur == true %}
+                <a href="{{ path( 'app_editer_un_contrat' , { id : c.id} ) }}" class="btn btn-outline-light btn-sm shadow ms-3" data-bs-custom-class="custom-tooltip-edition shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Editer">
+                {# Editer #}<img class="icone-cliquable" src="{{ asset('assets/images/icone_edition.png') }}" alt="Icône non trouvé."></img>
+                {% endif %}
+                </a>
+            </div>
+        {# </div> #}
     {% endfor %}
-</div> #}
+</div>
 
 {% if employeOuAdministrateur == true %}
     <a href="{{ path('app_liste_des_comptes_clients') }}" class="btn btn-outline-light btn-sm shadow mt-4">Retour</a>

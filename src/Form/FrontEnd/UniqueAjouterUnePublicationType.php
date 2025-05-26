@@ -43,7 +43,7 @@ class UniqueAjouterUnePublicationType extends AbstractType {
             ],
         ])
         ->add( 'submit', SubmitType::class, [ 'label' => 'Ajouter' ,
-        'attr' => ['class' => 'btn btn-outline-light btn-sm mt-3'] ] )
+        'attr' => ['class' => 'btn btn-outline-light btn-sm shadow'] ] )
         ;
     }
 

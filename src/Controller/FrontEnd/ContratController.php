@@ -97,7 +97,7 @@ class ContratController extends AbstractController {
 
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_liste_des_contrats', [ 'id' => $idClient , 'pathContratDansPublic' => '' ], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_liste_des_contrats', [ 'id' => $idClient ], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render( 'FrontEnd/EditerUnContrat.html.twig' , [ 'form' => $form, 'edition' => false, 'id' => $idClient ] );
@@ -259,7 +259,7 @@ class ContratController extends AbstractController {
             //     unlink( $pathContratActuelDansVar );
             // }
 
-            return $this->redirectToRoute('', [ 'id' => $client->getId() , 'pathContratDansPublic' => '' ] , Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_liste_des_contrats', [ 'id' => $client->getId() ] , Response::HTTP_SEE_OTHER);
 
         }
 
@@ -289,7 +289,7 @@ class ContratController extends AbstractController {
 
         $client = $contrat->getIdUtilisateur();
 
-        return $this->redirectToRoute('', [ 'id' => $client->getId() , 'pathContratDansPublic' => '' ] , Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_liste_des_contrats', [ 'id' => $client->getId() ] , Response::HTTP_SEE_OTHER);
     }
 
 

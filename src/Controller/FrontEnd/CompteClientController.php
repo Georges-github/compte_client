@@ -49,14 +49,6 @@ final class CompteClientController extends AbstractController {
             $pileDePDFDansPublic->pop();
         }
 
-        // if ( ! empty( $request->query->get( 'pathContratDansPublic' ) ) ) {
-        //     $pathContratActuelDansPublic = str_replace( "//" , "/" , $this->params->get('app.public_upload_dir') . $request->query->get( 'pathContratDansPublic' ) );
-        //     $pathContratActuelDansPublic = str_replace( "/storage/" , "/" , $pathContratActuelDansPublic );
-        //     if ( file_exists( $pathContratActuelDansPublic ) ) {
-        //         unlink( $pathContratActuelDansPublic );
-        //     }
-        // }
-
         $id = $request->attributes->get( 'id' );
 
         $client = $utilisateurRepository->findOneBy( [ 'id' => $id ] );
@@ -75,7 +67,7 @@ final class CompteClientController extends AbstractController {
             ->getQuery()
             ->getResult();
 
-            /** @var Utilisateur $utilisateur */
+        /** @var Utilisateur $utilisateur */
         $utilisateur = $this->getUser();
 
         return $this->render( 'FrontEnd/listeDesContrats.html.twig' , [ 'employeOuAdministrateur' => $utilisateur->sesRolesContiennent( 'EMPLOYE' ), 'client' => $client, 'listeDesContrats' => $listeDesContrats ] );
