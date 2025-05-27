@@ -28,7 +28,7 @@
                         class="btn btn-outline-danger btn-sm shadow btn-delete-photo mt-2"
                         data-id="{{ publication.photos[0].id }}"
                         data-token="{{ csrf_token('delete-photo-' ~ publication.photos[0].id) }}">
-                        &#x1f5d1;
+                        {# &#x1f5d1; #}<img class="icone-cliquable" src="{{ asset('assets/images/icone_corbeille.png') }}" alt="Icône non trouvé."></img>
                         </button>
                     </span>
                     <p class="fw-light fs-6 ms-3">Pour remplacer l'image par une autre, d'abord supprimer l'image actuelle.</p>

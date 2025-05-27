@@ -30,7 +30,9 @@
             <input type="hidden" name="_token" value="{{ csrf_token('supprimer_une_fac') }}">
         </form>
         <div data-bs-custom-class="custom-tooltip-delete" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Supprimer la fiche">
-            <button type="button" class="btn btn-outline-danger btn-sm shadow" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-FAC">&#x1f5d1;</button>
+            <button type="button" class="btn btn-outline-danger btn-sm shadow" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-FAC">
+            {# &#x1f5d1; #}<img class="icone-cliquable" src="{{ asset('assets/images/icone_corbeille.png') }}" alt="Icône non trouvé."></img>
+            </button>
         </div>
         {% include 'Composants/_confirm_delete_modal.html.twig' with {
             id: "FAC",
@@ -52,7 +54,19 @@
 
     {% for photo in publication.photos %}
 
+        <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#imageModal_{{ noPublication }}">
+        {# <img src="https://cdn-icons-png.flaticon.com/512/709/709592.png" alt="Zoom" style="width: 32px;"> #}
         <img src="{{ path('serve_image', { filename: photo.cheminFichierImage }) }}" alt="Image" width="150">
+        </button>
+        <div class="modal fade" id="imageModal_{{ noPublication }}" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content bg-transparent border-0">
+                <div class="modal-body text-center">
+                    <img src="{{ path('serve_image', { filename: photo.cheminFichierImage }) }}" alt="Image zoomée" class="img-fluid rounded shadow">
+                </div>
+                </div>
+            </div>
+        </div>
         <p class="fs-6 fst-italic fw-light">{{ photo.legende }}</p>
 
     {% endfor %}
@@ -76,7 +90,8 @@
         </form>
         <div data-bs-custom-class="custom-tooltip-delete" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Supprimer la publication">
             <button type="button" class="btn btn-sm shadow" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-{{ publication.id }}">
-                &#x1f5d1;
+                {# &#x1f5d1; #}
+                <img class="icone-cliquable" src="{{ asset('assets/images/icone_corbeille.png') }}" alt="Icône non trouvé."></img>
             </button>
         </div>
         {% include 'Composants/_confirm_delete_modal.html.twig' with {
