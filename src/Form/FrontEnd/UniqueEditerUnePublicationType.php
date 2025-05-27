@@ -28,7 +28,7 @@ class UniqueEditerUnePublicationType extends AbstractType {
         ->add( 'titre' , TextType::class , [ 'label' => 'Titre' ] )
         ->add( 'contenu' , TextareaType::class , [ 'label' => 'Contenu' ] )
         ->add('legende', TextType::class, [
-            'label' => 'Légende',
+            'label' => 'Légende de la photo',
             'mapped' => false,
             'required' => false
         ])

@@ -35,19 +35,19 @@
 </ul> #}
 
 
-{% if employe %}
 
+{% if employe %}
 <div class="d-flex justify-content-around">
     <a href="{{ path('app_afficher_fac') }}" class="btn btn-sm btn-outline-primary shadow">Consulter la fiche d'avancement du chantier</a>
 
     <form id="delete-form-{{ contrat.id }}" action="{{ path('app_supprimer_un_contrat', {id: contrat.id}) }}" method="post">
         <input type="hidden" name="_token" value="{{ csrf_token('supprimer_un_contrat_' ~ contrat.id) }}">
     </form>
-        <div data-bs-custom-class="custom-tooltip-delete" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Supprimer la fiche">
-            <button type="button" class="btn btn-outline-danger btn-sm shadow" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-{{ contrat.id }}">
-                {# &#x1f5d1; #}<img class="icone-cliquable" src="{{ asset('assets/images/icone_corbeille.png') }}" alt="Icône non trouvé."></img>
-            </button>
-        </div>
+    <div data-bs-custom-class="custom-tooltip-delete" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Supprimer la fiche">
+        <button type="button" class="btn btn-outline-danger btn-sm shadow" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-{{ contrat.id }}">
+            {# &#x1f5d1; #}<img class="icone-cliquable" src="{{ asset('assets/images/icone_corbeille.png') }}" alt="Icône non trouvé."></img>
+        </button>
+    </div>
     {% include 'Composants/_confirm_delete_modal.html.twig' with {
         id: contrat.id,
         modalTitle: 'Supprimer le contrat',
@@ -55,45 +55,8 @@
         confirmButtonLabel: 'Oui, supprimer'
     } %}
 </div>
-
-
-
-    {# <form action="{{ path('app_supprimer_un_contrat', { 'id': contrat.id }) }}" method="POST" style="display: none;" id="deleteForm{{ contrat.id }}">
-        <button type="submit" class="btn btn-danger">Supprimer</button>
-        <input type="hidden" name="_token" value="{{ csrf_token('supprimer_un_contrat' ~ contrat.id) }}">
-    </form>
-    <a href="#" class="btn btn-outline-danger btn-sm" onclick="showDeleteModal({{ contrat.id }}); return false;">Supprimer ce contrat</a>
-</div>
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Confirmation de suppression</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Êtes-vous sûr de vouloir supprimer ce contrat ? Cette action est irréversible.
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                <button type="button" class="btn btn-danger" onclick="deleteContract();">Supprimer</button>
-            </div>
-        </div>
-    </div>
-</div>
-<script>
-    function showDeleteModal(contratId) {
-        window.contractToDelete = contratId;
-        const myModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-        myModal.show();
-    }
-
-    function deleteContract() {
-        const form = document.getElementById('deleteForm' + window.contractToDelete);
-        form.submit();
-    }
-</script> #}
-
+{% else %}
+<a href="{{ path('app_afficher_fac') }}" class="btn btn-sm btn-outline-primary shadow">Consulter la fiche d'avancement du chantier</a>
 {% endif %}
 
 <div class="container my-5">

@@ -60,7 +60,7 @@ class FACController extends AbstractController {
             $publication->commentairesArbre = $commentaireTreeBuilder->buildTree($commentaires);
         }
 
-        return $this->render('FrontEnd/afficherFAC.html.twig', ['contrat' => $contrat  , 'publications' => $publications]);
+        return $this->render('FrontEnd/afficherFAC.html.twig', ['contrat' => $contrat  , 'publications' => $publications , 'employe' => $this->getUser()->sesRolesContiennent( "EMPLOYE" ) ]);
     }
 
     #[Route('/fac' , name: 'app_ancien_afficher_fac' , methods: ['GET'])]
@@ -398,6 +398,8 @@ class FACController extends AbstractController {
 
             }
 
+            $commentaire->setIdUtilisateur($utilisateur);
+
             $entityManager->persist($commentaire);
 
             $entityManager->flush();
@@ -524,6 +526,8 @@ class FACController extends AbstractController {
 
             }
 
+            $commentaire->setIdUtilisateur($utilisateur);
+
             $entityManager->persist($commentaire);
 
             $entityManager->flush();
@@ -538,6 +542,9 @@ class FACController extends AbstractController {
     {
         foreach ($commentaires as $commentaire) {
             $indent = 10 + ($niveau * 10);
+            $pdf->Ln(3);
+            $pdf->Line($indent, $pdf->GetY(), 200, $pdf->GetY());
+            $pdf->Ln(1);
             $pdf->SetX($indent);
             $pdf->SetDrawColor(220, 220, 220);
             $pdf->SetLineWidth(0.3);
@@ -551,7 +558,7 @@ class FACController extends AbstractController {
             $pdf->Ln(2);
 
             $pdf->SetDrawColor(200, 200, 200);
-            $pdf->Line($indent, $pdf->GetY(), 200, $pdf->GetY());
+            // $pdf->Line($indent, $pdf->GetY(), 200, $pdf->GetY());
             $pdf->Ln(2);
 
             foreach ($commentaire->getPhotos() as $photo) {
@@ -598,7 +605,14 @@ class FACController extends AbstractController {
         $pdf->AddPage();
         $pdf->SetFont('Arial', 'B', 14);
 
+        $nbPublications = count( $publications );
+        $i = 0;
         foreach ($publications as $publication) {
+
+            $i++;
+
+            $pdf->Line(10, $pdf->GetY(), 200, $pdf->GetY());
+            $pdf->Ln(1);
             $pdf->SetFont('Arial', 'B', 14);
             $pdf->SetTextColor(0);
             $pdf->Cell(0, 10, utf8_decode('Publication : ' . $publication->getTitre()), 0, 1, 'L');
@@ -607,8 +621,8 @@ class FACController extends AbstractController {
             $pdf->Ln(3);
 
             $pdf->SetDrawColor(180, 180, 180);
-            $pdf->Line(10, $pdf->GetY(), 200, $pdf->GetY());
-            $pdf->Ln(4);
+            // $pdf->Line(10, $pdf->GetY(), 200, $pdf->GetY());
+            $pdf->Ln(3);
 
             foreach ($publication->getPhotos() as $photo) {
                 $cheminImage = $projectDir . '/var/storage/' . $photo->getCheminFichierImage();
@@ -624,7 +638,9 @@ class FACController extends AbstractController {
 
             $this->ajouterCommentaires($pdf, $publication->commentairesArbre, $projectDir, 0);
 
-            $pdf->AddPage();
+            if ( $i < $nbPublications ) {
+                $pdf->AddPage();
+            }
         }
 
         return new Response($pdf->Output('I', 'publication.pdf', true), 200, [

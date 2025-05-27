@@ -10,18 +10,20 @@
     </a>
 </div>
 
-{% if publications is defined and publications|length > 0 %}
-
 <div class="d-flex justify-content-between">
     <div class="d-flex justify-content-start">
+{% if employe %}
         <form action="{{ path('app_unique_ajouter_une_publication') }}" method="POST">
             <input type="hidden" name="_token" value="{{ csrf_token('ajouter_une_publication') }}">
             <button type="submit" class="btn btn-outline-light btn-sm shadow me-5">Ajouter une publication</button>
         </form>
+{% endif %}
+
+{% if publications is defined and publications|length > 0 %}
 
         <form action="{{ path('app_generer_pdf_fac', {id: contrat.id}) }}" method="post" target="_blank">
             <input type="hidden" name="_token" value="{{ csrf_token('generer_pdf_fac_' ~ contrat.id) }}">
-            <button type="submit" class="btn btn-outline-danger btn-sm shadow">Générer PDF</button>
+            <button type="submit" class="btn btn-outline-light btn-sm shadow">Générer PDF</button>
         </form>
     </div>
 
@@ -48,17 +50,17 @@
 
     <div class="d-flex flex-column">
         <span class="fs-6 badge text-bg-light mt-5 mb-1" style="width: fit-content">Publication No {{noPublication}} : {{ publication.titre }}</span>
-        <span class="fst-italic fw-light">{{ publication.dateHeureMAJ|date('Y-m-d H:i') }}</span>
+        <span class="fst-italic fw-light">{{publication.idUtilisateur.prenom}} {{publication.idUtilisateur.nom}}, {{ publication.dateHeureInsertion |format_datetime(locale='fr', pattern='EEEE d MMMM y à HH:mm') }}</span>
         <span class="mb-2">{{ publication.contenu }}</span>
     </div>
 
     {% for photo in publication.photos %}
 
-        <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#imageModal_{{ noPublication }}">
-        {# <img src="https://cdn-icons-png.flaticon.com/512/709/709592.png" alt="Zoom" style="width: 32px;"> #}
-        <img src="{{ path('serve_image', { filename: photo.cheminFichierImage }) }}" alt="Image" width="150">
+        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#imageModal_publication_{{ noPublication }}">
+            {# <img src="https://cdn-icons-png.flaticon.com/512/709/709592.png" alt="Zoom" style="width: 32px;"> #}
+            <img src="{{ path('serve_image', { filename: photo.cheminFichierImage }) }}" alt="Image" width="150">
         </button>
-        <div class="modal fade" id="imageModal_{{ noPublication }}" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal fade" id="imageModal_publication_{{ noPublication }}" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content bg-transparent border-0">
                 <div class="modal-body text-center">
@@ -114,7 +116,9 @@
 <br><br>
 
 {% else %}
-    <p class="text-danger">Aucune publication</p>
+    </div>
+</div>
+<p class="text-danger mt-5">Aucune publication</p>
 {% endif %}
 
 {% endblock %}

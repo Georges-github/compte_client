@@ -132,6 +132,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private bool $isVerified = false;
 
+    #[ORM\OneToOne(mappedBy: 'idUtilisateur', cascade: ['persist', 'remove'])]
+    private ?Commentaire $commentaires = null;
+
     public function __construct()
     {
         $this->etatContrats = new ArrayCollection();
@@ -535,6 +538,23 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
             }
         }
         return $oui;
+    }
+
+    public function getCommentaires(): ?Commentaire
+    {
+        return $this->commentaires;
+    }
+
+    public function setCommentaires(Commentaire $commentaires): static
+    {
+        // set the owning side of the relation if necessary
+        if ($commentaires->getIdUtilisateur() !== $this) {
+            $commentaires->setIdUtilisateur($this);
+        }
+
+        $this->commentaires = $commentaires;
+
+        return $this;
     }
 
 }

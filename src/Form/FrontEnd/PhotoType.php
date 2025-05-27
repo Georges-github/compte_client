@@ -17,7 +17,7 @@ class PhotoType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('legende', TextType::class, [
-            'label' => 'Légende',
+            'label' => 'Légende de la photo',
         ])
         ->add('imageFile', FileType::class, [
             'label' => 'Photo',

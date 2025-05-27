@@ -1,9 +1,26 @@
 <div style="margin-left: {{ niveau * 20 }}px; margin-top: 20px; border-left: 1px solid rgb(248,249,250); padding-left: 10px;">
-    <p><strong>Commentaire :</strong> {{ commentaire.texte }}</p>
+    <div class="d-flex flex-column">
+        <span><strong>Commentaire :</strong> {{ commentaire.texte }}</span>
+        <span class="fst-italic fw-light mb-2">{{commentaire.idUtilisateur.prenom}} {{commentaire.idUtilisateur.nom}}, {{ commentaire.dateHeureInsertion |format_datetime(locale='fr', pattern='EEEE d MMMM y à HH:mm') }}</span>
+    </div>
 
     {% for photo in commentaire.photos %}
 
-        <img src="{{ path('serve_image', { filename: photo.cheminFichierImage }) }}" alt="Image" width="150">
+        {% set modalId = 'imageModal_' ~ photo.cheminFichierImage|replace({'/': '_', '.': '_', ':': '_'}) %}
+        {# <img src="{{ path('serve_image', { filename: photo.cheminFichierImage }) }}" alt="Image" width="150"> #}
+        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#{{modalId}}">
+            {# <img src="https://cdn-icons-png.flaticon.com/512/709/709592.png" alt="Zoom" style="width: 32px;"> #}
+            <img src="{{ path('serve_image', { filename: photo.cheminFichierImage }) }}" alt="Image" width="150">
+        </button>
+        <div class="modal fade" id="{{modalId}}" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content bg-transparent border-0">
+                <div class="modal-body text-center">
+                    <img src="{{ path('serve_image', { filename: photo.cheminFichierImage }) }}" alt="Image zoomée" class="img-fluid rounded shadow">
+                </div>
+                </div>
+            </div>
+        </div>
         <p class="fs-6 fst-italic fw-light">{{ photo.legende }}</p>
 
     {% endfor %}

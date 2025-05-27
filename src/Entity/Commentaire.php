@@ -44,6 +44,10 @@ class Commentaire
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'idCommentaireParent')]
     private Collection $commentaires;
 
+    #[ORM\OneToOne(inversedBy: 'commentaires', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Utilisateur $idUtilisateur = null;
+
     public function __construct()
     {
         $this->photos = new ArrayCollection();
@@ -171,6 +175,18 @@ class Commentaire
                 $commentaire->setIdCommentaireParent(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getIdUtilisateur(): ?Utilisateur
+    {
+        return $this->idUtilisateur;
+    }
+
+    public function setIdUtilisateur(Utilisateur $idUtilisateur): static
+    {
+        $this->idUtilisateur = $idUtilisateur;
 
         return $this;
     }
