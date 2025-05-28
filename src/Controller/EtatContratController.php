@@ -2,14 +2,20 @@
 
 namespace App\Controller;
 
-use App\Entity\EtatContrat;
-use App\Form\EtatContratType;
-use App\Repository\EtatContratRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
+use Doctrine\ORM\EntityManagerInterface;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+
 use Symfony\Component\Routing\Attribute\Route;
+
+use App\Entity\EtatContrat;
+
+use App\Repository\EtatContratRepository;
+
+use App\Form\EtatContratType;
 
 #[Route('/etatcontrat')]
 final class EtatContratController extends AbstractController

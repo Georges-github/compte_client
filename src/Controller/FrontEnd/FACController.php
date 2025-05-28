@@ -4,40 +4,43 @@ namespace App\Controller\FrontEnd;
 
 use App\Entity\Photo;
 use App\Entity\Publication;
-use App\Entity\Contrat;
-use App\Entity\Commentaire;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+use Doctrine\ORM\EntityManagerInterface;
+
+use Symfony\Component\Routing\Attribute\Route;
+
+use App\Service\ContratActif;
+
+use App\Entity\Commentaire;
+
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 use App\Form\FrontEnd\NouveauAjouterUnePublicationType;
-
 use App\Form\FrontEnd\UniqueAjouterUnePublicationType;
+
 use App\Form\FrontEnd\UniqueEditerUnePublicationType;
 
 use App\Form\FrontEnd\AjouterUnCommentaireType;
 
 use App\Form\FrontEnd\EditerUnePublicationType;
-use App\Form\FrontEnd\AjouterUnePublicationType;
+use App\Outils\OutilsDivers;
 use App\Repository\CommentaireRepository;
 use App\Repository\PublicationRepository;
-use App\Service\ContratActif;
-use App\Service\FileUploader;
+
 use App\Service\CommentaireTreeBuilder;
-use Doctrine\ORM\EntityManagerInterface;
 
-use App\Service\PdfWithFooter;
-
-use App\Outils;
+use App\Service\FileUploader;
 
 use FPDF;
 
+use App\Service\PdfWithFooter;
 
-
-use App\Utils\Tracer;
-
-use Symfony\Component\Routing\Attribute\Route;
+use App\Outils\Tracer;
 
 #[Route('/fac')]
 #[IsGranted('IS_AUTHENTICATED_FULLY')]
@@ -559,7 +562,7 @@ class FACController extends AbstractController {
             $pdf->SetX($indent);
             $auteur = $commentaire->getIdUtilisateur();
             $pdf->SetFont('Arial', 'I', 10);
-            $pdf->MultiCell(0, 6, utf8_decode($auteur->getPrenom() . " "  . $auteur->getNom() . ", le " . formaterUneDateEnFr( $commentaire->getDateHeureInsertion() ) ) . ".");
+            $pdf->MultiCell(0, 6, utf8_decode($auteur->getPrenom() . " "  . $auteur->getNom() . ", le " . OutilsDivers::formaterUneDateEnFr( $commentaire->getDateHeureInsertion() ) ) . ".");
             $pdf->SetFont('Arial', '', 11);
             $pdf->SetX($indent);
             $pdf->MultiCell(0, 6, utf8_decode($commentaire->getTexte()));
@@ -626,7 +629,7 @@ class FACController extends AbstractController {
             $pdf->SetTextColor(0);
             $pdf->Cell(0, 10, utf8_decode('Publication : ' . $publication->getTitre()), 0, 1, 'L');
             $pdf->SetFont('Arial', 'I', 10);
-            $pdf->MultiCell(0, 6, utf8_decode($auteur->getPrenom() . " "  . $auteur->getNom() . ", le " . formaterUneDateEnFr( $publication->getDateHeureInsertion() ) ) . ".");
+            $pdf->MultiCell(0, 6, utf8_decode($auteur->getPrenom() . " "  . $auteur->getNom() . ", le " . OutilsDivers::formaterUneDateEnFr( $publication->getDateHeureInsertion() ) ) . ".");
             $pdf->SetFont('Arial', '', 12);
             $pdf->MultiCell(0, 6, utf8_decode($publication->getContenu()));
             $pdf->Ln(3);

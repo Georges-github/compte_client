@@ -2,39 +2,37 @@
 
 namespace App\Controller\FrontEnd;
 
-use App\Entity\Contrat;
-use App\Entity\EtatContrat;
-use App\Entity\Utilisateur;
-use App\Repository\ContratRepository;
-use App\Repository\UtilisateurRepository;
-use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-use App\Form\FrontEnd\EditerUnContratType;
-use App\Repository\EtatContratRepository;
-use App\Service\ContratActif;
-use App\Validation\Validations;
-use App\Validation\ValidationGroups;
-
-use Symfony\Component\Form\FormError;
-
-use App\Service\FileUploader;
-use App\Service\PileDePDFDansPublic;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use App\Entity\Contrat;
+use App\Entity\EtatContrat;
+
+use App\Repository\ContratRepository;
+use App\Repository\UtilisateurRepository;
+
+use App\Repository\EtatContratRepository;
+
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
+use App\Form\FrontEnd\EditerUnContratType;
+
+use App\Service\ContratActif;
+
+use App\Service\FileUploader;
+
+use Symfony\Component\Filesystem\Filesystem;
+
+use App\Service\PileDePDFDansPublic;
 
 #[Route('/contrat')]
 #[IsGranted('IS_AUTHENTICATED_FULLY')]

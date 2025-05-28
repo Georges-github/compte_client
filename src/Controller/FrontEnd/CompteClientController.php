@@ -2,30 +2,36 @@
 
 namespace App\Controller\FrontEnd;
 
-use App\Entity\Utilisateur;
-use App\Repository\ContratRepository;
-use App\Repository\UtilisateurRepository;
-use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 use Doctrine\ORM\EntityManagerInterface;
+
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-
-use App\Form\FrontEnd\EditerUnCompteClientType;
-use App\Service\PileDePDFDansPublic;
 use App\Validation\Validations;
 use App\Validation\ValidationGroups;
 
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+use App\Entity\Utilisateur;
+use App\Repository\UtilisateurRepository;
+
+use App\Repository\ContratRepository;
+
+use Symfony\Component\Routing\Attribute\Route;
+
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
+use App\Form\FrontEnd\EditerUnCompteClientType;
+
+use App\Service\PileDePDFDansPublic;
+
 use Symfony\Component\Form\FormError;
-
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-
 
 #[Route('/client')]
 #[IsGranted('IS_AUTHENTICATED_FULLY')]

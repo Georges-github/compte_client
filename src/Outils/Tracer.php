@@ -1,7 +1,6 @@
 <?php
-// src/Utils/Tracer.php
 
-namespace App\Utils;
+namespace App\Outils;
 
 class Tracer
 {

@@ -2,11 +2,17 @@
 
 namespace App\Controller\BackEnd;
 
-use App\Repository\ContratRepository;
-use App\Repository\UtilisateurRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
+use App\Repository\ContratRepository;
+
+use App\Repository\UtilisateurRepository;
+
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+
 use Symfony\Component\Routing\Attribute\Route;
+
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route( '/employe' )]
@@ -16,8 +22,10 @@ final class EmployeController extends AbstractController
 
     #[ Route( '/listeDesComptesClients' , name: 'app_liste_des_comptes_clients' , methods: [ 'GET' ] ) ]
     #[IsGranted('REGEX:^ROLE_EMPLOYE')]
-    public function listeDesComptesClients( UtilisateurRepository $utilisateurRepository , ContratRepository $contratRepository) : Response
+    public function listeDesComptesClients( UtilisateurRepository $utilisateurRepository , ContratRepository $contratRepository , Request $request) : Response
     {
+        $request->getSession()->set( 'sujet' , 'ComptesClients' );
+
         $listeDesComptesClients = [];
 
         $listeDesClients = $utilisateurRepository->createQueryBuilder( 'u' )

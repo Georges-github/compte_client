@@ -2,20 +2,30 @@
 
 namespace App\Controller;
 
-use App\Entity\Utilisateur;
-use App\Form\RegistrationFormType;
-use App\Repository\UtilisateurRepository;
-use App\Security\EmailVerifier;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
+use Doctrine\ORM\EntityManagerInterface;
+
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+
+use App\Security\EmailVerifier;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mime\Address;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+
 use Symfony\Component\Routing\Attribute\Route;
+
+use App\Entity\Utilisateur;
+
+use App\Repository\UtilisateurRepository;
+
+use App\Form\RegistrationFormType;
+
+use Symfony\Component\Mime\Address;
+
 use Symfony\Contracts\Translation\TranslatorInterface;
-use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class RegistrationController extends AbstractController
 {

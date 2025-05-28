@@ -2,23 +2,29 @@
 
 namespace App\Controller\BackEnd\Administrateur;
 
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
 use App\Entity\Utilisateur;
 use App\Repository\UtilisateurRepository;
+
+use App\Form\EditerUnEmployeType;
+
+use Symfony\Component\Form\FormError;
+
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+
 use Symfony\Component\Routing\Attribute\Route;
+
+use App\Validation\ValidationGroups;
+use App\Validation\Validations;
+
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-
-use Symfony\Component\Form\FormError;
-
-use App\Form\EditerUnEmployeType;
-use App\Validation\ValidationGroups;
-use App\Validation\Validations;
 
 #[ Route( '/administrateur' ) ]
 #[ IsGranted( 'IS_AUTHENTICATED_FULLY' ) ]
@@ -29,8 +35,10 @@ final class AdministrateurController extends AbstractController
     // public const EDITER_EMPLOYE = 'EditerUnEmploye';
 
     #[ Route( name: 'app_accueil_administrateur' , methods: [ 'GET' ] ) ]
-    public function accueilAdministrateur(): Response
+    public function accueilAdministrateur(Request $request): Response
     {
+
+        $request->getSession()->set( 'sujet' , 'Accueil' );
 
         return $this->render( 'BackEnd/Administrateur/accueilAdministrateur.html.twig' , [
             'utilisateur' => $this->getUser() ,
@@ -39,8 +47,10 @@ final class AdministrateurController extends AbstractController
     }
 
     #[ Route( '/listeDesEmployes' , name: 'app_liste_des_employes' , methods: [ 'GET' ] ) ]
-    public function listeDesEmployes( UtilisateurRepository $utilisateurRepository ) : Response
+    public function listeDesEmployes( UtilisateurRepository $utilisateurRepository , Request $request ) : Response
     {
+
+        $request->getSession()->set( 'sujet' , 'Employes' );
 
         $listeDesEmployes = $utilisateurRepository->createQueryBuilder( 'u' )
             ->andWhere( 'u.roles LIKE :e' )
