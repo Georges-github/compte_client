@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ajouter un commentaire{% endblock %}
+{% block title %}Fiche d'avancement chantier{% endblock %}
 
 {% block body %}
 
@@ -23,7 +23,7 @@
 
         <form action="{{ path('app_generer_pdf_fac', {id: contrat.id}) }}" method="post" target="_blank">
             <input type="hidden" name="_token" value="{{ csrf_token('generer_pdf_fac_' ~ contrat.id) }}">
-            <button type="submit" class="btn btn-outline-light btn-sm shadow">Générer PDF</button>
+            <button type="submit" class="btn btn-outline-primary btn-sm shadow">Générer PDF</button>
         </form>
     </div>
 
@@ -74,11 +74,13 @@
     {% endfor %}
 
     <div class="d-flex flex-row mb-3">
+{% if employe %}
         <form action="{{ path('app_unique_editer_une_publication' , {id: publication.id}) }}" method="POST">
             <button type="submit" class="btn btn-sm shadow me-3" data-bs-custom-class="custom-tooltip-edition" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Editer la publication">
             {# &#x1f4dd; #}<img class="icone-cliquable" src="{{ asset('assets/images/icone_edition.png') }}" alt="Icône non trouvé."></img>
             </button>
         </form>
+{% endif %}
 
         <form action="{{ path('app_ajouter_un_commentaire_a_une_publication', {idPublication: publication.id}) }}" method="post">
             <input type="hidden" name="_token" value="{{ csrf_token('ajouter_un_commentaire_' ~ publication.id) }}">
@@ -87,6 +89,7 @@
             </button>
         </form>
 
+{% if employe %}
         <form id="delete-form-{{ publication.id }}" action="{{ path('app_supprimer_une_publication', {id: publication.id}) }}" method="post">
             <input type="hidden" name="_token" value="{{ csrf_token('supprimer_une_publication_' ~ publication.id) }}">
         </form>
@@ -102,10 +105,11 @@
             modalMessage: 'Voulez-vous vraiment supprimer la publication intitulée « ' ~ publication.titre ~ ' » ? Cette action est irréversible.',
             confirmButtonLabel: 'Oui, supprimer'
         } %}
+{% endif %}
     </div>
 
     {% for commentaire in publication.commentairesArbre %}
-        {% include 'FrontEnd/_commentaire_recursive.html.twig' with { commentaire: commentaire, idPublication: publication.id, niveau: 0 } %}
+        {% include 'FrontEnd/_commentaire_recursive.html.twig' with { commentaire: commentaire, idPublication: publication.id, niveau: 0, employe: employe } %}
     {% endfor %}
 
     {% set noPublication = noPublication + 1 %}

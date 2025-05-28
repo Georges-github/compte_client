@@ -33,6 +33,7 @@
             </button>
         </form>
 
+{% if employe %}
         <form id="delete-form-{{ commentaire.id }}" action="{{ path('app_supprimer_un_commentaire', {id: commentaire.id}) }}" method="post">
             <input type="hidden" name="_token" value="{{ csrf_token('supprimer_un_commentaire_' ~ commentaire.id) }}">
         </form>
@@ -47,10 +48,11 @@
             modalMessage: 'Voulez-vous vraiment supprimer le commentaire ? Cette action est irréversible.',
             confirmButtonLabel: 'Oui, supprimer'
         } %}
+{% endif %}
     </div>
 
     {# Affichage récursif des sous-commentaires #}
     {% for child in commentaire.children %}
-        {% include 'FrontEnd/_commentaire_recursive.html.twig' with { commentaire: child, niveau: niveau + 1 } %}
+        {% include 'FrontEnd/_commentaire_recursive.html.twig' with { commentaire: child, niveau: niveau + 1, employe: employe } %}
     {% endfor %}
 </div>

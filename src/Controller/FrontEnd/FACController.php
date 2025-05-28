@@ -29,6 +29,8 @@ use Doctrine\ORM\EntityManagerInterface;
 
 use App\Service\PdfWithFooter;
 
+use App\Outils;
+
 use FPDF;
 
 
@@ -271,76 +273,76 @@ class FACController extends AbstractController {
         return $this->redirectToRoute('app_afficher_fac');
     }
 
-    private function renderCommentaireRecursif(\FPDF $pdf, Commentaire $commentaire, FileUploader $fileUploader, int $niveau = 1): void
-    {
-        $indent = str_repeat('    ', $niveau);
+    // private function renderCommentaireRecursif(\FPDF $pdf, Commentaire $commentaire, FileUploader $fileUploader, int $niveau = 1): void
+    // {
+    //     $indent = str_repeat('    ', $niveau);
 
-        $pdf->SetFont('Arial', 'I', 11);
-        // $pdf->MultiCell(0, 7, $indent . $commentaire->getAuteur()->getNom() . ' : ' . $commentaire->getTexte());
-        $pdf->MultiCell(0, 7, $indent . ' : ' . $commentaire->getTexte());
+    //     $pdf->SetFont('Arial', 'I', 11);
+    //     // $pdf->MultiCell(0, 7, $indent . $commentaire->getAuteur()->getNom() . ' : ' . $commentaire->getTexte());
+    //     $pdf->MultiCell(0, 7, $indent . ' : ' . $commentaire->getTexte());
 
-        // Photos du commentaire
-        foreach ($commentaire->getPhotos() as $photo) {
-            // $imagePath = $fileUploader->getAbsolutePath($photo->getCheminFichierImage());
-            $imagePath = $this->getParameter('kernel.project_dir') . '/var/storage/' . $photo->getCheminFichierImage();
-            if (file_exists($imagePath)) {
-                $pdf->Image($imagePath, null, null, 40); // plus petite taille
-                $pdf->Ln(3);
-            }
-            $pdf->MultiCell(0, 8, $photo->getLegende() );
-        }
+    //     // Photos du commentaire
+    //     foreach ($commentaire->getPhotos() as $photo) {
+    //         // $imagePath = $fileUploader->getAbsolutePath($photo->getCheminFichierImage());
+    //         $imagePath = $this->getParameter('kernel.project_dir') . '/var/storage/' . $photo->getCheminFichierImage();
+    //         if (file_exists($imagePath)) {
+    //             $pdf->Image($imagePath, null, null, 40); // plus petite taille
+    //             $pdf->Ln(3);
+    //         }
+    //         $pdf->MultiCell(0, 8, $photo->getLegende() );
+    //     }
 
-        // Sous-commentaires récursifs
-        foreach ($commentaire->getCommentaires() as $sousCommentaire) {
-            $this->renderCommentaireRecursif($pdf, $sousCommentaire, $fileUploader, $niveau + 1);
-        }
+    //     // Sous-commentaires récursifs
+    //     foreach ($commentaire->getCommentaires() as $sousCommentaire) {
+    //         $this->renderCommentaireRecursif($pdf, $sousCommentaire, $fileUploader, $niveau + 1);
+    //     }
 
-        $pdf->Ln(5);
-    }
+    //     $pdf->Ln(5);
+    // }
 
-    #[Route('/genererPDFFAC/{id}', name: 'app_generer_pdf_fac')]
-    public function genererPdfContrat(
-        Contrat $contrat,
-        FileUploader $fileUploader // pour les chemins de fichiers locaux
-    ): Response {
-        $pdf = new \FPDF();
-        $pdf->AddPage();
-        $pdf->SetFont('Arial', 'B', 16);
-        // $pdf->Cell(0, 10, 'Publications du contrat : ' . $contrat->getIntitule(), 0, 1);
-        $pdf->MultiCell(0, 10, 'Publications du contrat : ' . $contrat->getIntitule(), 0, 1);
+    // #[Route('/genererPDFFAC/{id}', name: 'app_generer_pdf_fac')]
+    // public function genererPdfContrat(
+    //     Contrat $contrat,
+    //     FileUploader $fileUploader // pour les chemins de fichiers locaux
+    // ): Response {
+    //     $pdf = new \FPDF();
+    //     $pdf->AddPage();
+    //     $pdf->SetFont('Arial', 'B', 16);
+    //     // $pdf->Cell(0, 10, 'Publications du contrat : ' . $contrat->getIntitule(), 0, 1);
+    //     $pdf->MultiCell(0, 10, 'Publications du contrat : ' . $contrat->getIntitule(), 0, 1);
 
-        foreach ($contrat->getPublications() as $publication) {
-            $pdf->SetFont('Arial', 'B', 14);
-            // $pdf->Cell(0, 10, 'Publication : ' . $publication->getTitre(), 0, 1);
-            $pdf->MultiCell(0, 10, 'Publication : ' . $publication->getTitre(), 0, 1);
+    //     foreach ($contrat->getPublications() as $publication) {
+    //         $pdf->SetFont('Arial', 'B', 14);
+    //         // $pdf->Cell(0, 10, 'Publication : ' . $publication->getTitre(), 0, 1);
+    //         $pdf->MultiCell(0, 10, 'Publication : ' . $publication->getTitre(), 0, 1);
 
-            $pdf->SetFont('Arial', '', 12);
-            $pdf->MultiCell(0, 8, $publication->getContenu());
+    //         $pdf->SetFont('Arial', '', 12);
+    //         $pdf->MultiCell(0, 8, $publication->getContenu());
 
-            // Photos de la publication
-            foreach ($publication->getPhotos() as $photo) {
-                // $imagePath = $fileUploader->getAbsolutePath($photo->getCheminFichierImage());
-                $imagePath = $this->getParameter('kernel.project_dir') . '/var/storage/' . $photo->getCheminFichierImage();
-                if (file_exists($imagePath)) {
-                    $pdf->Image($imagePath, null, null, 60);
-                    $pdf->Ln(5);
-                }
-                $pdf->MultiCell(0, 8, $photo->getLegende() );
-            }
+    //         // Photos de la publication
+    //         foreach ($publication->getPhotos() as $photo) {
+    //             // $imagePath = $fileUploader->getAbsolutePath($photo->getCheminFichierImage());
+    //             $imagePath = $this->getParameter('kernel.project_dir') . '/var/storage/' . $photo->getCheminFichierImage();
+    //             if (file_exists($imagePath)) {
+    //                 $pdf->Image($imagePath, null, null, 60);
+    //                 $pdf->Ln(5);
+    //             }
+    //             $pdf->MultiCell(0, 8, $photo->getLegende() );
+    //         }
 
-            // Commentaires (récursif)
-            foreach ($publication->getCommentaires() as $commentaire) {
-                $this->renderCommentaireRecursif($pdf, $commentaire, $fileUploader, 1);
-            }
+    //         // Commentaires (récursif)
+    //         foreach ($publication->getCommentaires() as $commentaire) {
+    //             $this->renderCommentaireRecursif($pdf, $commentaire, $fileUploader, 1);
+    //         }
 
-            $pdf->Ln(10); // espacement entre les publications
-        }
+    //         $pdf->Ln(10); // espacement entre les publications
+    //     }
 
-        return new Response($pdf->Output('S'), 200, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="publications_contrat.pdf"'
-        ]);
-    }
+    //     return new Response($pdf->Output('S'), 200, [
+    //         'Content-Type' => 'application/pdf',
+    //         'Content-Disposition' => 'inline; filename="publications_contrat.pdf"'
+    //     ]);
+    // }
 
     #[Route('/ajouterUnCommentaireAUnePublication/{idPublication}' , name: 'app_ajouter_un_commentaire_a_une_publication' , methods: ['POST'])]
     public function ajouterUnCommentaireAUnePublication(Request $request,
@@ -540,6 +542,7 @@ class FACController extends AbstractController {
 
     private function ajouterCommentaires(\FPDF $pdf, array $commentaires, string $projectDir, int $niveau): void
     {
+
         foreach ($commentaires as $commentaire) {
             $indent = 10 + ($niveau * 10);
             $pdf->Ln(3);
@@ -551,12 +554,16 @@ class FACController extends AbstractController {
             $yBefore = $pdf->GetY();
             $pdf->SetFont('Arial', 'B', 11);
             $pdf->SetTextColor(40, 40, 40);
-            $pdf->Cell(0, 6, utf8_decode("Commentaire #" . $commentaire->getId()), 0, 1);
+            // $pdf->Cell(0, 6, utf8_decode("Commentaire #" . $commentaire->getId()), 0, 1);
+            $pdf->Cell(0, 6, utf8_decode("Commentaire"), 0, 1);
+            $pdf->SetX($indent);
+            $auteur = $commentaire->getIdUtilisateur();
+            $pdf->SetFont('Arial', 'I', 10);
+            $pdf->MultiCell(0, 6, utf8_decode($auteur->getPrenom() . " "  . $auteur->getNom() . ", le " . formaterUneDateEnFr( $commentaire->getDateHeureInsertion() ) ) . ".");
             $pdf->SetFont('Arial', '', 11);
             $pdf->SetX($indent);
             $pdf->MultiCell(0, 6, utf8_decode($commentaire->getTexte()));
             $pdf->Ln(2);
-
             $pdf->SetDrawColor(200, 200, 200);
             // $pdf->Line($indent, $pdf->GetY(), 200, $pdf->GetY());
             $pdf->Ln(2);
@@ -611,13 +618,17 @@ class FACController extends AbstractController {
 
             $i++;
 
+            $auteur = $publication->getIdUtilisateur();
+
             $pdf->Line(10, $pdf->GetY(), 200, $pdf->GetY());
             $pdf->Ln(1);
             $pdf->SetFont('Arial', 'B', 14);
             $pdf->SetTextColor(0);
             $pdf->Cell(0, 10, utf8_decode('Publication : ' . $publication->getTitre()), 0, 1, 'L');
+            $pdf->SetFont('Arial', 'I', 10);
+            $pdf->MultiCell(0, 6, utf8_decode($auteur->getPrenom() . " "  . $auteur->getNom() . ", le " . formaterUneDateEnFr( $publication->getDateHeureInsertion() ) ) . ".");
             $pdf->SetFont('Arial', '', 12);
-            $pdf->MultiCell(0, 8, utf8_decode($publication->getContenu()));
+            $pdf->MultiCell(0, 6, utf8_decode($publication->getContenu()));
             $pdf->Ln(3);
 
             $pdf->SetDrawColor(180, 180, 180);
