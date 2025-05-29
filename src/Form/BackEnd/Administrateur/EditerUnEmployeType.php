@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form\Backend\Administrateur;
+namespace App\Form\BackEnd\Administrateur;
 
 use App\Entity\Utilisateur;
 

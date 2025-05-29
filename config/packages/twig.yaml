@@ -9,7 +9,7 @@ twig:
         locale: 'fr'
 
     # Doit être désactivé (null) pour que les templates prennent le dessus
-    exception_controller: null
+    #exception_controller: null
 
 when@test:
     twig:

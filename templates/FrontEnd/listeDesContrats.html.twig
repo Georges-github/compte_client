@@ -39,6 +39,8 @@
         </a>
 </div>
 
+<h5 class="d-flex justify-content-center">Liste des contrats</h5>
+
 {% if employeOuAdministrateur == true %}
     <a href="{{ path('app_ajouter_un_contrat' , {id : client.id }) }}" class="btn btn-outline-light btn-sm shadow" data-bs-custom-class="custom-tooltip-ajout shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Ajouter un contrat">
     {# &#x2795; #}<img class="icone-cliquable" src="{{ asset('assets/images/icone_ajouter.png') }}" alt="Icône non trouvé."></img>
@@ -80,8 +82,8 @@
                 <th>Date Prévue</th>
                 <th>Fin Prévue</th>
                 <th>Etat</th>
-                <th>Début effectif</th>
-                <th>Fin effective</th>
+                <th>Début</th>
+                <th>Fin</th>
                 <th></th>
             </tr>
         </thead>
