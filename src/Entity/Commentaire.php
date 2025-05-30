@@ -47,7 +47,10 @@ class Commentaire
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'idCommentaireParent')]
     private Collection $commentaires;
 
-    #[ORM\OneToOne(inversedBy: 'commentaires', cascade: ['persist', 'remove'])]
+    // #[ORM\OneToOne(inversedBy: 'commentaires', cascade: ['persist', 'remove'])]
+    // #[ORM\JoinColumn(nullable: false)]
+    // private ?Utilisateur $idUtilisateur = null;
+    #[ORM\ManyToOne(inversedBy: 'commentaires')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Utilisateur $idUtilisateur = null;
 

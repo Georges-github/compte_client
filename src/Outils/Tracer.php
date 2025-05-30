@@ -9,6 +9,8 @@ class Tracer
     public function __construct(string $filename = 'trace.txt')
     {
         $this->file = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $filename;
+
+        echo( $this->file . "\n" );
     }
 
     public function log(mixed $value, ?string $label): void

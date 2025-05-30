@@ -138,14 +138,20 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private bool $isVerified = false;
 
-    #[ORM\OneToOne(mappedBy: 'idUtilisateur', cascade: ['persist', 'remove'])]
-    private ?Commentaire $commentaires = null;
+    // #[ORM\OneToOne(mappedBy: 'idUtilisateur', cascade: ['persist', 'remove'])]
+    // private ?Commentaire $commentaires = null;
+    /**
+     * @var Collection<int, Commentaire>
+     */
+    #[ORM\OneToMany(mappedBy: 'idUtilisateur', targetEntity: Commentaire::class)]
+    private Collection $commentaires;
 
     public function __construct()
     {
         $this->etatContrats = new ArrayCollection();
         $this->contrats = new ArrayCollection();
         $this->publications = new ArrayCollection();
+        $this->commentaires = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -546,19 +552,44 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $oui;
     }
 
-    public function getCommentaires(): ?Commentaire
+    // public function getCommentaires(): ?Commentaire
+    // {
+    //     return $this->commentaires;
+    // }
+
+    // public function setCommentaires(Commentaire $commentaires): static
+    // {
+    //     // set the owning side of the relation if necessary
+    //     if ($commentaires->getIdUtilisateur() !== $this) {
+    //         $commentaires->setIdUtilisateur($this);
+    //     }
+
+    //     $this->commentaires = $commentaires;
+
+    //     return $this;
+    // }
+    public function getCommentaires(): Collection
     {
         return $this->commentaires;
     }
 
-    public function setCommentaires(Commentaire $commentaires): static
+    public function addCommentaire(Commentaire $commentaire): static
     {
-        // set the owning side of the relation if necessary
-        if ($commentaires->getIdUtilisateur() !== $this) {
-            $commentaires->setIdUtilisateur($this);
+        if (!$this->commentaires->contains($commentaire)) {
+            $this->commentaires->add($commentaire);
+            $commentaire->setIdUtilisateur($this); // relation inverse
         }
 
-        $this->commentaires = $commentaires;
+        return $this;
+    }
+
+    public function removeCommentaire(Commentaire $commentaire): static
+    {
+        if ($this->commentaires->removeElement($commentaire)) {
+            if ($commentaire->getIdUtilisateur() === $this) {
+                $commentaire->setIdUtilisateur(null);
+            }
+        }
 
         return $this;
     }

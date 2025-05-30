@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Entity\Utilisateur;
 use App\Repository\UtilisateurRepository;
 
-use App\Form\EditerUnEmployeType;
+use App\Form\BackEnd\Administrateur\EditerUnEmployeType;
 
 use Symfony\Component\Form\FormError;
 
