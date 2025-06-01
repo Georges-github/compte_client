@@ -38,7 +38,9 @@ class Commentaire
     #[ORM\JoinColumn(nullable: false)]
     private ?Publication $idPublication = null;
 
+    //#[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'commentaires')]
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'commentaires')]
+    #[ORM\JoinColumn(onDelete: "CASCADE")]
     private ?self $idCommentaireParent = null;
 
     /**

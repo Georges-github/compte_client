@@ -28,11 +28,15 @@ class Photo
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateHeureMAJ = null;
 
+    // #[ORM\ManyToOne(inversedBy: 'photos')]
+    // #[ORM\JoinColumn(nullable: true)]
     #[ORM\ManyToOne(inversedBy: 'photos')]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\JoinColumn(nullable: true, onDelete: "CASCADE")]
     private ?Publication $idPublication = null;
 
+    // #[ORM\ManyToOne(inversedBy: 'photos')]
     #[ORM\ManyToOne(inversedBy: 'photos')]
+    #[ORM\JoinColumn(nullable: true, onDelete: "CASCADE")]
     private ?Commentaire $idCommentaire = null;
 
     public function getId(): ?int

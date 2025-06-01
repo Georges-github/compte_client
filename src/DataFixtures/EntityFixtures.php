@@ -20,7 +20,7 @@ class EntityFixtures extends Fixture
 
     private UserPasswordHasherInterface $passwordHasher;
 
-    private const MAX_COMMENTAIRE_NIVEAU = 5;
+    private const MAX_COMMENTAIRE_NIVEAU = 2;
 
     public function __construct(UserPasswordHasherInterface $passwordHasher)
     {
@@ -98,125 +98,271 @@ class EntityFixtures extends Fixture
         $manager->flush();
     }
 
-    private function loadContrats(ObjectManager $manager): void
-    {
-        $numeroBase = 1000;
+    // private function loadContrats(ObjectManager $manager): void
+    // {
+    //     $numeroBase = 1000;
 
-        for ($i = 1; $i <= 5; $i++) {
-            /** @var Utilisateur $utilisateur */
-            $utilisateur = $this->getReference('utilisateur_' . $i,Utilisateur::class);
+    //     for ($i = 1; $i <= 5; $i++) {
+    //         /** @var Utilisateur $utilisateur */
+    //         $utilisateur = $this->getReference('utilisateur_' . $i,Utilisateur::class);
 
-            $nombreContrats = rand(1, 3);
+    //         $nombreContrats = rand(1, 3);
 
-            for ($j = 1; $j <= $nombreContrats; $j++) {
-                $contrat = new Contrat();
+    //         for ($j = 1; $j <= $nombreContrats; $j++) {
+    //             $contrat = new Contrat();
 
-                $contrat->setIdUtilisateur($utilisateur);
+    //             $contrat->setIdUtilisateur($utilisateur);
 
-                $numeroContrat = 'CTR-' . ($numeroBase + $i * 10 + $j);
-                $contrat->setNumeroContrat($numeroContrat);
+    //             $numeroContrat = 'CTR-' . ($numeroBase + $i * 10 + $j);
+    //             $contrat->setNumeroContrat($numeroContrat);
 
-                $contrat->setIntitule("Contrat $numeroContrat");
+    //             $contrat->setIntitule("Contrat $numeroContrat");
 
-                $contrat->setDescription("Description du contrat numéro $numeroContrat, avec des détails succincts.");
+    //             $contrat->setDescription("Description du contrat numéro $numeroContrat, avec des détails succincts.");
 
-                $now = new \DateTimeImmutable();
+    //             $now = new \DateTimeImmutable();
 
-                $dateDebutPrevue = (clone $now)->modify("-" . rand(30, 60) . " days");
-                $dateFinPrevue = (clone $dateDebutPrevue)->modify("+ " . rand(30, 90) . " days");
+    //             $dateDebutPrevue = (clone $now)->modify("-" . rand(30, 60) . " days");
+    //             $dateFinPrevue = (clone $dateDebutPrevue)->modify("+ " . rand(30, 90) . " days");
 
-                $contrat->setDateDebutPrevue($dateDebutPrevue);
-                $contrat->setDateFinPrevue($dateFinPrevue);
+    //             $contrat->setDateDebutPrevue($dateDebutPrevue);
+    //             $contrat->setDateFinPrevue($dateFinPrevue);
 
-                $dateDebut = (clone $dateDebutPrevue)->modify("+" . rand(0, 5) . " days");
-                $contrat->setDateDebut($dateDebut);
+    //             $dateDebut = (clone $dateDebutPrevue)->modify("+" . rand(0, 5) . " days");
+    //             $contrat->setDateDebut($dateDebut);
 
-                if (rand(0, 1) === 1) {
-                    $dateFin = (clone $dateDebut)->modify("+ " . rand(10, 50) . " days");
-                    if ($dateFin > $dateFinPrevue) {
-                        $dateFin = $dateFinPrevue;
-                    }
-                    $contrat->setDateFin($dateFin);
-                } else {
-                    $contrat->setDateFin(null);
-                }
+    //             if (rand(0, 1) === 1) {
+    //                 $dateFin = (clone $dateDebut)->modify("+ " . rand(10, 50) . " days");
+    //                 if ($dateFin > $dateFinPrevue) {
+    //                     $dateFin = $dateFinPrevue;
+    //                 }
+    //                 $contrat->setDateFin($dateFin);
+    //             } else {
+    //                 $contrat->setDateFin(null);
+    //             }
 
-                $cheminFichier = sprintf(
-                    "utilisateurs/%d/contrat/contrat_%s.pdf",
-                    $utilisateur->getId() ?? $i,
-                    strtolower(str_replace([' ', '-'], ['_', '_'], $numeroContrat))
-                );
-                $contrat->setCheminFichier($cheminFichier);
+    //             $cheminFichier = sprintf(
+    //                 "utilisateurs/%d/contrat/contrat_%s.pdf",
+    //                 $utilisateur->getId() ?? $i,
+    //                 strtolower(str_replace([' ', '-'], ['_', '_'], $numeroContrat))
+    //             );
+    //             $contrat->setCheminFichier($cheminFichier);
 
-                $contrat->setDateHeureInsertion(new \DateTimeImmutable());
-                $contrat->setDateHeureMAJ(null);
+    //             $contrat->setDateHeureInsertion(new \DateTimeImmutable());
+    //             $contrat->setDateHeureMAJ(null);
 
-                $manager->persist($contrat);
+    //             $manager->persist($contrat);
 
-                $this->addReference("contrat_{$i}_{$j}", $contrat);
-                $this->lesReferences["contrat_{$i}_{$j}"] = $contrat;
-            }
-        }
-        $manager->flush();
+    //             $this->addReference("contrat_{$i}_{$j}", $contrat);
+    //             $this->lesReferences["contrat_{$i}_{$j}"] = $contrat;
+    //         }
+    //     }
+    //     $manager->flush();
+    // }
+
+private function loadContrats(ObjectManager $manager): void
+{
+    $numeroBase = 1000;
+
+    $sourceDir = 'var/storage/vivierContrats/';
+    $sourcePDFs = glob($sourceDir . '*.pdf');
+
+    if (empty($sourcePDFs)) {
+        throw new \RuntimeException("Aucun fichier PDF trouvé dans $sourceDir");
     }
+
+    for ($i = 1; $i <= 5; $i++) {
+        /** @var Utilisateur $utilisateur */
+        $utilisateur = $this->getReference('utilisateur_' . $i, Utilisateur::class);
+
+        $nombreContrats = rand(1, 3);
+
+        for ($j = 1; $j <= $nombreContrats; $j++) {
+            $contrat = new Contrat();
+            $contrat->setIdUtilisateur($utilisateur);
+
+            $numeroContrat = 'CTR-' . ($numeroBase + $i * 10 + $j);
+            $contrat->setNumeroContrat($numeroContrat);
+            $contrat->setIntitule("Contrat $numeroContrat");
+            $contrat->setDescription("Description du contrat numéro $numeroContrat, avec des détails succincts.");
+
+            $now = new \DateTimeImmutable();
+            $dateDebutPrevue = (clone $now)->modify("-" . rand(30, 60) . " days");
+            $dateFinPrevue = (clone $dateDebutPrevue)->modify("+ " . rand(30, 90) . " days");
+
+            $contrat->setDateDebutPrevue($dateDebutPrevue);
+            $contrat->setDateFinPrevue($dateFinPrevue);
+
+            $dateDebut = (clone $dateDebutPrevue)->modify("+" . rand(0, 5) . " days");
+            $contrat->setDateDebut($dateDebut);
+
+            if (rand(0, 1) === 1) {
+                $dateFin = (clone $dateDebut)->modify("+ " . rand(10, 50) . " days");
+                if ($dateFin > $dateFinPrevue) {
+                    $dateFin = $dateFinPrevue;
+                }
+                $contrat->setDateFin($dateFin);
+            } else {
+                $contrat->setDateFin(null);
+            }
+
+            // Construction du chemin
+            $cheminFichier = sprintf(
+                "utilisateurs/%d/contrat/contrat_%s.pdf",
+                $utilisateur->getId() ?? $i,
+                strtolower(str_replace([' ', '-'], ['_', '_'], $numeroContrat))
+            );
+            $contrat->setCheminFichier($cheminFichier);
+
+            $contrat->setDateHeureInsertion(new \DateTimeImmutable());
+            $contrat->setDateHeureMAJ(null);
+
+            // Copie du fichier PDF
+            $destinationDir = sprintf('var/storage/utilisateurs/%d/contrat/', $utilisateur->getId());
+            if (!is_dir($destinationDir)) {
+                mkdir($destinationDir, 0777, true);
+            }
+
+            $sourceFile = $sourcePDFs[array_rand($sourcePDFs)];
+            $destinationFile = $destinationDir . basename($cheminFichier);
+            copy($sourceFile, $destinationFile);
+
+            $manager->persist($contrat);
+
+            $this->addReference("contrat_{$i}_{$j}", $contrat);
+            $this->lesReferences["contrat_{$i}_{$j}"] = $contrat;
+        }
+    }
+
+    $manager->flush();
+}
+    // private function loadEtatsContrat(ObjectManager $manager): void
+    // {
+    //     // $etatsPossibles = [
+    //     //     EtatContrat::ETAT_EN_DISCUSSION,
+    //     //     EtatContrat::ETAT_A_VENIR,
+    //     //     EtatContrat::ETAT_EN_COURS,
+    //     //     EtatContrat::ETAT_EN_PAUSE,
+    //     //     EtatContrat::ETAT_ANNULE,
+    //     //     EtatContrat::ETAT_TERMINE,
+    //     // ];
+
+    //     $etatsPossibles = [
+    //         'ETAT_EN_DISCUSSION',
+    //         'ETAT_A_VENIR',
+    //         'ETAT_EN_COURS',
+    //         'ETAT_EN_PAUSE',
+    //         'ETAT_ANNULE',
+    //         'ETAT_TERMINE'
+    //     ];
+
+    //     for ($i = 1; $i <= 5; $i++) {
+    //         $nombreContrats = rand(1, 3);
+
+    //         for ($j = 1; $j <= $nombreContrats; $j++) {
+    //             try {
+    //                 /** @var Contrat $contrat */
+    //                 $contrat = $this->getReference("contrat_{$i}_{$j}",Contrat::class);
+    //             } catch (\Exception $e) {
+    //                 continue;
+    //             }
+
+    //             $utilisateur = $contrat->getIdUtilisateur();
+
+    //             $nombreEtats = rand(2, 5);
+
+    //             $dateBase = $contrat->getDateHeureInsertion() ?: new \DateTimeImmutable('-90 days');
+
+    //                 $etatContrat = new EtatContrat();
+
+    //                 $etatContrat->setEtat($etatsPossibles[0]);
+
+    //                 $dateInsertion = $dateBase->modify("+ " . (1 * 7) . " days");
+    //                 $etatContrat->setDateHeureInsertion($dateInsertion);
+
+    //                 $etatContrat->setDateHeureMAJ(null);
+
+    //                 $etatContrat->setIdUtilisateur($utilisateur);
+    //                 $etatContrat->setIdContrat($contrat);
+
+    //                 $manager->persist($etatContrat);
+
+    //                 $etatContrat = new EtatContrat();
+
+    //                 $etatContrat->setEtat($etatsPossibles[1]);
+
+    //                 $dateInsertion = $dateBase->modify("+ " . (2 * 7) . " days");
+    //                 $etatContrat->setDateHeureInsertion($dateInsertion);
+
+    //                 $etatContrat->setDateHeureMAJ(null);
+
+    //                 $etatContrat->setIdUtilisateur($utilisateur);
+    //                 $etatContrat->setIdContrat($contrat);
+
+    //                 $manager->persist($etatContrat);
+
+    //             // for ($k = 0; $k < $nombreEtats; $k++) {
+    //             //     $etatContrat = new EtatContrat();
+
+    //             //     $etatIndex = min($k, count($etatsPossibles) - 1);
+    //             //     $etatContrat->setEtat($etatsPossibles[$etatIndex]);
+
+    //             //     $dateInsertion = $dateBase->modify("+ " . ($k * 7) . " days");
+    //             //     $etatContrat->setDateHeureInsertion($dateInsertion);
+
+    //             //     $etatContrat->setDateHeureMAJ(null);
+
+    //             //     $etatContrat->setIdUtilisateur($utilisateur);
+    //             //     $etatContrat->setIdContrat($contrat);
+
+    //             //     $manager->persist($etatContrat);
+    //             // }
+    //         }
+    //     }
+    //     $manager->flush();
+    // }
 
     private function loadEtatsContrat(ObjectManager $manager): void
-    {
-        // $etatsPossibles = [
-        //     EtatContrat::ETAT_EN_DISCUSSION,
-        //     EtatContrat::ETAT_A_VENIR,
-        //     EtatContrat::ETAT_EN_COURS,
-        //     EtatContrat::ETAT_EN_PAUSE,
-        //     EtatContrat::ETAT_ANNULE,
-        //     EtatContrat::ETAT_TERMINE,
-        // ];
+{
+    $etatsPossibles = [
+        EtatContrat::ETAT_EN_DISCUSSION,
+        EtatContrat::ETAT_A_VENIR,
+        EtatContrat::ETAT_EN_COURS,
+        EtatContrat::ETAT_EN_PAUSE,
+        EtatContrat::ETAT_ANNULE,
+        EtatContrat::ETAT_TERMINE,
+    ];
 
-        $etatsPossibles = [
-            'ETAT_EN_DISCUSSION',
-            'ETAT_A_VENIR',
-            'ETAT_EN_COURS',
-            'ETAT_EN_PAUSE',
-            'ETAT_ANNULE',
-            'ETAT_TERMINE'
-        ];
+    foreach ($this->lesReferences as $refName => $refObj) {
+        if (str_starts_with($refName, 'contrat_')) {
+            /** @var Contrat $contrat */
+            $contrat = $refObj;
+            $utilisateur = $contrat->getIdUtilisateur();
 
-        for ($i = 1; $i <= 5; $i++) {
-            $nombreContrats = rand(1, 3);
+            $nombreEtats = rand(2, 5); // Tu veux toujours au moins 2 états
+            $dateBase = $contrat->getDateHeureInsertion() ?? new \DateTimeImmutable('-90 days');
 
-            for ($j = 1; $j <= $nombreContrats; $j++) {
-                try {
-                    /** @var Contrat $contrat */
-                    $contrat = $this->getReference("contrat_{$i}_{$j}",Contrat::class);
-                } catch (\Exception $e) {
-                    continue;
-                }
+            for ($k = 0; $k < $nombreEtats; $k++) {
+                $etatContrat = new EtatContrat();
 
-                $utilisateur = $contrat->getIdUtilisateur();
+                $etatIndex = min($k, count($etatsPossibles) - 1);
+                $etatContrat->setEtat($etatsPossibles[$etatIndex]);
 
-                $nombreEtats = rand(2, 5);
+                $dateInsertion = $dateBase->modify("+ " . ($k * 7) . " days");
+                $etatContrat->setDateHeureInsertion($dateInsertion);
 
-                $dateBase = $contrat->getDateHeureInsertion() ?: new \DateTimeImmutable('-90 days');
+                $etatContrat->setDateHeureMAJ(null);
+                $etatContrat->setIdUtilisateur($utilisateur);
+                $etatContrat->setIdContrat($contrat);
 
-                for ($k = 0; $k < $nombreEtats; $k++) {
-                    $etatContrat = new EtatContrat();
-
-                    $etatIndex = min($k, count($etatsPossibles) - 1);
-                    $etatContrat->setEtat($etatsPossibles[$etatIndex]);
-
-                    $dateInsertion = $dateBase->modify("+ " . ($k * 7) . " days");
-                    $etatContrat->setDateHeureInsertion($dateInsertion);
-
-                    $etatContrat->setDateHeureMAJ(null);
-
-                    $etatContrat->setIdUtilisateur($utilisateur);
-                    $etatContrat->setIdContrat($contrat);
-
-                    $manager->persist($etatContrat);
-                }
+                $manager->persist($etatContrat);
             }
         }
-        $manager->flush();
     }
+
+    $manager->flush();
+}
+
 
     private function loadPublications(ObjectManager $manager): void
     {
@@ -312,7 +458,7 @@ class EntityFixtures extends Fixture
             if ($niveau >= self::MAX_COMMENTAIRE_NIVEAU) {
                 return;
             }
-            $nbSousCommentaires = rand(0, 3);
+            $nbSousCommentaires = rand(0, 2);
 
             for ($i = 0; $i < $nbSousCommentaires; $i++) {
                 $commentaire = new Commentaire();
@@ -366,71 +512,154 @@ class EntityFixtures extends Fixture
         $manager->flush();
     }
 
-    private function loadPhotos(ObjectManager $manager): void
-    {
-        echo("loadPhotos\n");
-        $legendes = [
-            'Photo accueil',
-            'Image produit',
-            'Portrait client',
-            'Vue générale',
-            'Événement',
-            'Document scanné',
-            'Photo d’équipe',
-            'Plan de salle',
-            'Photo souvenir',
-            'Image illustrative'
-        ];
+    // private function loadPhotos(ObjectManager $manager): void
+    // {
+    //     echo("loadPhotos\n");
+    //     $legendes = [
+    //         'Photo accueil',
+    //         'Image produit',
+    //         'Portrait client',
+    //         'Vue générale',
+    //         'Événement',
+    //         'Document scanné',
+    //         'Photo d’équipe',
+    //         'Plan de salle',
+    //         'Photo souvenir',
+    //         'Image illustrative'
+    //     ];
 
-        // Photos pour publications
-        // foreach ($this->getReferences() as $refName => $refObj) {
-        foreach ($this->lesReferences as $refName => $refObj) {
-            if (strpos($refName, 'publication_') === 0) {
-                /** @var Publication $publication */
-                $publication = $refObj;
-                $utilisateur = $publication->getIdUtilisateur();
+    //     // Photos pour publications
+    //     // foreach ($this->getReferences() as $refName => $refObj) {
+    //     foreach ($this->lesReferences as $refName => $refObj) {
+    //         if (strpos($refName, 'publication_') === 0) {
+    //             /** @var Publication $publication */
+    //             $publication = $refObj;
+    //             $utilisateur = $publication->getIdUtilisateur();
 
-                if (mt_rand(1, 100) <= 70) {
-                    $photo = new Photo();
-                    $photo->setLegende($legendes[array_rand($legendes)]);
-                    $photo->setCheminFichierImage(
-                        "utilisateurs/{$utilisateur->getId()}/image/photo_pub_{$publication->getId()}.jpg"
-                    );
-                    $photo->setDateHeureInsertion(new \DateTimeImmutable());
-                    $photo->setDateHeureMAJ(null);
-                    $photo->setIdPublication($publication);
-                    $photo->setIdCommentaire(null);
+    //             if (mt_rand(1, 100) <= 70) {
+    //                 $photo = new Photo();
+    //                 $photo->setLegende($legendes[array_rand($legendes)]);
+    //                 $photo->setCheminFichierImage(
+    //                     "utilisateurs/{$utilisateur->getId()}/image/photo_pub_{$publication->getId()}.jpg"
+    //                 );
+    //                 $photo->setDateHeureInsertion(new \DateTimeImmutable());
+    //                 $photo->setDateHeureMAJ(null);
+    //                 $photo->setIdPublication($publication);
+    //                 $photo->setIdCommentaire(null);
 
-                    $manager->persist($photo);
+    //                 $manager->persist($photo);
+    //             }
+    //         }
+    //     }
+
+    //     // Photos pour commentaires
+    //     // foreach ($this->getReferences() as $refName => $refObj) {
+    //     foreach ($this->lesReferences as $refName => $refObj) {
+    //         if (strpos($refName, 'commentaire_') === 0) {
+    //             /** @var Commentaire $commentaire */
+    //             $commentaire = $refObj;
+    //             $utilisateur = $commentaire->getIdUtilisateur();
+
+    //             if (mt_rand(1, 100) <= 30) {
+    //                 $photo = new Photo();
+    //                 $photo->setLegende($legendes[array_rand($legendes)]);
+    //                 $photo->setCheminFichierImage(
+    //                     "utilisateurs/{$utilisateur->getId()}/image/photo_com_{$commentaire->getId()}.jpg"
+    //                 );
+    //                 $photo->setDateHeureInsertion(new \DateTimeImmutable());
+    //                 $photo->setDateHeureMAJ(null);
+    //                 $photo->setIdPublication(null);
+    //                 $photo->setIdCommentaire($commentaire);
+
+    //                 $manager->persist($photo);
+    //             }
+    //         }
+    //     }
+    // }
+
+private function loadPhotos(ObjectManager $manager): void
+{
+    echo("loadPhotos\n");
+    $legendes = [
+        'Photo accueil',
+        'Image produit',
+        'Portrait client',
+        'Vue générale',
+        'Événement',
+        'Document scanné',
+        'Photo d’équipe',
+        'Plan de salle',
+        'Photo souvenir',
+        'Image illustrative'
+    ];
+
+    $sourceDir = 'var/storage/vivierPhotos/';
+    $sourcePhotos = glob($sourceDir . '*.jpg');
+
+    if (empty($sourcePhotos)) {
+        throw new \RuntimeException("Aucune image source trouvée dans $sourceDir");
+    }
+
+    // Photos pour publications
+    foreach ($this->lesReferences as $refName => $refObj) {
+        if (strpos($refName, 'publication_') === 0) {
+            /** @var Publication $publication */
+            $publication = $refObj;
+            $utilisateur = $publication->getIdUtilisateur();
+
+            if (mt_rand(1, 100) <= 70) {
+                $photo = new Photo();
+                $photo->setLegende($legendes[array_rand($legendes)]);
+                $targetPath = "utilisateurs/{$utilisateur->getId()}/image/photo_pub_{$publication->getId()}.jpg";
+                $photo->setCheminFichierImage($targetPath);
+                $photo->setDateHeureInsertion(new \DateTimeImmutable());
+                $photo->setDateHeureMAJ(null);
+                $photo->setIdPublication($publication);
+                $photo->setIdCommentaire(null);
+
+                // Choisir une image au hasard
+                $sourceFile = $sourcePhotos[array_rand($sourcePhotos)];
+                $destinationDir = "var/storage/utilisateurs/{$utilisateur->getId()}/image/";
+                if (!is_dir($destinationDir)) {
+                    mkdir($destinationDir, 0777, true);
                 }
-            }
-        }
+                copy($sourceFile, $destinationDir . "photo_pub_{$publication->getId()}.jpg");
 
-        // Photos pour commentaires
-        // foreach ($this->getReferences() as $refName => $refObj) {
-        foreach ($this->lesReferences as $refName => $refObj) {
-            if (strpos($refName, 'commentaire_') === 0) {
-                /** @var Commentaire $commentaire */
-                $commentaire = $refObj;
-                $utilisateur = $commentaire->getIdUtilisateur();
-
-                if (mt_rand(1, 100) <= 30) {
-                    $photo = new Photo();
-                    $photo->setLegende($legendes[array_rand($legendes)]);
-                    $photo->setCheminFichierImage(
-                        "utilisateurs/{$utilisateur->getId()}/image/photo_com_{$commentaire->getId()}.jpg"
-                    );
-                    $photo->setDateHeureInsertion(new \DateTimeImmutable());
-                    $photo->setDateHeureMAJ(null);
-                    $photo->setIdPublication(null);
-                    $photo->setIdCommentaire($commentaire);
-
-                    $manager->persist($photo);
-                }
+                $manager->persist($photo);
             }
         }
     }
 
+    // Photos pour commentaires
+    foreach ($this->lesReferences as $refName => $refObj) {
+        if (strpos($refName, 'commentaire_') === 0) {
+            /** @var Commentaire $commentaire */
+            $commentaire = $refObj;
+            $utilisateur = $commentaire->getIdUtilisateur();
+
+            if (mt_rand(1, 100) <= 30) {
+                $photo = new Photo();
+                $photo->setLegende($legendes[array_rand($legendes)]);
+                $targetPath = "utilisateurs/{$utilisateur->getId()}/image/photo_com_{$commentaire->getId()}.jpg";
+                $photo->setCheminFichierImage($targetPath);
+                $photo->setDateHeureInsertion(new \DateTimeImmutable());
+                $photo->setDateHeureMAJ(null);
+                $photo->setIdPublication(null);
+                $photo->setIdCommentaire($commentaire);
+
+                // Choisir une image au hasard
+                $sourceFile = $sourcePhotos[array_rand($sourcePhotos)];
+                $destinationDir = "var/storage/utilisateurs/{$utilisateur->getId()}/image/";
+                if (!is_dir($destinationDir)) {
+                    mkdir($destinationDir, 0777, true);
+                }
+                copy($sourceFile, $destinationDir . "photo_com_{$commentaire->getId()}.jpg");
+
+                $manager->persist($photo);
+            }
+        }
+    }
+}
     /**
      * Récupérer toutes les références existantes
      * (reproduit partiellement le comportement de getReferences() privé)
