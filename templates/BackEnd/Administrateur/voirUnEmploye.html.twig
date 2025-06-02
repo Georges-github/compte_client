@@ -14,13 +14,30 @@
         <div class="col-12 col-md-6 col-lg-5 d-flex justify-content-center">
             <div class="card bg-transparent" style="width: 18rem;">
                 <div class="card-body d-flex flex-column shadow">
-                    <span class="card-title mx-auto mb-3 fs-2 fw-light">{{employe.prenom}} {{employe.nom}}</span>
-                    <span class="card-subtitle mb-2 text-body-secondary">{% for r in employe.roles %}{{r|replace({'ROLE_':''})|replace({'_':' '})|lower|capitalize}}{% if not(loop.last) %} , {% endif %}{% endfor %}</span>
-                    <span class="card-text"><span class="fw-bold">Fixe :</span> {{employe.telephoneFixe}}</span>
-                    <span class="card-text"><span class="fw-bold">Mobile :</span> {{employe.telephoneMobile}}</span>
-                    <span class="card-text"><span class="fw-bold">Médias de contact :</span> {% for m in employe.mediasDeContact %}{{m|lower|capitalize}}{% if not(loop.last) %} , {% endif %}{% endfor %}</span>
-                    <span class="card-text mt-2 mb-2">{{employe.rueEtNumero}}, {{employe.codePostal}} {{employe.ville}}</span>
-                    <span class="card-text"><span class="fw-bold">Société :</span> {{employe.societe}}</span>
+                    {% if ( employe.prenom is defined and employe.prenom is not empty ) and ( employe.nom is defined and employe.nom is not empty ) %}
+                        <span class="card-title mx-auto mb-3 fs-2 fw-light">{{employe.prenom}} {{employe.nom}}</span>
+                    {% endif %}
+                    {% if employe.roles is defined and employe.roles is not empty %}
+                        <span class="card-subtitle mb-2 text-body-secondary">{% for r in employe.roles %}{{r|replace({'ROLE_':''})|replace({'_':' '})|lower|capitalize}}{% if not(loop.last) %} , {% endif %}{% endfor %}</span>
+                    {% endif %}
+                    {% if employe.telephoneFixe is defined and employe.telephoneFixe is not empty %}
+                        <span class="card-text"><span class="fw-bold">Fixe :</span> {{employe.telephoneFixe}}</span>
+                    {% endif %}
+                    {% if employe.telephoneMobile is defined and employe.telephoneMobile is not empty %}
+                        <span class="card-text"><span class="fw-bold">Mobile :</span> {{employe.telephoneMobile}}</span>
+                    {% endif %}
+                    {% if employe.mediasDeContact is defined and employe.mediasDeContact is not empty %}
+                        <span class="card-text"><span class="fw-bold">Médias de contact :</span> {% for m in employe.mediasDeContact %}{{m|lower|capitalize}}{% if not(loop.last) %} , {% endif %}{% endfor %}</span>
+                    {% endif %}
+                    {% if ( employe.rueEtNumero is defined and employe.rueEtNumero is not empty ) and
+                    ( employe.codePostal is defined and employe.codePostal is not empty ) and
+                    ( employe.ville is defined and employe.ville is not empty )
+                    %}
+                        <span class="card-text mt-2 mb-2">{{employe.rueEtNumero}}, {{employe.codePostal}} {{employe.ville}}</span>
+                    {% endif %}
+                    {% if employe.societe is defined and employe.societe is not empty %}
+                        <span class="card-text"><span class="fw-bold">Société :</span> {{employe.societe}}</span>
+                    {% endif %}
                     <a href="{{ path('app_editer_un_employe' , {id : employe.id}) }}" class="btn btn-outline-light btn-sm w-25 mx-auto shadow mt-4" class="btn btn-outline-light btn-sm w-50" data-bs-custom-class="custom-tooltip-edition shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Editer">
                     {# &#x1f4dd; #}<img class="icone-cliquable" src="{{ asset('assets/images/icone_edition.png') }}" alt="Icône non trouvé."></img>
                     </a>

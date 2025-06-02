@@ -43,7 +43,7 @@
     <form id="delete-form-{{ contrat.id }}" action="{{ path('app_supprimer_un_contrat', {id: contrat.id}) }}" method="post">
         <input type="hidden" name="_token" value="{{ csrf_token('supprimer_un_contrat_' ~ contrat.id) }}">
     </form>
-    <div data-bs-custom-class="custom-tooltip-delete" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Supprimer la fiche">
+    <div data-bs-custom-class="custom-tooltip-delete" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Supprimer le contrat">
         <button type="button" class="btn btn-outline-danger btn-sm shadow" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-{{ contrat.id }}">
             {# &#x1f5d1; #}<img class="icone-cliquable" src="{{ asset('assets/images/icone_corbeille.png') }}" alt="Icône non trouvé."></img>
         </button>
@@ -63,15 +63,29 @@
 
     <div class="row justify-content-center">
         <div class="col-12 col-md-6 col-lg-5 d-flex justify-content-center">
-            <div class="card bg-transparent" style="width: 18rem;">
-                <div class="card-body d-flex flex-column shadow">
-                    <h5 class="card-title mx-auto mb-3">{{client.prenom}} {{client.nom}}</h5>
-                    <span class="card-text"><span class="fw-bold">Fixe :</span> {{client.telephoneFixe}}</span>
-                    <span class="card-text"><span class="fw-bold">Mobile :</span> {{client.telephoneMobile}}</span>
-                    <span class="card-text">{{client.rueEtNumero}}, {{client.codePostal}} {{client.ville}}</span>
-                    <span class="card-text"><span class="fw-bold">Société :</span> {{client.societe}}</span>
+            <div class="card bg-transparent ps-3" style="width: 18rem;">
+                    {% if ( client.prenom is defined and client.prenom is not empty ) and ( client.nom is defined and client.nom is not empty ) %}
+                        <h5 class="card-title mx-auto mb-3">{{client.prenom}} {{client.nom}}</h5>
+                    {% endif %}
+                    {% if client.telephoneFixe is defined and client.telephoneFixe is not empty %}
+                        <span class="card-text"><span class="fw-bold">Fixe :</span> {{client.telephoneFixe}}</span>
+                    {% endif %}
+                    {% if client.telephoneMobile is defined and client.telephoneMobile is not empty %}
+                        <span class="card-text"><span class="fw-bold">Mobile :</span> {{client.telephoneMobile}}</span>
+                    {% endif %}
+                    {% if ( client.rueEtNumero is defined and client.rueEtNumero is not empty ) and
+                    ( client.codePostal is defined and client.codePostal is not empty ) and
+                    ( client.ville is defined and client.ville is not empty )
+                    %}
+                        <span class="card-text">{{client.rueEtNumero}}, {{client.codePostal}} {{client.ville}}</span>
+                    {% endif %}
+                    {% if client.societe is defined and client.societe is not empty %}
+                        <span class="card-text"><span class="fw-bold">Société :</span> {{client.societe}}</span>
+                    {% endif %}
                     <br>
-                    <span class="card-text"><span class="fw-bold">Contrat No :</span> {{contrat.numeroContrat}}</span>
+                    {% if contrat.societe is defined and contrat.societe is not empty %}
+                        <span class="card-text"><span class="fw-bold">Contrat No :</span> {{contrat.numeroContrat}}</span>
+                    {% endif %}
                 </div>
             </div>
         </div>

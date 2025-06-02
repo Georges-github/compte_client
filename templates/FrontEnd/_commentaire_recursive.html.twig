@@ -1,6 +1,6 @@
 <div style="margin-left: {{ niveau * 20 }}px; margin-top: 20px; border-left: 1px solid rgb(248,249,250); padding-left: 10px;">
     <div class="d-flex flex-column">
-        <span><strong>Commentaire :</strong> {{ commentaire.texte }}</span>
+        <span><strong style="font-size: .8em;">Commentaire :</strong> {{ commentaire.texte }}</span>
         <span class="fst-italic fw-light mb-2">{{commentaire.idUtilisateur.prenom}} {{commentaire.idUtilisateur.nom}}, {{ commentaire.dateHeureInsertion |format_datetime(locale='fr', pattern='EEEE d MMMM y à HH:mm') }}</span>
     </div>
 

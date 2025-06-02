@@ -555,7 +555,7 @@ class FACController extends AbstractController {
             $pdf->SetDrawColor(220, 220, 220);
             $pdf->SetLineWidth(0.3);
             $yBefore = $pdf->GetY();
-            $pdf->SetFont('Arial', 'B', 11);
+            $pdf->SetFont('Arial', 'B', 9);
             $pdf->SetTextColor(40, 40, 40);
             // $pdf->Cell(0, 6, utf8_decode("Commentaire #" . $commentaire->getId()), 0, 1);
             $pdf->Cell(0, 6, utf8_decode("Commentaire"), 0, 1);
