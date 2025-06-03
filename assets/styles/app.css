@@ -13,7 +13,7 @@ body {
 /* Rendre les champs de recherche de DataTables transparents */
 /* --------------------------------------------------------- */
 .dataTables_filter input , .page-link {
-    background-color: transparent !important;
+    /* background-color: transparent !important; */
     border: 1px solid #ccc; /* Ajout d'une bordure discrète si nécessaire */
     color: #333; /* Définir la couleur du texte */
     padding: 5px 10px; /* Ajuster l'espacement interne */
@@ -22,7 +22,7 @@ body {
 /* Rendre les champs de pagination également transparents si nécessaire */
 .dataTables_length select,
 .dataTables_info {
-    background-color: transparent !important;
+    /* background-color: transparent !important; */
 }
 
 /* Optionnel: Styliser le texte si nécessaire */

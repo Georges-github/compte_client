@@ -50,7 +50,7 @@
 
     <div class="d-flex flex-column">
         <span class="fs-6 badge text-bg-light mt-5 mb-1" style="width: fit-content">Publication No {{noPublication}} : {{ publication.titre }}</span>
-        <span class="fst-italic fw-light">{{publication.idUtilisateur.prenom}} {{publication.idUtilisateur.nom}}, {{ publication.dateHeureInsertion |format_datetime(locale='fr', pattern='EEEE d MMMM y à HH:mm') }}</span>
+        <span class="fst-italic fw-light" style="font-size: .8em;">{{publication.idUtilisateur.prenom}} {{publication.idUtilisateur.nom}}, {{ publication.dateHeureInsertion |format_datetime(locale='fr', pattern='EEEE d MMMM y à HH:mm') }}</span>
         <span class="mb-2">{{ publication.contenu }}</span>
     </div>
 
@@ -69,7 +69,7 @@
                 </div>
             </div>
         </div>
-        <p class="fs-6 fst-italic fw-light">{{ photo.legende }}</p>
+        <p class="fst-italic fw-light" style="font-size: .8em;">{{ photo.legende }}</p>
 
     {% endfor %}
 

@@ -18,6 +18,8 @@ class EditerUnCompteClientType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $labelSubmit = $options['edition'] ? 'Valider' : 'Ajouter';
+
         $builder
             ->add('courriel')
             // ->add('mediasDeContact')
@@ -55,7 +57,7 @@ class EditerUnCompteClientType extends AbstractType
             ->add('codePostal')
             ->add('ville')
             ->add('societe')
-            ->add('submit', SubmitType::class, [ 'label' => 'Mettre à jour' ,
+            ->add('submit', SubmitType::class, [ 'label' => $labelSubmit ,
             'attr' => ['class' => 'btn btn-outline-light btn-sm shadow'] ])
             // ->add('dateHeureInsertion', null, [
             //     'widget' => 'single_text',

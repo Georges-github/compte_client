@@ -77,9 +77,15 @@
     {% for e in listeDesEmployes %}
         <div class="d-flex justify-content-start mb-3">
             <div class="w-75">
-                <span class="fw-bold fs-3">{{e.prenom}} {{e.nom}}</span><br>
-                {% for r in e.roles %}<span class="fs-6 fst-italic">{{r|replace({'ROLE_':''})|replace({'_':' '})|lower|capitalize}}{% if not(loop.last) %} ,<br>{% endif %}</span>{% endfor %}<br>
-                {{e.Courriel}}
+                <span class="fw-bold fs-4">{{e.prenom}} {{e.nom}}</span><br>
+                <div class="row">
+                    <div class="col-1"></div>
+                    <div class="col-7 fst-italic">{% for r in e.roles %}<span class="fs-6 fst-italic">{{r|replace({'ROLE_':''})|replace({'_':' '})|lower|capitalize}}{% if not(loop.last) %} ,<br>{% endif %}</span>{% endfor %}<br></div>
+                </div>  
+                <div class="row">
+                    <div class="col-1"></div>
+                    <div class="col-7 fst-italic">{{e.Courriel}}</div>
+                </div>
             </div>
             <div class="d-flex flex-column align-items-center justify-content-center">
                 <a href="{{ path('app_voir_un_employe' , {id : e.id}) }}" class="btn btn-outline-light btn-sm shadow w-100 mb-3" data-bs-custom-class="custom-tooltip-edition shadow" data-bs-toggle="tooltip" data-bs-delay='{ "show": 600, "hide": 100 }' data-bs-placement="bottom" data-bs-title="Voir">
@@ -90,7 +96,10 @@
                 </a>
             </div>
         </div>
-    {% endfor %}
+        {% if not loop.last %}
+        <div class="row"><div class="col-2"></div><div class="col-8 border-bottom border-light border-opacity-50 mb-3 ps-5 pe-5"></div><div class="col-2"></div></div>
+        {% endif %}
+     {% endfor %}
 </div>
 
 <a href="{{ path('app_accueil_administrateur') }}" class="btn btn-outline-light btn-sm shadow mt-4">Retour</a>
