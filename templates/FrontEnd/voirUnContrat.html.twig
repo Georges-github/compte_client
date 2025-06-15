@@ -24,6 +24,8 @@
     </a>
 </div>
 
+<h5 class="d-flex justify-content-center mb-4">Contrat</h5>
+
 {# {% set pile = app.session.get('pile_de_pdf_dans_public', []) %}
 <h3>Contenu de la pile PDF :</h3>
 <ul>
@@ -65,7 +67,7 @@
         <div class="col-12 col-md-6 col-lg-5 d-flex justify-content-center">
             <div class="card bg-transparent ps-3" style="width: 18rem;">
                     {% if ( client.prenom is defined and client.prenom is not empty ) and ( client.nom is defined and client.nom is not empty ) %}
-                        <h5 class="card-title mx-auto mb-3">{{client.prenom}} {{client.nom}}</h5>
+                        <h5 class="card-title mx-auto mb-3 mt-2">{{client.prenom}} {{client.nom}}</h5>
                     {% endif %}
                     {% if client.telephoneFixe is defined and client.telephoneFixe is not empty %}
                         <span class="card-text"><span class="fw-bold">Fixe :</span> {{client.telephoneFixe}}</span>
@@ -217,5 +219,7 @@
     <a href="{{ path('app_liste_des_contrats', { id: client.id }) }}" class="btn btn-outline-light btn-sm shadow mt-4">Retour</a>
 
 </div>
+
+<br><br>
 
 {% endblock %}

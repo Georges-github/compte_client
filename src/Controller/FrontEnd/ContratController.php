@@ -262,7 +262,7 @@ class ContratController extends AbstractController {
         }
 
         return $this->render( 'FrontEnd/EditerUnContrat.html.twig' , [ 'form' => $form,
-        'edition' => false ,
+        'edition' => true ,
         'pathContratActuel' => 'storage/' . $pathContratActuel['dirname'] . '/' . $pathContratActuel['basename'] ,
         'id' => $client->getId() ] );
     }

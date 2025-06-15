@@ -543,7 +543,7 @@ class FACController extends AbstractController {
         return $this->render( 'FrontEnd/AjouterUnCommentaire.html.twig' , [ 'form' => $form ] );
     }
 
-    private function ajouterCommentaires(\FPDF $pdf, array $commentaires, string $projectDir, int $niveau): void
+    private function ajouterCommentairesPDF(\FPDF $pdf, array $commentaires, string $projectDir, int $niveau): void
     {
 
         foreach ($commentaires as $commentaire) {
@@ -585,7 +585,7 @@ class FACController extends AbstractController {
             }
 
             if (!empty($commentaire->children)) {
-                $this->ajouterCommentaires($pdf, $commentaire->children, $projectDir, $niveau + 1);
+                $this->ajouterCommentairesPDF($pdf, $commentaire->children, $projectDir, $niveau + 1);
             }
 
             $pdf->Ln(5);
@@ -650,7 +650,7 @@ class FACController extends AbstractController {
                 }
             }
 
-            $this->ajouterCommentaires($pdf, $publication->commentairesArbre, $projectDir, 0);
+            $this->ajouterCommentairesPDF($pdf, $publication->commentairesArbre, $projectDir, 0);
 
             if ( $i < $nbPublications ) {
                 $pdf->AddPage();
