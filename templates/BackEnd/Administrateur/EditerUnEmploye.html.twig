@@ -4,6 +4,18 @@
 
 {% block body %}
 
+{# CSS de Choices.js #}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+
+{# JS de Choices.js #}
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+<style>
+    select.form-select {
+    border-radius: 5px !important;
+    }
+</style>
+
 <div class="d-flex justify-content-end position-fixed top-0 start-0 m-3">
     <a href="{{ path('app_liste_des_employes') }}">
         <img class="icone-cliquable" src="{{ asset('assets/images/page_precedente.png') }}" alt="Icône non trouvé."></img>
@@ -109,7 +121,7 @@
     </div>
     <div class="col-12 col-md-6">
         {{ form_label(form.roles) }}
-        {{ form_widget(form.roles) }}
+        {{ form_widget(form.roles, {'attr': {'class': 'form-select js-choices-multiple'} }) }}
         {{ form_errors(form.roles) }}
     </div>
 </div>
@@ -126,5 +138,19 @@
 {{ form_end(form) }}
 
 <br><br>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const selects = document.querySelectorAll('.js-choices-multiple');
+        selects.forEach(select => {
+            new Choices(select, {
+                removeItemButton: true,
+                placeholder: true,
+                searchEnabled: false,
+                shouldSort: false
+            });
+        });
+    });
+</script>
 
 {% endblock %}

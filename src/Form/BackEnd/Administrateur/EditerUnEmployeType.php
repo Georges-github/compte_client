@@ -22,6 +22,8 @@ class EditerUnEmployeType extends AbstractType
     {
         $labelSubmit = $options['edition'] ? 'Valider' : 'Ajouter';
 
+        $roleActuel = "ROLE_EMPLOYE";
+
         $builder
             ->add('courriel')
             // ->add('mediasDeContact')
@@ -34,7 +36,7 @@ class EditerUnEmployeType extends AbstractType
             ->add('roles' , ChoiceType::class , [
                 'choices' => Utilisateur::getLesRoles( 'EMPLOYE' ) ,
                 'multiple' => true , 
-                'attr' => ['size' => 5]
+                'attr' => ['size' => 1]
             ])
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,

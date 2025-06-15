@@ -38,7 +38,7 @@ class ContratType extends AbstractType
             ])
             ->add('idUtilisateur', EntityType::class, [
                 'class' => Utilisateur::class,
-'choice_label' => 'id',
+                'choice_label' => 'id',
             ])
         ;
     }
